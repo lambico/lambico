@@ -1,0 +1,61 @@
+/**
+ * Copyright (C) 2009 Lambico Team <lucio.benfante@gmail.com>
+ *
+ * This file is part of lambico-spring.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.lambico.spring.dao.hibernate;
+
+import org.lambico.po.hibernate.VersionedDataBase;
+import java.math.BigDecimal;
+
+import javax.persistence.Entity;
+
+/**
+ * A test class for a versioned entity.
+ *
+ * @author Lucio Benfante (<a href="lucio.benfante@jugpadova.it">lucio.benfante@jugpadova.it</a>)
+ * @version $Revision$
+ */
+@Entity()
+public class VersionedEntityDataTC extends VersionedDataBase<VersionedEntityTC> {
+    
+    /** A versioned (by time) attribute of VersionedEntityTC */
+    private BigDecimal balance;
+    
+    /** Another versioned (by language) attribute of VersionedEntityTC */
+    private String description;
+    
+    /** Creates a new instance of VersionedEntityDataTC */
+    public VersionedEntityDataTC() {
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    
+}

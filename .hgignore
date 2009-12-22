@@ -1,0 +1,7 @@
+syntag: regexp
+^lambico/nbactions.xml
+^lambico/profiles.xml
+^lambico/target
+^lambico/lambico-core/target
+^lambico/lambico-spring/target
+^lambico/lambico-test/target
