@@ -64,6 +64,12 @@
             <version>3.4.0.GA</version>
             <optional/>
         </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.3</version>
+            <optional/>
+        </dependency>
     </dependencies>
 </project>
 
