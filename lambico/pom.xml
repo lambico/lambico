@@ -11,9 +11,9 @@
     <modules>
         <module>lambico-core</module>
         <!--module>lambico-spring</module-->
-    <module>lambico-spring</module>
-    <module>lambico-test</module>
-  </modules>
+        <module>lambico-spring</module>
+        <module>lambico-test</module>
+    </modules>
     <properties>
         <main.basedir>${basedir}</main.basedir>
         <year>2009</year>
@@ -98,6 +98,14 @@
             </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
     <repositories>
         <repository>
             <id>parancoe-org-repository</id>
