@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.po.hibernate;
 
 import java.util.Date;
@@ -23,56 +22,57 @@ import java.util.Date;
 /**
  * The interface tham must be implemented by a set of versioned localized data.
  *
+ * @param <T> The versioned entity class.
  * @author <a href="mailto:lucio.benfante@jugpadova.it">Lucio Benfante</a>
  * @version $Revision$
  */
 public interface VersionedData<T extends VersionedEntity> extends Entity {
-    
+
     /**
      * Return the entity of this versioned data.
      * @return The entity
      */
-    public T  getEntity();
-    
+    T getEntity();
+
     /**
      * Set the entity of this versioned data.
      * @param entity The entity
      */
-    public void setEntity(T entity);
-    
+    void setEntity(T entity);
+
     /**
-     * Return the date of starting validity of this versioned data
+     * Return the date of starting validity of this versioned data.
      * @return The start date
      */
-    public Date getDateFrom();
-    
+    Date getDateFrom();
+
     /**
-     * Set the date of starting validity of this versioned data
+     * Set the date of starting validity of this versioned data.
      * @param dateFrom The start date
      */
-    public void setDateFrom(Date dateFrom);
-    
+    void setDateFrom(Date dateFrom);
+
     /**
      * Return the date of end validity of this versioned data.
      * @return The start date. null for no end of validity.
      */
-    public Date getDateTo();
-    
+    Date getDateTo();
+
     /**
-     * Set the date of starting validity of this versioned data
+     * Set the date of starting validity of this versioned data.
      * @param dateTo The end date. null for no end of validity.
      */
-    public void setDateTo(Date dateTo);
-    
+    void setDateTo(Date dateTo);
+
     /**
      * Return the locale of this version of data.
      * @return The locale
      */
-    public String getLocale();
-    
+    String getLocale();
+
     /**
      * Set the locale of this version of data.
      * @param locale The locale
      */
-    public void setLocale(String locale);
+    void setLocale(String locale);
 }

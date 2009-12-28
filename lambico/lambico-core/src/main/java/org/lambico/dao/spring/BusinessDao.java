@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
  * A stereotype annotation for marking a Generic Business Dao type.
  */
 @Documented
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Component
 public @interface BusinessDao {

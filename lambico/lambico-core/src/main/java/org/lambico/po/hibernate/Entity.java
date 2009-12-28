@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.po.hibernate;
 
 /**
@@ -25,32 +24,32 @@ package org.lambico.po.hibernate;
  * @version $Revision$
  */
 public interface Entity {
+
     /**
-     * Return the entity id
-     * 
+     * Return the entity id.
+     *
      * @return The entity id
      */
     Long getId();
 
     /**
-     * Return the version of this entity
-     * 
+     * Return the version of this entity.
+     *
      * @return The version of this entity
      */
 //    Integer getVersion();
 
     /**
-     * Set the entity id
-     * 
+     * Set the entity id.
+     *
      * @param id The entity id
      */
     void setId(Long id);
 
     /**
-     * Set the version of this entity
-     * 
+     * Set the version of this entity.
+     *
      * @param version The version
-//     */
+     */
 //    void setVersion(Integer version);
-    
 }

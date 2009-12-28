@@ -19,11 +19,22 @@
 package org.lambico.dao.generic;
 
 /**
+ * Support for entity type in the DAOs.
  *
  * @author <a href="mailto:lucio@benfante.com">Lucio Benfante</a>
  * @version $Revision$
  */
 public interface GenericDaoTypeSupport {
+    /**
+     * Returns the DAO entity type.
+     *
+     * @return The DAO entity type.
+     */
     Class getType();
+    /**
+     * Sets the DAO entity type.
+     *
+     * @param type The DAO entity type.
+     */
     void setType(Class type);
 }

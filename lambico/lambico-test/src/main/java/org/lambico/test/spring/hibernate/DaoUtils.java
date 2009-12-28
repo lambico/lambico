@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2009 Lambico Team <lucio.benfante@gmail.com>
  *
- * This file is part of lambico-test.
+ * This file is part of Lambico test.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

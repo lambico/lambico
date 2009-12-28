@@ -21,21 +21,52 @@ package org.lambico.dao.generic;
 import java.util.List;
 
 /**
+ * A page in a paginated result.
  *
- * @author lucio
+ * @param <T> The type of the entity instance in the page.
+ * @author Lucio Benfante <lucio.benfante@gmail.com>
  */
 public interface Page<T> {
-
+    /**
+     * Returns the index of the last page.
+     *
+     * @return The index of the last page.
+     */
     int getLastPage();
 
+    /**
+     * Return the content of the page.
+     *
+     * @return The content, i.e. the list of entity instances.
+     */
     List<T> getList();
 
+    /**
+     * Returns the index of the current page.
+     *
+     * @return The index of the current page.
+     */
     int getPage();
 
+    /**
+     * The total number of entity instances.
+     *
+     * @return The total number of entity instances.
+     */
     int getRowCount();
 
+    /**
+     * Checks if there exists a following page.
+     *
+     * @return true if there is a page after the current page.
+     */
     boolean isNextPage();
 
+    /**
+     * Checks if there exists a previous page.
+     *
+     * @return true if there is a page before the current page.
+     */
     boolean isPreviousPage();
 
 }

@@ -22,8 +22,13 @@ import java.io.Serializable;
 /**
  * Interface for the generic DAO.
  *
- * Derived from http://www-128.ibm.com/developerworks/java/library/j-genericdao.html
+ * Derived from
+ * <a
+ * href="http://www-128.ibm.com/developerworks/java/library/j-genericdao.html">
+ * http://www-128.ibm.com/developerworks/java/library/j-genericdao.html</a>
  *
+ * @param <T> The entity class type of the DAO.
+ * @param <PK> The type of the primary key of the entity.
  * @author <a href="mailto:lucio.benfante@jugpadova.it">Lucio Benfante</a>
  * @version $Rev$
  */

@@ -27,13 +27,13 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation for marking a parameter of a finder for the index
- * of the first record to return (for example, for paginating)
+ * of the first record to return (for example, for paginating).
  *
  * @author <a href="mailto:lucio.benfante@jugpadova.it">Lucio Benfante</a>
  * @version $Revision$
  */
 @Documented
-@Target({ElementType.PARAMETER})
+@Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface FirstResult {

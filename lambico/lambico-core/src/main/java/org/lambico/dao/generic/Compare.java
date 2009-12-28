@@ -27,15 +27,18 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation for defining the type of comparison for a finder
- * parameter used as query parameter
+ * parameter used as query parameter.
  *
  * @author <a href="mailto:lucio.benfante@jugpadova.it">Lucio Benfante</a>
  * @version $Revision$
  */
 @Documented
-@Target({ElementType.PARAMETER})
+@Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface Compare {
+    /**
+     * The type of comparaison to apply.
+     */
     CompareType value();
 }

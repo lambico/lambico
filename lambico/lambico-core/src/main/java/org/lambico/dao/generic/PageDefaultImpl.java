@@ -15,55 +15,113 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.dao.generic;
 
 import java.util.List;
 import java.util.Collections;
 
 /**
+ * The default implementation fo the {@link Page} interface.
+ *
+ * @param <T> The type of the entity instance in the page.
  * @author Jacopo Murador <jacopo.murador at seesaw.it>
+ * @author Lucio Benfante <lucio.benfante@gmail.com>
  */
 public class PageDefaultImpl<T> implements Page<T> {
 
+    /**
+     * The content of the page.
+     */
     private List results;
+    /**
+     * The size of the page, i.e. the max number of rows in a single page.
+     */
     private int pageSize;
+    /**
+     * The index of the current page.
+     */
     private int page;
+    /**
+     * The total rows count.
+     */
     private int rowCount;
+    /**
+     * An empty page.
+     */
+    public static final PageDefaultImpl EMPTY =
+            new PageDefaultImpl(Collections.EMPTY_LIST, 1, 1, 0);
 
-    public static PageDefaultImpl EMPTY = new PageDefaultImpl(Collections.EMPTY_LIST, 1, 1, 0);
-
-    public PageDefaultImpl(List<T> list, int page, int pageSize, int rowCount) {
+    /**
+     * The constructor of a page.
+     *
+     * @param list The page content.
+     * @param page The index of the page.
+     * @param pageSize The size of the page.
+     * @param rowCount The total rows count.
+     */
+    public PageDefaultImpl(final List<T> list, final int page,
+            final int pageSize, final int rowCount) {
         this.page = page;
         this.pageSize = pageSize;
         this.rowCount = rowCount;
         results = list;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     public int getPage() {
         return page;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     public boolean isNextPage() {
         return page < getLastPage();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     public boolean isPreviousPage() {
         return page > 1;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     public List<T> getList() {
         return results;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     public int getLastPage() {
-        int lastPage = rowCount/pageSize;
-        if (rowCount%pageSize > 0) lastPage++;
+        int lastPage = rowCount / pageSize;
+        if (rowCount % pageSize > 0) {
+            lastPage++;
+        }
         return lastPage;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     public int getRowCount() {
         return rowCount;
     }
-
 }

@@ -19,27 +19,27 @@
 package org.lambico.dao.generic;
 
 /**
- * Enum used with the @link(Compare) annotation, for defining type
+ * Enum used with the {@link Compare) annotation, for defining type
  * of comparison for a finder parameter used as query parameter.
  *
  * @author <a href="mailto:lucio.benfante@jugpadova.it">Lucio Benfante</a>
  * @version $Revision$
  */
 public enum CompareType {
-    /** Compare by equality */
+    /** Compare by equality. */
     EQUAL,
-    /** Compare by like */
+    /** Compare by like. */
     LIKE,
-    /** Compare by ilike */
+    /** Compare by ilike. */
     ILIKE,
-    /** Compare by greather than or equal */
+    /** Compare by greather than or equal. */
     GE,
-    /** Compare by greather than */
+    /** Compare by greather than. */
     GT,
-    /** Compare by less than or equal */
+    /** Compare by less than or equal. */
     LE,
-    /** Compare by less than */
+    /** Compare by less than. */
     LT,
-    /** Compare by no equal */
+    /** Compare by no equal. */
     NE
 }

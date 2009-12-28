@@ -32,9 +32,12 @@ import java.lang.annotation.Target;
  * @version $Revision$
  */
 @Documented
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface Dao {
+    /**
+     * The entity class type for which this DAO is defined.
+     */
     Class entity();
 }

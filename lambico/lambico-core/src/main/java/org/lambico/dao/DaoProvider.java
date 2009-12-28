@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.dao;
 
 import java.util.Map;
@@ -27,19 +26,22 @@ import java.util.Map;
  * @version $Revision$
  */
 public interface DaoProvider {
+
     /**
      * Get a Map containing the DAOs. The keys are the dao names.
+     *
+     * @return A map of the DAOs.
      */
     Map<String, ?> getDaoMap();
-    
+
     /**
      * Get a dao with a specified name.
-     * 
+     *
      * @param daoName The name of the DAO
      * @return The dao. null if the dao doesn't exist.
      */
     Object getDao(String daoName);
-    
+
     /**
      * Get a dao for an entity type.
      *

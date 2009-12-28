@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.po.hibernate;
 
 import java.util.List;
@@ -23,32 +22,33 @@ import java.util.List;
 /**
  * The interface tham must be implemented by an entity with versioned localized data.
  *
+ * @param <T> The versioned data class.
  * @author <a href="mailto:lucio.benfante@jugpadova.it">Lucio Benfante</a>
  * @version $Revision$
  */
 public interface VersionedEntity<T extends VersionedData> extends Entity {
+
     /**
      * Return the collection of versioned localized data.
      * @return The collection of versioned localized data
      */
     List<T> getVersionedData();
-    
+
     /**
-     * Set the collection of versioned localized data
+     * Set the collection of versioned localized data.
      * @param versionedData The collection of versioned localized data
      */
     void setVersionedData(List<T> versionedData);
-    
+
     /**
-     * Return the default locale for this entity
+     * Return the default locale for this entity.
      * @return The default locale
      */
     String getDefaultLocale();
-    
+
     /**
      * Set the default locale for this entity.
      * @param locale The default locale
      */
     void setDefaultLocale(String locale);
-    
 }

@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.po.hibernate;
 
 import java.io.Serializable;
@@ -24,7 +23,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Version;
 
 /**
  * A base class for all persistent entities.
@@ -34,28 +32,24 @@ import javax.persistence.Version;
  */
 @MappedSuperclass
 public abstract class EntityBase implements Entity, Serializable {
-    
+
     /**
-     * Creates a new instance of EntityBase
+     * Creates a new instance of EntityBase.
      */
     public EntityBase() {
     }
-
-    
     /**
-     * The entity id
+     * The entity id.
      */
     protected Long id;
-
     /**
-     * The entity version for optimistic locking
+     * The entity version for optimistic locking.
      */
-    protected Integer version;
-
+//    protected Integer version;
 
     /**
      * Get the entity id.
-     * 
+     *
      * @return the entity id.
      */
     @Id
@@ -73,14 +67,12 @@ public abstract class EntityBase implements Entity, Serializable {
 //    public Integer getVersion() {
 //        return this.version;
 //    }
-
-
     /**
      * Set the entity id.
      *
      * @param id the entity id
      */
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -93,7 +85,6 @@ public abstract class EntityBase implements Entity, Serializable {
 //    public void setVersion(Integer version) {
 //        this.version = version;
 //    }
-
     /**
      * Default implementation of the equals method.
      * It return true if the objects are of the same type and have
@@ -103,13 +94,15 @@ public abstract class EntityBase implements Entity, Serializable {
      * @return true if the objects are equals
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         boolean result = false;
         if (obj != null) {
             String className = obj.getClass().getName();
-            if (className.indexOf("$$EnhancerByCGLIB$$") > 0) className = className.substring(0, className.indexOf("$$EnhancerByCGLIB$$"));
+            if (className.indexOf("$$EnhancerByCGLIB$$") > 0) {
+                className = className.substring(0, className.indexOf("$$EnhancerByCGLIB$$"));
+            }
             if (this.getClass().getName().equals(className)) {
-                if (this.getId() != null && this.getId().equals(((EntityBase)obj).getId())) {
+                if (this.getId() != null && this.getId().equals(((EntityBase) obj).getId())) {
                     result = true;
                 }
             }
@@ -122,8 +115,7 @@ public abstract class EntityBase implements Entity, Serializable {
      * It return the hascode of the Id, if the Id is not null.
      * It return the hascode of the Object, if the Id is null.
      *
-     * @param obj The object to compare with this
-     * @return true if the objects are equals
+     * @return The hashcode of the entity instance.
      */
     @Override
     public int hashCode() {
@@ -133,12 +125,11 @@ public abstract class EntityBase implements Entity, Serializable {
         } else {
             result = super.hashCode();
         }
-        return result;            
+        return result;
     }
 
     @Override
     public String toString() {
-        return this.getClass().getName()+"[id=" + this.id + "]";
+        return this.getClass().getName() + "[id=" + this.id + "]";
     }
-
 }

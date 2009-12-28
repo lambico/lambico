@@ -15,17 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.dao.spring.hibernate;
 
-import org.lambico.dao.generic.*;
 import java.io.Serializable;
+import org.lambico.dao.generic.GenericDao;
+import org.lambico.dao.hibernate.GenericDaoHibernateCriteriaSupport;
 
 /**
  * The interface for the Spring Hibernate generic DAO.
  *
+ * @param <T> The entity class type of the DAO.
+ * @param <PK> The type of the primary key of the entity.
  * @author Lucio Benfante
  */
 public interface HibernateGenericDao<T, PK extends Serializable>
-        extends GenericDao<T, PK>, GenericDaoTypeSupport, GenericDaoHibernateSupport {
+        extends GenericDao<T, PK>, GenericDaoHibernateCriteriaSupport<T, PK>,
+        GenericDaoHibernateSupport {
 }

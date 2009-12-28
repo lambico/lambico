@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.po.hibernate;
 
 import java.util.ArrayList;
@@ -30,45 +29,65 @@ import javax.persistence.OrderBy;
 /**
  * The standard abstract implementation for an entity with versioned localized data.
  *
+ * @param <T> The versioned data class.
  * @author <a href="mailto:lucio.benfante@jugpadova.it">Lucio Benfante</a>
  * @version $Revision$
  */
 @MappedSuperclass
-public abstract class VersionedEntityBase<T extends VersionedData> extends EntityBase implements VersionedEntity<T> {
-    
-    /**
-     * The collection of versioned data
-     */
+public abstract class VersionedEntityBase<T extends VersionedData>
+        extends EntityBase implements VersionedEntity<T> {
+
+    /** A delay fpr fast machines. */
+    private static final int DEFAULT_FAST_DELAY = 1000;
+    /** The collection of versioned data. */
     protected List<T> versionedData;
-    /**
-     * The default locale for the entity
-     */
+    /** The default locale for the entity. */
     protected String defaultLocale;
-    
+
     /**
-     * Creates a new instance of VersionedEntityBase
+     * Creates a new instance of VersionedEntityBase.
      */
     public VersionedEntityBase() {
     }
-    
-    @OneToMany(mappedBy="entity", cascade=CascadeType.ALL)
-    @OrderBy(value="dateFrom")
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
+    @OneToMany(mappedBy = "entity", cascade = CascadeType.ALL)
+    @OrderBy(value = "dateFrom")
     public List<T> getVersionedData() {
         return this.versionedData;
     }
-    
-    public void setVersionedData(List<T> versionedData) {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param versionedData {@inheritDoc}
+     */
+    public void setVersionedData(final List<T> versionedData) {
         this.versionedData = versionedData;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     public String getDefaultLocale() {
         return defaultLocale;
     }
-    
-    public void setDefaultLocale(String defaultLocale) {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param defaultLocale {@inheritDoc}
+     */
+    public void setDefaultLocale(final String defaultLocale) {
         this.defaultLocale = defaultLocale;
     }
-    
+
     /**
      * Find the last versioned data, using the default locale.
      * @return The last versioned data
@@ -76,20 +95,22 @@ public abstract class VersionedEntityBase<T extends VersionedData> extends Entit
     public T findLastVersionedData() {
         return findLastVersionedData(this.getDefaultLocale());
     }
-    
+
     /**
-     * TODO to complete
-     *
      * Find the last versioned data, using the passed locale.
+     * *TODO* to complete
+     *
+     * @param locale The locale.
      * @return The last versioned data
      */
-    public T findLastVersionedData(String locale) {
+    public T findLastVersionedData(final String locale) {
         T result = null;
         if (this.getVersionedData() != null && !this.getVersionedData().isEmpty()) {
-            for (int i = this.getVersionedData().size()-1; i >= 0; i--) {
+            for (int i = this.getVersionedData().size() - 1; i >= 0; i--) {
                 T current = this.getVersionedData().get(i);
                 if (locale == null) {
-                    if (current.getLocale() == null || current.getLocale().equals(this.getDefaultLocale())) {
+                    if (current.getLocale() == null
+                            || current.getLocale().equals(this.getDefaultLocale())) {
                         result = current;
                         break;
                     }
@@ -97,7 +118,8 @@ public abstract class VersionedEntityBase<T extends VersionedData> extends Entit
                     if (locale.equals(current.getLocale())) {
                         result = current;
                         break;
-                    } else if (current.getLocale() == null && locale.equals(this.getDefaultLocale())) {
+                    } else if (current.getLocale() == null
+                            && locale.equals(this.getDefaultLocale())) {
                         result = current;
                         break;
                     }
@@ -106,13 +128,14 @@ public abstract class VersionedEntityBase<T extends VersionedData> extends Entit
         }
         return result;
     }
-    
+
     /**
      * Update the versioned data.
+     *
      * @param newVersionData The new version of data of this entity
      */
     @SuppressWarnings("unchecked")
-    public void updateVersionedData(T newVersionData) {
+    public void updateVersionedData(final T newVersionData) {
         newVersionData.setEntity(this);
         if (this.getVersionedData() == null) {
             this.setVersionedData(new ArrayList<T>());
@@ -122,14 +145,14 @@ public abstract class VersionedEntityBase<T extends VersionedData> extends Entit
         if (last != null) {
             if (!current.after(last.getDateFrom())) {
                 // sometimes it happens with fast machines
-                current.setTime(last.getDateFrom().getTime()+1000);
+                current.setTime(last.getDateFrom().getTime() + DEFAULT_FAST_DELAY);
             }
             last.setDateTo(current);
         }
         newVersionData.setDateFrom(current);
         this.getVersionedData().add(newVersionData);
     }
-    
+
     @Override
     public int hashCode() {
         if (this.getId() != null) {
@@ -138,13 +161,13 @@ public abstract class VersionedEntityBase<T extends VersionedData> extends Entit
             return super.hashCode();
         }
     }
-    
+
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (!(obj instanceof VersionedEntityBase)) {
             return false;
         }
-        VersionedEntityBase q = (VersionedEntityBase)obj;
+        VersionedEntityBase q = (VersionedEntityBase) obj;
         return (this.getId() == null ? q.getId() == null : this.getId().equals(q.getId()));
     }
 }

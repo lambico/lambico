@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.dao;
 
 /**
@@ -24,5 +23,4 @@ package org.lambico.dao;
  * The convention for the methods is get<dao_bean_id>.
  */
 public interface Daos extends DaoProvider {
-   
 }

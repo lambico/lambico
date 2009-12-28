@@ -9,8 +9,8 @@
     <url>http://www.lambico.org</url>
     <inceptionYear>2009</inceptionYear>
     <modules>
+        <module>build-tools</module>
         <module>lambico-core</module>
-        <!--module>lambico-spring</module-->
         <module>lambico-spring</module>
         <module>lambico-test</module>
     </modules>
@@ -20,6 +20,14 @@
         <lambico.spring.version>3.0.0.RELEASE</lambico.spring.version>
         <lambico.hibernate.version>3.3.2.GA</lambico.hibernate.version>
         <lambico.log4j.version>1.2.14</lambico.log4j.version>
+
+        <!-- NetBeans IDE properties -->
+        <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>8</org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.text-limit-width>100</org-netbeans-modules-editor-indent.CodeStyle.project.text-limit-width>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.expand-tabs>true</org-netbeans-modules-editor-indent.CodeStyle.project.expand-tabs>
     </properties>
     <build>
         <plugins>
@@ -96,6 +104,17 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.lambico</groupId>
+                        <artifactId>build-tools</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -103,6 +122,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>org/lambico/buildtools/lambico_checks.xml</configLocation>
+                </configuration>
             </plugin>
         </plugins>
     </reporting>
@@ -132,6 +154,10 @@
             <url>scp://maven2.parancoe.org/home/web/maven2.parancoe.org/repository/repo</url>
             <layout>default</layout>
         </repository>
+        <site>
+            <id>docs.lambico.org</id>
+            <url>scp://docs.lambico.org/var/www/lambico/docs</url>
+        </site>
     </distributionManagement>
     <scm>
         <connection>scm:hg:https://lambico.googlecode.com/hg</connection>

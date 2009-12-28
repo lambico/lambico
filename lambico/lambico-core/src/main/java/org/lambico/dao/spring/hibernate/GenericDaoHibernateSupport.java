@@ -22,10 +22,16 @@ import org.lambico.dao.generic.GenericDaoTypeSupport;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 /**
+ * Methods of a generic DAO with support for hibernate.
  *
  * @author <a href="mailto:lucio@benfante.com">Lucio Benfante</a>
  * @version $Revision$
  */
 public interface GenericDaoHibernateSupport extends GenericDaoTypeSupport {
+    /**
+     * Gets a Spring's Hibernate Template.
+     *
+     * @return A Spring's Hibernate template.
+     */
     HibernateTemplate getHibernateTemplate();
 }
