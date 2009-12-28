@@ -124,6 +124,7 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <configuration>
                     <configLocation>org/lambico/buildtools/lambico_checks.xml</configLocation>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
         </plugins>
