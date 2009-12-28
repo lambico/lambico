@@ -5,3 +5,4 @@ syntag: regexp
 ^lambico/lambico-core/target
 ^lambico/lambico-spring/target
 ^lambico/lambico-test/target
+^lambico/build-tools/target
