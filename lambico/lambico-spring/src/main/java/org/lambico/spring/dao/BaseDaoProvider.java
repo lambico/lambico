@@ -15,12 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao;
 
-import org.lambico.dao.*;
 import java.util.Iterator;
 import java.util.Map;
+import org.lambico.dao.DaoProvider;
 
 /**
  * A class for retrieving DAOs from the context.
@@ -29,25 +28,48 @@ import java.util.Map;
  * @version $Revision$
  */
 public class BaseDaoProvider implements DaoProvider {
-    private Map<String, ?> daoMap;    
-    
-    /** Creates a new instance of BaseDaoProvider */
+
+    /** The map of DAOs. */
+    private Map<String, ?> daoMap;
+
+    /** Creates a new instance of BaseDaoProvider. */
     public BaseDaoProvider() {
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
     public Map<String, ? extends Object> getDaoMap() {
         return daoMap;
     }
 
-    public void setDaoMap(Map<String, ? extends Object> daoMap) {
+    /**
+     * Set the map of current DAOs.
+     *
+     * @param daoMap The map of current DAOs.
+     */
+    public void setDaoMap(final Map<String, ? extends Object> daoMap) {
         this.daoMap = daoMap;
     }
-    
-    public Object getDao(String daoName) {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return {@inheritDoc}
+     */
+    public Object getDao(final String daoName) {
         return daoMap.get(daoName);
     }
 
-    public Object getDao(Class daoEntityType) {
+    /**
+     * {@inheritDoc}
+     *
+     * @param daoEntityType {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    public Object getDao(final Class daoEntityType) {
         Object result = null;
         Iterator it = daoMap.values().iterator();
         while (it.hasNext()) {
@@ -59,5 +81,4 @@ public class BaseDaoProvider implements DaoProvider {
         }
         return result;
     }
-    
 }

@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.xml;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -31,24 +30,34 @@ import org.w3c.dom.Element;
  *
  * Based on an idea (and code) of Chris Richardson:
  *
+ * CHECKSTYLE:OFF
  * <a href="http://chris-richardson.blog-city.com/simpler_xml_configuration_files_for_spring_dependency_inject.htm">http://chris-richardson.blog-city.com/simpler_xml_configuration_files_for_spring_dependency_inject.htm</a>
+ * CHECKSTYLE:ON
  */
 public class DefineDaosBeanDefinitionParser implements BeanDefinitionParser {
+
+    /** The basePackage attribute. */
     public static final String BASE_PACKAGE_ATTRIBUTE = "basePackage";
+    /** The genericDao attribute. */
     public static final String GENERIC_DAO_ATTRIBUTE = "genericDao";
 
-	public BeanDefinition parse(Element element, ParserContext parserContext) {
-		String packageName = element.getAttribute(BASE_PACKAGE_ATTRIBUTE);
-                String genericDaoName = element.getAttribute(GENERIC_DAO_ATTRIBUTE);
-		BeanDefinitionParserDelegate delegate = parserContext
-								.getDelegate();
-		ResourcePatternResolver resourceLoader = (ResourcePatternResolver) parserContext
-				.getReaderContext().getReader().getResourceLoader();
-		BeanDefinitionRegistry registry = parserContext.getReaderContext()
-				.getRegistry();
-		DaoBeanCreator daoBeanCreator = new DaoBeanCreator(
-				resourceLoader, registry, delegate, parserContext.getReaderContext());
-		daoBeanCreator.createBeans(element, packageName, genericDaoName);
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * @param element {@inheritDoc}
+     * @param parserContext {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    public BeanDefinition parse(final Element element, final ParserContext parserContext) {
+        String packageName = element.getAttribute(BASE_PACKAGE_ATTRIBUTE);
+        String genericDaoName = element.getAttribute(GENERIC_DAO_ATTRIBUTE);
+        BeanDefinitionParserDelegate delegate = parserContext.getDelegate();
+        ResourcePatternResolver resourceLoader = (ResourcePatternResolver) parserContext.
+                getReaderContext().getReader().getResourceLoader();
+        BeanDefinitionRegistry registry = parserContext.getReaderContext().getRegistry();
+        DaoBeanCreator daoBeanCreator = new DaoBeanCreator(
+                resourceLoader, registry, delegate, parserContext.getReaderContext());
+        daoBeanCreator.createBeans(element, packageName, genericDaoName);
+        return null;
+    }
 }

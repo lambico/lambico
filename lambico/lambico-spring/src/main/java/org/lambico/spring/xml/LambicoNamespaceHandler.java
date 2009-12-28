@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.xml;
 
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
@@ -27,9 +26,14 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * @version $Revision$
  */
 public class LambicoNamespaceHandler extends NamespaceHandlerSupport {
+
+    /**
+     * Initialization method.
+     */
     public void init() {
         registerBeanDefinitionParser("dao", new DaoBeanDefinitionParser());
         registerBeanDefinitionParser("define-daos", new DefineDaosBeanDefinitionParser());
-        registerBeanDefinitionParser("discover-persistent-classes", new DiscoverPersistentClassesBeanDefinitionParser());
-    }    
+        registerBeanDefinitionParser("discover-persistent-classes",
+                new DiscoverPersistentClassesBeanDefinitionParser());
+    }
 }

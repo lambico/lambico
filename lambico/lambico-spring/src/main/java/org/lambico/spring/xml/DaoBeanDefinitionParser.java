@@ -15,12 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.xml;
 
 import org.lambico.dao.generic.Dao;
 import org.springframework.aop.framework.ProxyFactoryBean;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
@@ -35,29 +33,50 @@ import org.w3c.dom.Element;
  * @version $Revision$
  */
 public class DaoBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+
+    /** The interface attribute. */
     public static final String INTERFACE_ATTRIBUTE = "interface";
+    /** The genericDao attribute. */
     public static final String GENERIC_DAO_ATTRIBUTE = "genericDao";
-    
-    /** Creates a new instance of DaoBeanDefinitionParser */
+
+    /** Creates a new instance of DaoBeanDefinitionParser. */
     public DaoBeanDefinitionParser() {
     }
-    
-    protected Class getBeanClass(Element element) {
+
+    /**
+     * {@inheritDoc}
+     *
+     * In this case it always return a {@link ProxyFactoryBean} class definition.
+     *
+     * @param element {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    protected Class getBeanClass(final Element element) {
         return ProxyFactoryBean.class;
     }
-    
-    protected void doParse(Element element, BeanDefinitionBuilder bean) {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param element {@inheritDoc}
+     * @param bean {@inheritDoc}
+     */
+    @Override
+    protected void doParse(final Element element, final BeanDefinitionBuilder bean) {
         String daoInterface = element.getAttribute(INTERFACE_ATTRIBUTE);
         bean.addPropertyValue("proxyInterfaces", daoInterface);
         Class entityType = null;
         try {
-            Class daoInterfaceClass = Class.forName(daoInterface, true, this.getClass().getClassLoader());
+            Class daoInterfaceClass =
+                    Class.forName(daoInterface, true, this.getClass().getClassLoader());
             Dao daoAnnotation = (Dao) daoInterfaceClass.getAnnotation(Dao.class);
             if (daoAnnotation != null) {
                 entityType = daoAnnotation.entity();
             }
             if (entityType == null) {
-                throw new IllegalArgumentException("target Dao interface not annotated with Dao annotation");
+                throw new IllegalArgumentException(
+                        "target Dao interface not annotated with Dao annotation");
             }
         } catch (ClassNotFoundException ex) {
             throw new IllegalArgumentException("Dao interface not found", ex);
@@ -67,14 +86,30 @@ public class DaoBeanDefinitionParser extends AbstractSingleBeanDefinitionParser 
         genericDaoBDB.addPropertyValue("type", entityType);
         bean.addPropertyValue("target", genericDaoBDB.getBeanDefinition());
     }
-    
+
+    /**
+     * {@inheritDoc}
+     *
+     * In this case it always returns true.
+     *
+     * @return true
+     */
+    @Override
     protected boolean shouldGenerateIdAsFallback() {
         return true;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param element {@inheritDoc}
+     * @param definition {@inheritDoc}
+     * @param parserContext {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
-    protected String resolveId(Element element, AbstractBeanDefinition definition, ParserContext parserContext)
-    throws BeanDefinitionStoreException {        
+    protected String resolveId(final Element element, final  AbstractBeanDefinition definition,
+            final ParserContext parserContext) {
         if (shouldGenerateId()) {
             return super.resolveId(element, definition, parserContext);
         } else {
@@ -86,7 +121,4 @@ public class DaoBeanDefinitionParser extends AbstractSingleBeanDefinitionParser 
             return id;
         }
     }
-    
-    
-    
 }

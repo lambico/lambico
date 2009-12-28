@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.xml;
 
 import java.io.IOException;
@@ -37,54 +36,79 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.w3c.dom.Element;
 
-
 /**
  * A populator for the Lambico session factory.
  * It automagically populate the session factory with persistent classes.
  *
  * Based on an idea (and code) of Chris Richardson:
  *
+ * CHECKSTYLE:OFF
  * <a href="http://chris-richardson.blog-city.com/simpler_xml_configuration_files_for_spring_dependency_inject.htm">http://chris-richardson.blog-city.com/simpler_xml_configuration_files_for_spring_dependency_inject.htm</a>
+ * CHECKSTYLE:ON
  *
  * @author Lucio Benfante <lucio.benfante at gmail dot com>
  */
 public class SessionFactoryPopulator {
-    
+
+    /** The ResourcePatternResolver. */
     private ResourcePatternResolver rl;
-    
+    /** The BeanDefinition registry. */
     private BeanDefinitionRegistry registry;
-    
+    /** The BeanDefinitionParserDelegate. */
     private BeanDefinitionParserDelegate delegate;
-    
+    /** The ReaderContext. */
     private final ReaderContext readerContext;
-    
-    public SessionFactoryPopulator(ResourcePatternResolver resourcePatternResolver,
-            BeanDefinitionRegistry beanDefinitionRegistry,
-            BeanDefinitionParserDelegate parserDelegate, ReaderContext readerContext) {
+
+    /**
+     * The constructor.
+     *
+     * @param resourcePatternResolver The ResourcePatternResolver.
+     * @param beanDefinitionRegistry The BeanDefinitionRegistry.
+     * @param parserDelegate The BeanDefinitionParserDelegate.
+     * @param readerContext The ReaderContext.
+     */
+    public SessionFactoryPopulator(final ResourcePatternResolver resourcePatternResolver,
+            final BeanDefinitionRegistry beanDefinitionRegistry,
+            final BeanDefinitionParserDelegate parserDelegate,
+            final ReaderContext readerContext) {
         this.readerContext = readerContext;
         this.rl = resourcePatternResolver;
         this.registry = beanDefinitionRegistry;
         this.delegate = parserDelegate;
     }
-    
-    void populateSessionFactory(Element element, String packageName, String sessionFactoryName) {
+
+    /**
+     * Populate the SessionFactory with the persistent classes.
+     *
+     * @param element The DOM definition element.
+     * @param packageName The base package name.
+     * @param sessionFactoryName The session factory name.
+     */
+    void populateSessionFactory(final Element element, final String packageName,
+            final String sessionFactoryName) {
         List<Class> allClasses = getAllClasses(packageName);
         List<Class> persistentClasses = getPersistentClasses(allClasses);
-        BeanDefinition sessionFactoryBeanDefinition = registry.getBeanDefinition(sessionFactoryName);
+        BeanDefinition sessionFactoryBeanDefinition =
+                registry.getBeanDefinition(sessionFactoryName);
         addPersistentClasses(persistentClasses, sessionFactoryBeanDefinition);
     }
-    
-    private void fatal(Throwable e) {
+
+    /**
+     * Send a fatal messag to the context.
+     *
+     * @param e The cause.
+     */
+    private void fatal(final Throwable e) {
         readerContext.fatal(e.getMessage(), null, e);
     }
-    
+
     /**
      * Return all classes in the package subtree.
      *
      * @param packageName The base package
      * @return The listo of all classes
      */
-    List<Class> getAllClasses(String packageName) {
+    List<Class> getAllClasses(final String packageName) {
         List<Class> result = new ArrayList<Class>();
         try {
             String packagePart = packageName.replace('.', '/');
@@ -95,8 +119,7 @@ public class SessionFactoryPopulator {
                 String fileName = resource.getURL().toString();
                 String className = fileName.substring(
                         fileName.indexOf(packagePart),
-                        fileName.length() - ".class".length())
-                        .replace('/', '.');
+                        fileName.length() - ".class".length()).replace('/', '.');
                 Class<?> type = Class.forName(className);
                 result.add(type);
             }
@@ -109,8 +132,7 @@ public class SessionFactoryPopulator {
         }
         return result;
     }
-    
-    
+
     /**
      * Filter the list of classes extracting only the classes annotated with a
      * specific annotation.
@@ -119,30 +141,39 @@ public class SessionFactoryPopulator {
      * @param annotationType The annotation
      * @return The filtered list
      */
-    List<Class> getClassesByAnnotation(List<Class> classes, Class<? extends Annotation> annotationType) {
+    List<Class> getClassesByAnnotation(final List<Class> classes,
+            final Class<? extends Annotation> annotationType) {
         List<Class> result = new ArrayList<Class>();
         AnnotationClassFilter filter = new AnnotationClassFilter(annotationType);
         for (Class type : classes) {
-            if (filter.matches(type))
+            if (filter.matches(type)) {
                 result.add(type);
+            }
         }
         return result;
     }
-    
+
     /**
-     * Filter the list of classes extracting only the DAO interfaces
+     * Filter the list of classes extracting only the DAO interfaces.
      *
      * @param classes The full list of classes
      * @return The filtered list
      */
-    List<Class> getPersistentClasses(List<Class> classes) {
+    List<Class> getPersistentClasses(final List<Class> classes) {
         return getClassesByAnnotation(classes, Entity.class);
     }
-    
-    private void addPersistentClasses(List<Class> persistentClasses, BeanDefinition sessionFactoryBeanDefinition) {
+
+    /**
+     * Add the persistent classes to the SessionFactory.
+     *
+     * @param persistentClasses The list of persistent classes.
+     * @param sessionFactoryBeanDefinition The session factory bean definition.
+     */
+    private void addPersistentClasses(final List<Class> persistentClasses,
+            final BeanDefinition sessionFactoryBeanDefinition) {
         List<TypedStringValue> result = null;
-        PropertyValue annotatedClassesProperty = sessionFactoryBeanDefinition
-                .getPropertyValues().getPropertyValue("annotatedClasses");
+        PropertyValue annotatedClassesProperty = sessionFactoryBeanDefinition.
+                getPropertyValues().getPropertyValue("annotatedClasses");
         if (annotatedClassesProperty == null) {
             result = new ManagedList();
         } else {
@@ -150,11 +181,11 @@ public class SessionFactoryPopulator {
         }
         for (Class current : persistentClasses) {
             TypedStringValue currentValue = new TypedStringValue(current.getName());
-                result.add(currentValue);
+            result.add(currentValue);
         }
         if (annotatedClassesProperty == null) {
-            sessionFactoryBeanDefinition.getPropertyValues().addPropertyValue(new PropertyValue("annotatedClasses", result));
+            sessionFactoryBeanDefinition.getPropertyValues().
+                    addPropertyValue(new PropertyValue("annotatedClasses", result));
         }
     }
-    
 }

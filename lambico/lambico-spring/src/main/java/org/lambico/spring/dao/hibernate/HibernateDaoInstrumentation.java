@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import java.lang.annotation.Annotation;
@@ -27,7 +26,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -53,18 +51,29 @@ import org.springframework.util.StringUtils;
 @Aspect
 public class HibernateDaoInstrumentation {
 
-    private static final Logger logger = Logger.getLogger(HibernateDaoInstrumentation.class);
+    /** Length of the "findBy"prefix. */
+    private static final int FIND_BY_PREFIX_SIZE = "findBy".length();
+    /** Length of the "orderBy" prefix. */
+    private static final int ORDER_BY_PREFIX_SIZE = "orderBy".length();
+    /** The logger for this class. */
+    private static Logger logger = Logger.getLogger(HibernateDaoInstrumentation.class);
 
-//    @Around(value = "execution(* *(..)) && target(org.lambico.dao.generic.AutoGenericDao)")
+    /**
+     * Executes a finder method in the instrumented class.
+     *
+     * @param pjp The joint point.
+     * @return The result of the execution of the finder method.
+     * @throws Throwable In case of error.
+     */
     @Around(value = "execution(* *(..)) && target(org.lambico.dao.generic.GenericDao)")
-    public Object executeFinder(ProceedingJoinPoint pjp) throws Throwable {
+    public Object executeFinder(final ProceedingJoinPoint pjp) throws Throwable {
         Object result = null;
         final GenericDao target = (GenericDao) pjp.getTarget();
         final Method method = ((MethodSignature) pjp.getSignature()).getMethod();
         final Object[] args = pjp.getArgs();
         final Class<?>[] parameterTypes = method.getParameterTypes();
         final Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        final StringBuffer errorMessages = new StringBuffer();
+        final StringBuilder errorMessages = new StringBuilder();
         final Integer firstResult = getFirstResultValue(args, parameterTypes, parameterAnnotations);
         final Integer maxResults = getMaxResultsValue(args, parameterTypes, parameterAnnotations);
         logger.debug("target: " + target);
@@ -72,15 +81,16 @@ public class HibernateDaoInstrumentation {
         logger.debug("args: " + args);
 
         // query using a named query from the method name
-        result = ((HibernateTemplate)target.getSupport()).executeFind(new HibernateCallback() {
+        result = ((HibernateTemplate) target.getSupport()).executeFind(new HibernateCallback() {
 
-            public Object doInHibernate(Session session) throws HibernateException {
+            public Object doInHibernate(final Session session) {
                 String queryName = queryNameFromMethod(target, method);
                 Query namedQuery = null;
                 try {
                     namedQuery = session.getNamedQuery(queryName);
                 } catch (MappingException e) {
-                // No such named query
+                    // No such named query
+                    logger.info("Named query not found: " + queryName);
                 }
                 if (namedQuery != null) {
                     for (int i = 0; i < args.length; i++) {
@@ -106,32 +116,41 @@ public class HibernateDaoInstrumentation {
             // No named query found
             if (method.getName().startsWith("findBy")) {
                 // Query evicting condition from the method name
-                result = ((HibernateTemplate)target.getSupport()).executeFind(new HibernateCallback() {
+                result = ((HibernateTemplate) target.getSupport()).executeFind(
+                        new HibernateCallback() {
 
-                    public Object doInHibernate(Session session) throws HibernateException {
-                        DetachedCriteria criteria = criteriaFromMethod(target, method, args);
-                        Criteria executableCriteria = criteria.getExecutableCriteria(session);
-                        if (firstResult != null) {
-                            executableCriteria.setFirstResult(firstResult.intValue());
-                        }
-                        if (maxResults != null && maxResults.intValue() >= 0) {
-                            executableCriteria.setMaxResults(maxResults.intValue());
-                        }
-                        return criteria.getExecutableCriteria(session).list();
-                    }
-                });
+                            public Object doInHibernate(final Session session) {
+                                DetachedCriteria criteria =
+                                        criteriaFromMethod(target, method, args);
+                                Criteria executableCriteria =
+                                        criteria.getExecutableCriteria(session);
+                                if (firstResult != null) {
+                                    executableCriteria.setFirstResult(firstResult.intValue());
+                                }
+                                if (maxResults != null && maxResults.intValue() >= 0) {
+                                    executableCriteria.setMaxResults(maxResults.intValue());
+                                }
+                                return criteria.getExecutableCriteria(session).list();
+                            }
+                        });
             } else {
                 // Call an instance method
                 try {
                     result = pjp.proceed(args);
                 } catch (Throwable throwable) {
-                    // TODO: enhance the exception management. For example: capture the AOP-related exceptions, and rethrows the DAO implementation-related ones (for example Hibernate/SQL exceptions)
-                    errorMessages.append("Method not starting with \"findBy\".").append("Trying to call ").append(method.getName()).append(" method, but the method doesn't exist in the object (").append(target.getClass().getName()).append(").");
+                    // TODO: enhance the exception management.
+                    // For example: capture the AOP-related exceptions, and rethrows the DAO
+                    // implementation-related ones (for example Hibernate/SQL exceptions)
+                    errorMessages.append("Method not starting with \"findBy\".").
+                            append("Trying to call ").append(method.getName()).
+                            append(" method, but the method doesn't exist in the object (").
+                            append(target.getClass().getName()).append(").");
                     logger.error(errorMessages.toString(), throwable);
                 }
             }
         }
-        if (result != null && List.class.isAssignableFrom(result.getClass()) && !List.class.isAssignableFrom(method.getReturnType())) {
+        if (result != null && List.class.isAssignableFrom(result.getClass())
+                && !List.class.isAssignableFrom(method.getReturnType())) {
             // The return type is not a List, so I return the first result
             // of the list, or null if the list is empty
             List listResult = (List) result;
@@ -144,25 +163,47 @@ public class HibernateDaoInstrumentation {
         return result;
     }
 
-    private String queryNameFromMethod(GenericDao target, Method finderMethod) {
+    /**
+     * Extracts the named query name from the method signature.
+     *
+     * At present the name is:
+     *
+     * &lt;DAO entity type simple name&gt;.&lt;method name&gt;
+     *
+     * @param target The DAO.
+     * @param finderMethod The method.
+     * @return The named query name.
+     */
+    private String queryNameFromMethod(final GenericDao target, final Method finderMethod) {
         return target.getType().getSimpleName() + "." + finderMethod.getName();
     }
 
-    private DetachedCriteria criteriaFromMethod(GenericDao target, Method finderMethod, Object[] args) {
+    /**
+     * Create a criteria using the method signature.
+     *
+     * @param target The DAO.
+     * @param finderMethod The method.
+     * @param args The arguments to pass to the criteria.
+     * @return The named query name.
+     */
+    private DetachedCriteria criteriaFromMethod(final GenericDao target, final Method finderMethod,
+            final Object[] args) {
         Class<?>[] parameterTypes = finderMethod.getParameterTypes();
         Annotation[][] parameterAnnotations = finderMethod.getParameterAnnotations();
-        DetachedCriteria criteria = DetachedCriteria.forClass(((GenericDaoTypeSupport)target).getType());
-        int orderByIdx = finderMethod.getName().indexOf("OrderBy");
+        DetachedCriteria criteria =
+                DetachedCriteria.forClass(((GenericDaoTypeSupport) target).getType());
+        final String methodName = finderMethod.getName();
+        int orderByIdx = methodName.indexOf("OrderBy");
         String[] parameters = null;
         String[] orderParameters = null;
         if (orderByIdx == -1) {
             // no orderBy
-            parameters = finderMethod.getName().substring(6).split("And");
+            parameters = methodName.substring(FIND_BY_PREFIX_SIZE).split("And");
         } else {
-            if (orderByIdx - 1 > 6) {
-                parameters = finderMethod.getName().substring(6, orderByIdx).split("And");
+            if (orderByIdx - 1 > FIND_BY_PREFIX_SIZE) {
+                parameters = methodName.substring(FIND_BY_PREFIX_SIZE, orderByIdx).split("And");
             }
-            orderParameters = finderMethod.getName().substring(orderByIdx + 7).split("And");
+            orderParameters = methodName.substring(orderByIdx + ORDER_BY_PREFIX_SIZE).split("And");
         }
         if (parameters != null) {
             int argIndex = 0;
@@ -171,8 +212,8 @@ public class HibernateDaoInstrumentation {
                     // skip not query parameters
                     argIndex++;
                 }
-                addComparison(criteria, StringUtils.uncapitalize(parameters[i]), args[argIndex], parameterAnnotations[argIndex]);
-//                criteria.add(Restrictions.eq(StringUtils.uncapitalize(parameters[i]), args[argIndex]));
+                addComparison(criteria, StringUtils.uncapitalize(parameters[i]),
+                        args[argIndex], parameterAnnotations[argIndex]);
                 argIndex++;
             }
         }
@@ -186,16 +227,18 @@ public class HibernateDaoInstrumentation {
 
     /**
      * Check if a parameter is for the FirstResult value for the query.
-     * 
+     *
      * @param parameterIndex index of the parameter as declared in the method
      * @param parameterTypes types of parameters of the method
      * @param parameterAnnotations annotations of parameters of the method
      * @return true if the parameter is for the FirstResult value
      */
-    private boolean isFirstResultParameter(int parameterIndex, Class<?>[] parameterTypes, Annotation[][] parameterAnnotations) {
+    private boolean isFirstResultParameter(final int parameterIndex,
+            final Class<?>[] parameterTypes, final Annotation[][] parameterAnnotations) {
         boolean result = false;
         for (Annotation annotation : parameterAnnotations[parameterIndex]) {
-            if (annotation instanceof FirstResult && int.class.isAssignableFrom(parameterTypes[parameterIndex])) {
+            if (annotation instanceof FirstResult
+                    && int.class.isAssignableFrom(parameterTypes[parameterIndex])) {
                 result = true;
                 break;
             }
@@ -205,16 +248,18 @@ public class HibernateDaoInstrumentation {
 
     /**
      * Check if a parameter is for the MaxResults value for the query.
-     * 
+     *
      * @param parameterIndex index of the parameter as declared in the method
      * @param parameterTypes types of parameters of the method
      * @param parameterAnnotations annotations of parameters of the method
      * @return true if the parameter is for the MaxResults value
      */
-    private boolean isMaxResultsParameter(int parameterIndex, Class<?>[] parameterTypes, Annotation[][] parameterAnnotations) {
+    private boolean isMaxResultsParameter(final int parameterIndex,
+            final Class<?>[] parameterTypes, final Annotation[][] parameterAnnotations) {
         boolean result = false;
         for (Annotation annotation : parameterAnnotations[parameterIndex]) {
-            if (annotation instanceof MaxResults && int.class.isAssignableFrom(parameterTypes[parameterIndex])) {
+            if (annotation instanceof MaxResults
+                    && int.class.isAssignableFrom(parameterTypes[parameterIndex])) {
                 result = true;
                 break;
             }
@@ -223,26 +268,29 @@ public class HibernateDaoInstrumentation {
     }
 
     /**
-     * Check if a parameter is a parameter for the query
-     * 
+     * Check if a parameter is a parameter for the query.
+     *
      * @param parameterIndex index of the parameter as declared in the method
      * @param parameterTypes types of parameters of the method
      * @param parameterAnnotations annotations of parameters of the method
      * @return true if the parameter is a parameter for the query
      */
-    private boolean isQueryParameter(int parameterIndex, Class<?>[] parameterTypes, Annotation[][] parameterAnnotations) {
-        return !isMaxResultsParameter(parameterIndex, parameterTypes, parameterAnnotations) && !isFirstResultParameter(parameterIndex, parameterTypes, parameterAnnotations);
+    private boolean isQueryParameter(final int parameterIndex, final Class<?>[] parameterTypes,
+            final Annotation[][] parameterAnnotations) {
+        return !isMaxResultsParameter(parameterIndex, parameterTypes, parameterAnnotations)
+                && !isFirstResultParameter(parameterIndex, parameterTypes, parameterAnnotations);
     }
 
     /**
-     * Get the value of the parameter marked as @FirstRecord
-     * 
+     * Get the value of the parameter marked as @FirstRecord.
+     *
      * @param args parameters values
      * @param parameterTypes types of parameters of the method
      * @param parameterAnnotations annotations of parameters of the method
      * @return The value if it's found. null otherwise.
      */
-    private Integer getFirstResultValue(Object args[], Class<?>[] parameterTypes, Annotation[][] parameterAnnotations) {
+    private Integer getFirstResultValue(final Object[] args, final Class<?>[] parameterTypes,
+            final Annotation[][] parameterAnnotations) {
         Integer result = null;
         for (int i = 0; i < args.length; i++) {
             if (isFirstResultParameter(i, parameterTypes, parameterAnnotations)) {
@@ -254,14 +302,15 @@ public class HibernateDaoInstrumentation {
     }
 
     /**
-     * Get the value of the parameter marked as @MaxResults
-     * 
+     * Get the value of the parameter marked as @MaxResults.
+     *
      * @param args parameters values
      * @param parameterTypes types of parameters of the method
      * @param parameterAnnotations annotations of parameters of the method
      * @return The value if it's found. null otherwise.
      */
-    private Integer getMaxResultsValue(Object args[], Class<?>[] parameterTypes, Annotation[][] parameterAnnotations) {
+    private Integer getMaxResultsValue(final Object[] args, final Class<?>[] parameterTypes,
+            final Annotation[][] parameterAnnotations) {
         Integer result = null;
         for (int i = 0; i < args.length; i++) {
             if (isMaxResultsParameter(i, parameterTypes, parameterAnnotations)) {
@@ -274,15 +323,17 @@ public class HibernateDaoInstrumentation {
 
     /**
      * Add a comparison to criteria.
-     * 
-     * @param criteria
-     * @param string the parameter name
-     * @param object the parameter value to compare
-     * @param annotations method parameter annotations
+     *
+     * @param criteria The criteria.
+     * @param parameter The parameter name
+     * @param value The parameter value to compare
+     * @param annotations The method parameter annotations
      */
-    private void addComparison(DetachedCriteria criteria, String parameter, Object value, Annotation[] annotations) {
+    private void addComparison(final DetachedCriteria criteria, final String parameter,
+            final Object value, final Annotation[] annotations) {
         Compare compareAnnotation = getCompareAnnotation(annotations);
-        CompareType compareType = compareAnnotation != null?compareAnnotation.value():CompareType.EQUAL;
+        CompareType compareType =
+                compareAnnotation != null ? compareAnnotation.value() : CompareType.EQUAL;
         switch (compareType) {
             case LIKE:
                 criteria.add(Restrictions.like(parameter, value));
@@ -307,11 +358,17 @@ public class HibernateDaoInstrumentation {
                 break;
             case EQUAL:
             default:
-                criteria.add(Restrictions.eq(parameter, value));                
+                criteria.add(Restrictions.eq(parameter, value));
         }
     }
 
-    private Compare getCompareAnnotation(Annotation[] annotations) {
+    /**
+     * Search the {@link Compare} annotation in an array of annotations.
+     *
+     * @param annotations The set of annotations where to search.
+     * @return The {@link Compare} annotation. null, if not found.
+     */
+    private Compare getCompareAnnotation(final Annotation[] annotations) {
         Compare result = null;
         for (Annotation annotation : annotations) {
             if (annotation instanceof Compare) {
