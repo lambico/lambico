@@ -9,7 +9,6 @@
     <url>http://www.lambico.org</url>
     <inceptionYear>2009</inceptionYear>
     <modules>
-        <module>build-tools</module>
         <module>lambico-core</module>
         <module>lambico-spring</module>
         <module>lambico-test</module>
