@@ -15,10 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.test.spring.hibernate;
 
-import org.lambico.test.spring.*;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -31,29 +29,33 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.lambico.dao.generic.GenericDaoBase;
+import org.lambico.test.spring.EnhancedTestCase;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * A base class for tests that populate the DB with the fixture data.
- * 
+ *
  * @author Jacopo Murador <jacopo.murador at seesaw.it>
  */
 public abstract class DBTest extends EnhancedTestCase {
 
-    private static final Logger logger = Logger.getLogger(DBTest.class);
+    /** The logger for this class. */
+    private static Logger logger = Logger.getLogger(DBTest.class);
+    /** The fixtures. */
     protected Map<Class, Object[]> fixtures;
+    /** The session factory. */
     @Resource
-    SessionFactory sessionFactory;
-    @Resource(name="daoMap")
-    HashMap daoMap;
+    protected SessionFactory sessionFactory;
+    /** The map of DAOs. */
+    @Resource(name = "daoMap")
+    protected HashMap daoMap;
 
     /**
-     * Restituisce un array <strong>ordinato al contrario</strong> di model che
-     * devono essere caricati
+     * Returns a <strong>reverse-ordered</strong> array of the models that need to be loaded.
      *
-     * @return array di classi
+     * @return The array of class models.
      */
     public final Class[] getReverseOrderFixtureClasses() {
         Class[] models = getFixtureClasses();
@@ -62,18 +64,21 @@ public abstract class DBTest extends EnhancedTestCase {
     }
 
     /**
-     * Restituisce un array <strong>ordinato</strng> di model che devono essere
-     * caricati
+     * Returns a <strong>reverse-ordered</strong> array of the models that need to be loaded.
      *
-     * NB: Deve sepre ritornare un nuovo oggetto, e non riferimenti a istanze
-     * statiche o simili
+     * NB: It must always return a new object, not a reference to an already existent object.
      *
-     * @return array di classi
+     * @return The array of class models.
      */
     public Class[] getFixtureClasses() {
         return new Class[]{};
     }
 
+    /**
+     * Returns a set of the models that need to be loaded.
+     *
+     * @return The set of class models.
+     */
     public final Set<Class> getFixtureClassSet() {
         Class[] classes = getFixtureClasses();
         Set<Class> result = new LinkedHashSet<Class>(classes.length);
@@ -82,7 +87,9 @@ public abstract class DBTest extends EnhancedTestCase {
     }
 
     /**
-     * Cancello le righe dalle tabelle e le ripopolo
+     * Delete the rows from the tables, and reinsert all data.
+     *
+     * @throws Exception In case of error.
      */
     @Override
     public void onSetUpBeforeTransaction() throws Exception {
@@ -116,8 +123,8 @@ public abstract class DBTest extends EnhancedTestCase {
                 if (session != null) {
                     session.close();
                 }
-            } catch (Exception e) {/*do nothing*/
-
+            } catch (Exception e) { /*do nothing*/
+                logger.info("Can't close the session! (ignore it)");
             }
             TransactionSynchronizationManager.unbindResource(sessionFactory);
             TransactionSynchronizationManager.clearSynchronization();
@@ -149,27 +156,29 @@ public abstract class DBTest extends EnhancedTestCase {
                     fixtures = FixtureHelper.loadFixturesFromResource(
                             (ClassPathResource) applicationContext.getResource(
                             "classpath:/fixtures/"), fixtureClasses);
-                    logger.info("Loaded fixtures for classes " +
-                            fixtures.keySet().toString());
+                    logger.info("Loaded fixtures for classes "
+                            + fixtures.keySet().toString());
                 } catch (Exception e) {
-                    logger.warn("I can't load all fixture for classes " +
-                            fixtureClasses.toString(), e);
+                    logger.warn("I can't load all fixture for classes "
+                            + fixtureClasses.toString(), e);
                 }
             } else {
                 logger.info("No fixtures to load");
             }
         }
     }
-    
-    // At the end of the test the method endTransaction call a rollback for the transaction 
-    // although a explicit rollback call is did. This raise a false exception.
+
+    /**
+     * At the end of the test the method endTransaction call a rollback for the transaction
+     * although a explicit rollback call is did. This raise a false exception.
+     */
     @Override
     protected void endTransaction() {
         try {
             super.endTransaction();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             //do nothing
+            logger.info("Expected false exception when ending transaction! (ignore it)");
         }
     }
 }

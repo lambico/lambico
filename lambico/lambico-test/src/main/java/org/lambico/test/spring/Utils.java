@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.test.spring;
 
 import java.io.IOException;
@@ -33,27 +32,47 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 /**
+ * Some utility methods.
+ *
  * @author Paolo Dona paolo.dona@seesaw.it
  * @author Michele Franzin paolo.dona@seesaw.it
  * @author Andrea Nasato <mailto:andrea.nasato@jugpadova.it/>
  */
 public class Utils {
 
-    private static final Logger logger =
-            Logger.getLogger(Utils.class);
-
-    private static final byte[] UTF8_PREAMBLE =
-            new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
-
+    /** The logger for this class. */
+    private static Logger logger = Logger.getLogger(Utils.class);
+    /** The UTF8 preamble. */
+    private static final byte[] UTF8_PREAMBLE = new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
+    /** The UTF8 Unicode preamble. */
     private static final String UTF8_UNICODE_PREAMBLE = "﻿";
 
+    /**
+     * A default protected constructor.
+     */
+    protected Utils() {
+    }
+
+    /**
+     * Converts a map in a list of name/value pairs.
+     *
+     * @param map The map.
+     * @return A list of name/value pairs (name=value).
+     */
     @SuppressWarnings(value = "unchecked")
-    public static List<String> convertToNameValueList(Map map) {
+    public static List<String> convertToNameValueList(final Map map) {
         return convertToNameValueList(map, false);
     }
 
+    /**
+     * Converts a map in a list of name/value pairs.
+     *
+     * @param map The map.
+     * @param urlEncode if true, encode the values as URLs.
+     * @return A list of name/value pairs (name=value).
+     */
     @SuppressWarnings(value = "unchecked")
-    public static List<String> convertToNameValueList(Map map, boolean urlEncode) {
+    public static List<String> convertToNameValueList(final Map map, final boolean urlEncode) {
         List<String> result = new ArrayList<String>();
         for (String key : (Iterable<String>) map.keySet()) {
             Object tmp = map.get(key);
@@ -62,8 +81,8 @@ public class Utils {
                 for (String value : values) {
                     if (urlEncode) {
                         try {
-                            result.add(key + "=" +
-                                    java.net.URLEncoder.encode(value, "UTF-8"));
+                            result.add(key + "="
+                                    + java.net.URLEncoder.encode(value, "UTF-8"));
                         } catch (UnsupportedEncodingException ex) {
                             logger.warn("Your OS doesn't support UTF-8, so we can encode",
                                     ex);
@@ -77,8 +96,8 @@ public class Utils {
                 String value = (String) tmp;
                 if (urlEncode) {
                     try {
-                        result.add(key + "=" +
-                                java.net.URLEncoder.encode(value, "UTF-8"));
+                        result.add(key + "="
+                                + java.net.URLEncoder.encode(value, "UTF-8"));
                     } catch (UnsupportedEncodingException ex) {
                         logger.warn("Your OS doesn't support UTF-8, so we can encode",
                                 ex);
@@ -93,70 +112,105 @@ public class Utils {
     }
 
     /**
-     * Carica un file binario dal classpath
+     * Loads a binary file from the classpath.
      *
-     * @param classpathResource
-     * @return
+     * @param classpathResource The resource path.
+     * @return The content of the classpath resource.
      */
-    public static byte[] loadBinary(String classpathResource) {
+    public static byte[] loadBinary(final String classpathResource) {
         return loadBinary(new ClassPathResource(classpathResource));
     }
 
-    public static byte[] loadBinary(Resource classpathResource) {
+    /**
+     * Loads a binary file from the classpath.
+     *
+     * @param classpathResource The resource path.
+     * @return The content of the classpath resource.
+     */
+    public static byte[] loadBinary(final Resource classpathResource) {
         InputStream stream = null;
         try {
-            return unsafeLoadBinary(stream = classpathResource.getInputStream());
+            stream = classpathResource.getInputStream();
+            return unsafeLoadBinary(stream);
         } catch (IOException e) {
-            throw new RuntimeException("Impossibile caricare la risorsa binaria '" +
-                    classpathResource.getDescription() + "' dal classpath.");
+            throw new RuntimeException("Impossibile caricare la risorsa binaria '"
+                    + classpathResource.getDescription() + "' dal classpath.");
         } finally {
             IOUtils.closeQuietly(stream);
         }
     }
 
-    protected static byte[] unsafeLoadBinary(InputStream stream) throws IOException {
+    /**
+     * Loads a binary file from a stream.
+     *
+     * @param stream The stream from where to load. It is open,
+     *               and it won't be closed by this method.
+     * @return The content of the classpath resource.
+     * @throws IOException In case of error.
+     */
+    protected static byte[] unsafeLoadBinary(final InputStream stream) throws IOException {
         return IOUtils.toByteArray(stream);
     }
 
     /**
-     * Carica un file testuale dal classpath.<br/> NB: UTF-8 header are
-     * removed!
+     * Loads a text file from the classpath.
+     * NB: UTF-8 header are removed!
      *
-     * @param classpathResource
-     *            file relative path
-     * @return textual content of resource file
+     * @param classpathResource The resource path.
+     * @return The content of the classpath resource.
      */
-    public static String loadString(String classpathResource) {
+    public static String loadString(final String classpathResource) {
         return loadString(new ClassPathResource(classpathResource));
     }
 
-    public static String loadString(Resource classpathResource) {
+    /**
+     * Loads a text file from the classpath.
+     * NB: UTF-8 header are removed!
+     *
+     * @param classpathResource The resource path.
+     * @return The content of the classpath resource.
+     */
+    public static String loadString(final Resource classpathResource) {
         InputStream stream = null;
         try {
-            return unsafeLoadString(stream = classpathResource.getInputStream());
+            stream = classpathResource.getInputStream();
+            return unsafeLoadString(stream);
         } catch (IOException e) {
-            throw new RuntimeException("Impossibile caricare la risorsa testuale '" +
-                    classpathResource.getDescription() + "' dal classpath.");
+            throw new RuntimeException("Impossibile caricare la risorsa testuale '"
+                    + classpathResource.getDescription() + "' dal classpath.");
         } finally {
             IOUtils.closeQuietly(stream);
         }
     }
 
-    protected static String unsafeLoadString(InputStream stream) throws IOException {
+    /**
+     * Loads a text file from a stream.
+     *
+     * @param stream The stream from where to load. It is open,
+     *               and it won't be closed by this method.
+     * @return The content of the classpath resource.
+     * @throws IOException In case of error.
+     */
+    protected static String unsafeLoadString(final InputStream stream) throws IOException {
         byte[] byteResult =
                 IOUtils.toByteArray(stream);
         return stripUTF8preamble(new String(byteResult, "UTF-8"));
     }
 
     /**
-     * Rimuove il preambolo UTF se presente nella stringa<br/>NB: la convesione
-     * in array di byte e sucessivo strip della stringa non funziona
-     * correttamente perch&agrave;
+     * Strips the UTF8 preamble, if present.
+     *
+     * NB: the conversion to byte array, and a following strip won't work. The reason is that:
      * <code>new String(UTF8_PREAMBLE).getBytes() != UTF8_PREAMBLE</code>;
-     * alcune info qui:
-     * http://mail.python.org/pipermail/python-list/2004-February/250798.html
+     *
+     * <a href="http://mail.python.org/pipermail/python-list/2004-February/250798.html">Here</a>
+     * an explanation.
+     *
+     * @param s The string to strip.
+     * @return The string without the UTF8 preamble.
+     * @throws UnsupportedEncodingException If the UTF-8 encoding is not supported.
      */
-    public static String stripUTF8preamble(String s) throws UnsupportedEncodingException {
+    public static String stripUTF8preamble(final String s) throws UnsupportedEncodingException {
         if (hasUTF8preamble(s)) {
             logger.debug("Rimosso header UTF-8 dalla stringa");
             return s.substring(1);
@@ -165,25 +219,41 @@ public class Utils {
     }
 
     /**
-     * rimuove i 3 bytes di preambolo dagli UTF se presenti
+     * Strips the UTF8 preamble, if present.
+     *
+     * @param b The array of bytes (characters).
+     * @return The stripped array.
      */
-    public static byte[] stripUTF8preamble(byte[] b) {
+    public static byte[] stripUTF8preamble(final byte[] b) {
+        byte[] result = null;
         if (hasUTF8preamble(b)) {
             logger.debug("Rimosso header UTF-8 dall'array");
-            b = ArrayUtils.subarray(b, 3, b.length);
+            result = ArrayUtils.subarray(b, UTF8_PREAMBLE.length, b.length);
         }
-        return b;
+        return result;
     }
 
-    public static boolean hasUTF8preamble(byte[] b) {
-        return b[0] == UTF8_PREAMBLE[0] && b[1] == UTF8_PREAMBLE[1] &&
-                b[2] == UTF8_PREAMBLE[2];
+    /**
+     * Checks if the array starts with the UTF-8 preamble.
+     *
+     * @param b The array to inspect.
+     * @return true if the array starts with the UTF-8 preamble.
+     */
+    public static boolean hasUTF8preamble(final byte[] b) {
+        return b[0] == UTF8_PREAMBLE[0] && b[1] == UTF8_PREAMBLE[1]
+                && b[2] == UTF8_PREAMBLE[2];
     }
 
-    public static boolean hasUTF8preamble(String s) {
+    /**
+     * Checks if the string starts with the UTF-8 preamble.
+     *
+     * @param s The string to inspect.
+     * @return true if the string starts with the UTF-8 preamble.
+     */
+    public static boolean hasUTF8preamble(final String s) {
         return s.startsWith(UTF8_UNICODE_PREAMBLE);
     }
-    
+
     /**
      * Return an array containing all the substrings of
      * <code>camelString</code>, according to this rule: divide <code>camelString</code>
@@ -196,8 +266,10 @@ public class Utils {
      *  <li>'MYCAMELSTRING' gives: {m,y,c,a,m,e,l,s,t,r,i,n,g}</li>
      * </ol>
      *
+     * @param camelString The string to uncamelize.
+     * @return The string uncamelized.
      */
-    public static String[] uncamelize(String camelString) {
+    public static String[] uncamelize(final String camelString) {
 
         if (camelString == null || camelString.trim().equals("")) {
             throw new IllegalArgumentException("camelString cannot be null or empty");
@@ -239,5 +311,4 @@ public class Utils {
 
         return strList.toArray(new String[strList.size() - 1]);
     }
-    
 }

@@ -15,29 +15,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.test.spring;
 
 import javax.mail.internet.MimeMessage;
 import org.apache.log4j.Logger;
-import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 /**
  * Mock implementation of JavaMailSender for test porpouse.
- * 
+ *
  * @author Enrico Giurin
  * @author Lucio Benfante
- * 
+ * @version $Revision$
  */
 public class MailSenderMock extends JavaMailSenderImpl {
 
-    private static final Logger logger = Logger.getLogger(
+    /** The logger for this class. */
+    private static Logger logger = Logger.getLogger(
             MailSenderMock.class);
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param mimeMessages {@inheritDoc}
+     * @param originalMessages {@inheritDoc}
+     */
     @Override
-    protected void doSend(MimeMessage[] mimeMessages, Object[] originalMessages)
-            throws MailException {
+    protected void doSend(final MimeMessage[] mimeMessages, final Object[] originalMessages) {
         if (mimeMessages != null) {
             for (MimeMessage mimeMessage : mimeMessages) {
                 try {
