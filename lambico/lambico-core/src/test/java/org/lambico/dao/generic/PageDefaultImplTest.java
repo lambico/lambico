@@ -34,7 +34,6 @@ public class PageDefaultImplTest {
 
     /** The full set of data. */
     private static List<EntityBase> allData = new LinkedList<EntityBase>();
-    private PageDefaultImpl<EntityBase> instance;
 
     /**
      * Initialize the full set of data.
@@ -48,16 +47,12 @@ public class PageDefaultImplTest {
         allData.add(new EntityBaseImpl(Long.valueOf(5)));
     }
 
-    @Before
-    public void setUp() {
-        instance = new PageDefaultImpl<EntityBase>(allData.subList(0, 2), 1, 2, 5);
-    }
-
     /**
      * Test of getPage method, of class PageDefaultImpl.
      */
     @Test
     public void testGetPage() {
+        PageDefaultImpl<EntityBase> instance = new PageDefaultImpl<EntityBase>(allData.subList(0, 2), 1, 2, 5);
         assertEquals(1, instance.getPage());
     }
 
@@ -66,7 +61,17 @@ public class PageDefaultImplTest {
      */
     @Test
     public void testIsNextPage() {
+        PageDefaultImpl<EntityBase> instance = new PageDefaultImpl<EntityBase>(allData.subList(0, 2), 1, 2, 5);
         assertTrue(instance.isNextPage());
+    }
+
+    /**
+     * Test of isNextPage method, of class PageDefaultImpl.
+     */
+    @Test
+    public void testIsNextPageOnTheLast() {
+        PageDefaultImpl<EntityBase> instance = new PageDefaultImpl<EntityBase>(allData.subList(4, 5), 3, 2, 5);
+        assertFalse(instance.isNextPage());
     }
 
     /**
@@ -74,7 +79,17 @@ public class PageDefaultImplTest {
      */
     @Test
     public void testIsPreviousPage() {
+        PageDefaultImpl<EntityBase> instance = new PageDefaultImpl<EntityBase>(allData.subList(0, 2), 1, 2, 5);
         assertFalse(instance.isPreviousPage());
+    }
+
+    /**
+     * Test of isPreviousPage method, of class PageDefaultImpl.
+     */
+    @Test
+    public void testIsPreviousPageOnTheLast() {
+        PageDefaultImpl<EntityBase> instance = new PageDefaultImpl<EntityBase>(allData.subList(4, 5), 3, 2, 5);
+        assertTrue(instance.isPreviousPage());
     }
 
     /**
@@ -82,6 +97,7 @@ public class PageDefaultImplTest {
      */
     @Test
     public void testGetList() {
+        PageDefaultImpl<EntityBase> instance = new PageDefaultImpl<EntityBase>(allData.subList(0, 2), 1, 2, 5);
         assertEquals(2, instance.getList().size());
     }
 
@@ -90,6 +106,16 @@ public class PageDefaultImplTest {
      */
     @Test
     public void testGetLastPage() {
+        PageDefaultImpl<EntityBase> instance = new PageDefaultImpl<EntityBase>(allData.subList(0, 2), 1, 2, 5);
+        assertEquals(3, instance.getLastPage());
+    }
+
+    /**
+     * Test of getLastPage method, of class PageDefaultImpl.
+     */
+    @Test
+    public void testGetLastPageOnTheLast() {
+        PageDefaultImpl<EntityBase> instance = new PageDefaultImpl<EntityBase>(allData.subList(4, 5), 3, 2, 5);
         assertEquals(3, instance.getLastPage());
     }
 
@@ -98,6 +124,7 @@ public class PageDefaultImplTest {
      */
     @Test
     public void testGetRowCount() {
+        PageDefaultImpl<EntityBase> instance = new PageDefaultImpl<EntityBase>(allData.subList(0, 2), 1, 2, 5);
         assertEquals(5, instance.getRowCount());
     }
 
