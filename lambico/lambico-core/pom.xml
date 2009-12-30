@@ -33,6 +33,13 @@
             <version>${lambico.hibernate.version}</version>
             <optional/>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${lambico.junit4.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>
+

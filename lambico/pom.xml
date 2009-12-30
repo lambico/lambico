@@ -19,6 +19,7 @@
         <lambico.spring.version>3.0.0.RELEASE</lambico.spring.version>
         <lambico.hibernate.version>3.3.2.GA</lambico.hibernate.version>
         <lambico.log4j.version>1.2.14</lambico.log4j.version>
+        <lambico.junit4.version>4.4</lambico.junit4.version>
 
         <!-- NetBeans IDE properties -->
         <org-netbeans-modules-editor-indent.CodeStyle.usedProfile>project</org-netbeans-modules-editor-indent.CodeStyle.usedProfile>
