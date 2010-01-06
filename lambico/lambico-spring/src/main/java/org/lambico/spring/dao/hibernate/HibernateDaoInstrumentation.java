@@ -90,7 +90,7 @@ public class HibernateDaoInstrumentation {
                     namedQuery = session.getNamedQuery(queryName);
                 } catch (MappingException e) {
                     // No such named query
-                    logger.info("Named query not found: " + queryName);
+                    logger.debug("Named query not found: " + queryName);
                 }
                 if (namedQuery != null) {
                     for (int i = 0; i < args.length; i++) {

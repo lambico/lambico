@@ -64,7 +64,7 @@ public final class DaoUtils {
                 }
             } catch (BeanIsAbstractException ex) {
                 // ignore it
-                logger.info("The requested bean is abstract.");
+                logger.debug("The requested bean is abstract.");
             }
         }
         return result;
