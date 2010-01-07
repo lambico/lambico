@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import org.lambico.dao.spring.hibernate.HibernateGenericDao;
@@ -265,17 +264,5 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     public final void setType(final Class newType) {
         this.type = newType;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * This implementation returns an
-     * {@link org.springframework.orm.hibernate3.HibernateTemplate} object.
-     *
-     * @return {@inheritDoc}
-     */
-    public final Object getSupport() {
-        return this.getHibernateTemplate();
     }
 }

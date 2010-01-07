@@ -92,14 +92,4 @@ public interface GenericDaoBase<T, PK extends Serializable> {
      */
     void rollBackTransaction();
 
-    /**
-     * Get an object with support methods for interacting with the specific
-     * persistence (i.e. ORM) system backing the DAO.
-     *
-     * For converting to the correct type you need to know what DAO
-     * implementation you are using.
-     *
-     * @return A support object to the specific persistence system.
-     */
-    Object getSupport();
 }

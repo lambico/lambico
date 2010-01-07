@@ -121,9 +121,9 @@
     </reporting>
     <repositories>
         <repository>
-            <id>parancoe-org-repository</id>
+            <id>lambico-org-repository</id>
             <name>Parancoe Repository for Maven</name>
-            <url>http://maven2.parancoe.org/repo/</url>
+            <url>http://maven2.lambico.org/repo/</url>
             <layout>default</layout>
         </repository>
         <repository>
@@ -141,8 +141,8 @@
     </repositories>
     <distributionManagement>
         <repository>
-            <id>parancoe-org-repository</id>
-            <url>scp://maven2.parancoe.org/home/web/maven2.parancoe.org/repository/repo</url>
+            <id>lambico-org-repository</id>
+            <url>scp://maven2.lambico.org/home/web/maven2.parancoe.org/repository/repo</url>
             <layout>default</layout>
         </repository>
         <site>

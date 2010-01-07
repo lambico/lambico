@@ -32,6 +32,7 @@ import org.lambico.dao.generic.GenericDaoTypeSupport;
 import org.lambico.dao.generic.Page;
 import org.lambico.dao.generic.PageDefaultImpl;
 import org.lambico.dao.hibernate.GenericDaoHibernateCriteriaSupport;
+import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.dao.support.DataAccessUtils;
 
@@ -47,7 +48,7 @@ import org.springframework.dao.support.DataAccessUtils;
 public class HibernateGenericBusinessDao<T, PK extends Serializable>
         extends HibernateDaoSupport
         implements GenericDaoBase<T, PK>, GenericDaoHibernateCriteriaSupport<T, PK>,
-        GenericDaoTypeSupport {
+        GenericDaoTypeSupport, GenericDaoHibernateSupport {
 
     /** The entity class type. */
     private Class<T> persistentClass;
@@ -284,14 +285,5 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
                 && !currTransaction.wasRolledBack()) {
             currTransaction.rollback();
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return {@inheritDoc}
-     */
-    public Object getSupport() {
-        return this.getHibernateTemplate();
     }
 }

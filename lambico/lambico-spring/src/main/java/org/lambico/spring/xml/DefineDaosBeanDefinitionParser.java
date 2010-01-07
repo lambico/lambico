@@ -17,6 +17,7 @@
  */
 package org.lambico.spring.xml;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
@@ -40,6 +41,8 @@ public class DefineDaosBeanDefinitionParser implements BeanDefinitionParser {
     public static final String BASE_PACKAGE_ATTRIBUTE = "basePackage";
     /** The genericDao attribute. */
     public static final String GENERIC_DAO_ATTRIBUTE = "genericDao";
+    /** The logger for this class. */
+    private static Logger logger = Logger.getLogger(DefineDaosBeanDefinitionParser.class);
 
     /**
      * {@inheritDoc}
@@ -52,12 +55,17 @@ public class DefineDaosBeanDefinitionParser implements BeanDefinitionParser {
         String packageName = element.getAttribute(BASE_PACKAGE_ATTRIBUTE);
         String genericDaoName = element.getAttribute(GENERIC_DAO_ATTRIBUTE);
         BeanDefinitionParserDelegate delegate = parserContext.getDelegate();
-        ResourcePatternResolver resourceLoader = (ResourcePatternResolver) parserContext.
-                getReaderContext().getReader().getResourceLoader();
+        ResourcePatternResolver resourceLoader =
+                (ResourcePatternResolver) parserContext.getReaderContext().getReader().
+                getResourceLoader();
         BeanDefinitionRegistry registry = parserContext.getReaderContext().getRegistry();
         DaoBeanCreator daoBeanCreator = new DaoBeanCreator(
                 resourceLoader, registry, delegate, parserContext.getReaderContext());
-        daoBeanCreator.createBeans(element, packageName, genericDaoName);
+        try {
+            daoBeanCreator.createBeans(element, packageName, genericDaoName);
+        } catch (ClassNotFoundException ex) {
+            throw new RuntimeException("Can't create DAO beans.", ex);
+        }
         return null;
     }
 }

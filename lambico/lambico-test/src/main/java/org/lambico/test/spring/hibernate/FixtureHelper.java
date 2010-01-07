@@ -33,9 +33,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.lambico.dao.generic.GenericDaoBase;
+import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
 import org.lambico.test.spring.Utils;
 import org.springframework.core.io.Resource;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 
 /**
  * @author Paolo Dona paolo.dona@seesaw.it
@@ -253,7 +253,7 @@ public class FixtureHelper {
         try {
             for (Object entity : fixtures) {
                 dao.store(entity);
-                ((HibernateTemplate) dao.getSupport()).flush();
+                ((GenericDaoHibernateSupport) dao).getHibernateTemplate().flush();
             }
         } catch (Exception e) {
             logger.error("Error populating rows in " + getModelName(model)
@@ -280,7 +280,8 @@ public class FixtureHelper {
                         + model.getName() + " PO is null!");
             }
 
-            int deleted = ((HibernateTemplate) dao.getSupport()).bulkUpdate("DELETE FROM "
+            int deleted = ((GenericDaoHibernateSupport) dao).getHibernateTemplate().
+                    bulkUpdate("DELETE FROM "
                     + org.hibernate.cfg.DefaultComponentSafeNamingStrategy.INSTANCE.tableName(
                     model.getSimpleName()));
         } catch (Exception e) {

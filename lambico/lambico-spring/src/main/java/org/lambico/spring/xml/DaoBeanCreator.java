@@ -26,6 +26,7 @@ import javax.persistence.Entity;
 import org.lambico.dao.generic.Dao;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.annotation.AnnotationClassFilter;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.parsing.ReaderContext;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -80,13 +81,40 @@ public class DaoBeanCreator {
      * @param element The DOM of the DAO definition XML fragment.
      * @param packageName The DAO package name.
      * @param genericDaoName The DAO name.
+     * @throws ClassNotFoundException If the class of the base abstract generic DAO can't be found.
      */
     void createBeans(final Element element, final String packageName,
-            final String genericDaoName) {
+            final String genericDaoName) throws ClassNotFoundException {
         List<Class> allClasses = getAllClasses(packageName);
         List<Class> persistentClasses = getPersistentClasses(allClasses);
         List<Class> daoInterfaces = getDaoInterfaces(allClasses);
         createBeanDefinitions(persistentClasses, daoInterfaces, genericDaoName);
+    }
+
+    /**
+     * Build the array of interfaces that will be implemented and/or satisfied by the
+     * specific DAO. They are the specific DAO interface and all the interfaces implemented
+     * by the base abstra generic DAO.
+     *
+     * @param genericDaoName The name of the bean defining the base abstract generic DAO.
+     * @param daoInterface The interface of the constructing DAO.
+     * @return The array of interfaces.
+     * @throws ClassNotFoundException If the class of the base abstract generic DAO can't be found.
+     * @throws NoSuchBeanDefinitionException
+     */
+    private Class<?>[] extractDaoInterfaces(final String genericDaoName, final Class daoInterface)
+            throws ClassNotFoundException {
+        BeanDefinition baseDaoBD = registry.getBeanDefinition(genericDaoName);
+        Class<?>[] genericDaoInterfaces =
+                Class.forName(baseDaoBD.getBeanClassName()).getInterfaces();
+        if (daoInterface != null) {
+            Class<?>[] newGenericDaoInterfaces = new Class<?>[genericDaoInterfaces.length + 1];
+            System.arraycopy(genericDaoInterfaces, 0,
+                    newGenericDaoInterfaces, 0, genericDaoInterfaces.length);
+            newGenericDaoInterfaces[genericDaoInterfaces.length] = daoInterface;
+            genericDaoInterfaces = newGenericDaoInterfaces;
+        }
+        return genericDaoInterfaces;
     }
 
     /**
@@ -195,10 +223,11 @@ public class DaoBeanCreator {
      * @param persistentClasses The types of the DAOs.
      * @param daoInterfaces The DAO interfaces.
      * @param genericDaoName The parent DAO name.
+     * @throws ClassNotFoundException If the class of the base abstract generic DAO can't be found.
      */
     void createBeanDefinitions(final List<Class> persistentClasses,
             final List<Class> daoInterfaces,
-            final String genericDaoName) {
+            final String genericDaoName) throws ClassNotFoundException {
         for (Class pClass : persistentClasses) {
             Class daoInterface = findDaoInterface(pClass, daoInterfaces);
             createBeanDefinition(pClass, daoInterface, genericDaoName);
@@ -211,17 +240,17 @@ public class DaoBeanCreator {
      * @param persistentClass The type of the DAO.
      * @param daoInterface The DAO interface.
      * @param genericDaoName The parent DAO name.
+     * @throws ClassNotFoundException If the class of the base abstract generic DAO can't be found.
      */
     void createBeanDefinition(final Class persistentClass,
             final Class daoInterface,
-            final String genericDaoName) {
+            final String genericDaoName) throws ClassNotFoundException {
         BeanDefinitionBuilder beanDefinitionBuilder =
                 BeanDefinitionBuilder.rootBeanDefinition(ProxyFactoryBean.class);
-        if (daoInterface != null) {
-            beanDefinitionBuilder.addPropertyValue("proxyInterfaces", daoInterface);
-        }
         BeanDefinitionBuilder genericDaoBDB =
                 BeanDefinitionBuilder.childBeanDefinition(genericDaoName);
+        Class<?>[] genericDaoInterfaces = extractDaoInterfaces(genericDaoName, daoInterface);
+        beanDefinitionBuilder.addPropertyValue("proxyInterfaces", genericDaoInterfaces);
         genericDaoBDB.addPropertyValue("type", persistentClass);
         beanDefinitionBuilder.addPropertyValue("target", genericDaoBDB.getBeanDefinition());
         String id =
