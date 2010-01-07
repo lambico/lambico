@@ -4,7 +4,7 @@
     <groupId>org.lambico</groupId>
     <artifactId>lambico</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-beta-1</version>
     <name>Lambico</name>
     <url>http://www.lambico.org</url>
     <inceptionYear>2009</inceptionYear>
@@ -151,8 +151,8 @@
         </site>
     </distributionManagement>
     <scm>
-        <connection>scm:hg:https://lambico.googlecode.com/hg</connection>
-        <developerConnection>scm:hg:https://lambico.googlecode.com/hg</developerConnection>
+        <connection>scm:hg:https://lambico.googlecode.com/hg/lambico</connection>
+        <developerConnection>scm:hg:https://lambico.googlecode.com/hg/lambico</developerConnection>
         <url>http://code.google.com/p/lambico/source/browse/</url>
     </scm>
     <issueManagement>
