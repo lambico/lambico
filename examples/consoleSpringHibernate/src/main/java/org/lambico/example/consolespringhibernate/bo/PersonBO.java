@@ -29,14 +29,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package org.lambico.examples.consolespringhibernate.bo;
+package org.lambico.example.consolespringhibernate.bo;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import org.lambico.examples.consolespringhibernate.dao.PersonDao;
-import org.lambico.examples.consolespringhibernate.po.Person;
+import org.lambico.example.consolespringhibernate.dao.PersonDao;
+import org.lambico.example.consolespringhibernate.po.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

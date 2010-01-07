@@ -29,57 +29,28 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package org.lambico.examples.consolespringhibernate.po;
+package org.lambico.example.consolespringhibernate.dao;
 
 import java.util.Date;
-
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import org.lambico.po.hibernate.EntityBase;
+import java.util.List;
+import org.lambico.dao.generic.Dao;
+import org.lambico.dao.generic.GenericDao;
+import org.lambico.example.consolespringhibernate.po.Person;
 
 /**
- * An example of a persistent object containing personal data.
+ * The DAO interface for the Person entity.
  *
  * @author <a href="mailto:lucio@benfante.com">Lucio Benfante</a>
  * @version $Revision$
  */
-@javax.persistence.Entity()
-public class Person extends EntityBase {
+@Dao(entity = Person.class)
+public interface PersonDao extends GenericDao<Person, Long> {
 
-    private String firstName;
-    private String lastName;
-    private Date birthDate;
+    List<Person> findByLastName(String lastName);
 
-    /** Creates a new instance of Person */
-    public Person() {
-    }
+    List<Person> findByFirstNameAndLastName(String firstName, String lastName);
 
-    public String getFirstName() {
-        return firstName;
-    }
+    List<Person> findByBirthDate(Date birthDate);
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    @Temporal(TemporalType.DATE)
-    public Date getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public String toString() {
-        return this.firstName + " " + this.lastName + " (" + this.birthDate + ")";
-    }
+    List<Person> findByFirstName(String firstName);
 }

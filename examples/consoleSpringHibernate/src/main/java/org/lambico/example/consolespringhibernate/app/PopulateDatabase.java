@@ -17,8 +17,8 @@
  */
 package org.lambico.example.consolespringhibernate.app;
 
-import org.lambico.examples.consolespringhibernate.bo.PersonBO;
-import org.lambico.examples.consolespringhibernate.util.ApplicationContextHolder;
+import org.lambico.example.consolespringhibernate.bo.PersonBO;
+import org.lambico.example.consolespringhibernate.util.ApplicationContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

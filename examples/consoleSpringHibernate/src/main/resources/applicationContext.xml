@@ -28,10 +28,10 @@
        http://www.lambico.org/schema/lambico http://www.lambico.org/schema/lambico.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
     
-    <context:component-scan base-package="org.lambico.examples.consolespringhibernate"/>
+    <context:component-scan base-package="org.lambico.example.consolespringhibernate"/>
     <!-- Authomatic discovering of persistent classes -->
-    <lambico:discover-persistent-classes basePackage="org.lambico.examples.consolespringhibernate"/>
+    <lambico:discover-persistent-classes basePackage="org.lambico.example.consolespringhibernate"/>
     <!-- Authomatic DAO definition from persistent classes -->
-    <lambico:define-daos basePackage="org.lambico.examples.consolespringhibernate"/>
+    <lambico:define-daos basePackage="org.lambico.example.consolespringhibernate"/>
    
 </beans>

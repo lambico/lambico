@@ -29,12 +29,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package org.lambico.examples.consolespringhibernate.test;
+package org.lambico.example.consolespringhibernate.test;
 
 
 import org.lambico.test.spring.hibernate.DBTest;
-import org.lambico.examples.consolespringhibernate.po.Book;
-import org.lambico.examples.consolespringhibernate.po.Person;
+import org.lambico.example.consolespringhibernate.po.Book;
+import org.lambico.example.consolespringhibernate.po.Person;
 
 /**
  * A base class for basic persistence example tests.

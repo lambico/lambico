@@ -16,13 +16,13 @@
  * limitations under the License.
  */
 
-package org.lambico.examples.consolespringhibernate.dao;
+package org.lambico.example.consolespringhibernate.dao;
 
-import org.lambico.examples.consolespringhibernate.dao.PersonDao;
+import org.lambico.example.consolespringhibernate.dao.PersonDao;
 import java.util.List;
 import javax.annotation.Resource;
-import org.lambico.examples.consolespringhibernate.po.Person;
-import org.lambico.examples.consolespringhibernate.test.BaseTest;
+import org.lambico.example.consolespringhibernate.po.Person;
+import org.lambico.example.consolespringhibernate.test.BaseTest;
 
 /**
  *

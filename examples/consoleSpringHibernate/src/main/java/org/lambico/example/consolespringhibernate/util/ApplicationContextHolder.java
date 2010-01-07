@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.lambico.examples.consolespringhibernate.util;
+package org.lambico.example.consolespringhibernate.util;
 
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;

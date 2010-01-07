@@ -16,40 +16,32 @@
  * limitations under the License.
  */
 
-package org.lambico.examples.consolespringhibernate.dao;
+package org.lambico.example.consolespringhibernate.bo;
 
-import org.lambico.examples.consolespringhibernate.dao.BookDao;
+import org.lambico.example.consolespringhibernate.bo.BookBO;
 import java.util.List;
 
-import javax.annotation.Resource;
-import org.lambico.examples.consolespringhibernate.po.Book;
-import org.lambico.examples.consolespringhibernate.po.Person;
-import org.lambico.examples.consolespringhibernate.test.BaseTest;
+import org.lambico.example.consolespringhibernate.po.Book;
+import org.lambico.example.consolespringhibernate.po.Person;
+import org.lambico.example.consolespringhibernate.test.BaseTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
  * @author Enrico Giurin
  */
-public class BookDaoTest extends BaseTest {
+public class BookBOTest extends BaseTest {
     
-    @Resource
-    private BookDao bookDao;
+    @Autowired
+    private BookBO bookBO;
     
     
-    public void testAllBooksByBorrower() {
-    	List<Book> list = bookDao.allBooksByBorrower("Ugo", "Benfante");
-    	assertEquals(2, list.size());      
-    }
-    
-    public void testFindByAuthor() {
-    	
-        List<Book> books = bookDao.findByAuthor("Doug Lea");
-        assertEquals(1, books.size());
-        assertEquals(books.get(0).getTitle(), "Concurrent programming in java second edition");
-        
-    }
-
+   public void testBookReturned()
+   {
+	   Person p = bookBO.bookReturned("Doug Lea", "Concurrent programming in java second edition");
+	   assertTrue(p.getFirstName().equals("Ugo"));
+	   
+   }
     
    
     

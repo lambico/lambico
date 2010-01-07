@@ -29,12 +29,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package org.lambico.examples.consolespringhibernate.bo;
+package org.lambico.example.consolespringhibernate.bo;
 
 import javax.annotation.Resource;
-import org.lambico.examples.consolespringhibernate.dao.BookDao;
-import org.lambico.examples.consolespringhibernate.po.Book;
-import org.lambico.examples.consolespringhibernate.po.Person;
+import org.lambico.example.consolespringhibernate.dao.BookDao;
+import org.lambico.example.consolespringhibernate.po.Book;
+import org.lambico.example.consolespringhibernate.po.Person;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

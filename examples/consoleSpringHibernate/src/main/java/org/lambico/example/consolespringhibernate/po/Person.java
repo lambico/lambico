@@ -29,28 +29,57 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-package org.lambico.examples.consolespringhibernate.dao;
+package org.lambico.example.consolespringhibernate.po;
 
 import java.util.Date;
-import java.util.List;
-import org.lambico.dao.generic.Dao;
-import org.lambico.dao.generic.GenericDao;
-import org.lambico.examples.consolespringhibernate.po.Person;
+
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import org.lambico.po.hibernate.EntityBase;
 
 /**
- * The DAO interface for the Person entity.
+ * An example of a persistent object containing personal data.
  *
  * @author <a href="mailto:lucio@benfante.com">Lucio Benfante</a>
  * @version $Revision$
  */
-@Dao(entity = Person.class)
-public interface PersonDao extends GenericDao<Person, Long> {
+@javax.persistence.Entity()
+public class Person extends EntityBase {
 
-    List<Person> findByLastName(String lastName);
+    private String firstName;
+    private String lastName;
+    private Date birthDate;
 
-    List<Person> findByFirstNameAndLastName(String firstName, String lastName);
+    /** Creates a new instance of Person */
+    public Person() {
+    }
 
-    List<Person> findByBirthDate(Date birthDate);
+    public String getFirstName() {
+        return firstName;
+    }
 
-    List<Person> findByFirstName(String firstName);
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    @Temporal(TemporalType.DATE)
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String toString() {
+        return this.firstName + " " + this.lastName + " (" + this.birthDate + ")";
+    }
 }

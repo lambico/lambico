@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-package org.lambico.examples.consolespringhibernate.test;
+package org.lambico.example.consolespringhibernate.test;
 
 import javax.annotation.Resource;
-import org.lambico.examples.consolespringhibernate.bo.PersonBO;
-import org.lambico.examples.consolespringhibernate.dao.PersonDao;
+import org.lambico.example.consolespringhibernate.bo.PersonBO;
+import org.lambico.example.consolespringhibernate.dao.PersonDao;
 
 /**
  * Sanity tests
