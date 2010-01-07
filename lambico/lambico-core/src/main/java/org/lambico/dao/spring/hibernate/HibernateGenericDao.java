@@ -29,6 +29,6 @@ import org.lambico.dao.hibernate.GenericDaoHibernateCriteriaSupport;
  * @author Lucio Benfante
  */
 public interface HibernateGenericDao<T, PK extends Serializable>
-        extends GenericDao<T, PK>, GenericDaoHibernateCriteriaSupport<T, PK>,
+        extends GenericDao<T, PK>, GenericDaoHibernateCriteriaSupport<T>,
         GenericDaoHibernateSupport {
 }

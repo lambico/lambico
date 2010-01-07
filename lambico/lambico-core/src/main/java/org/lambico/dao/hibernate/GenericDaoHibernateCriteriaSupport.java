@@ -17,7 +17,6 @@
  */
 package org.lambico.dao.hibernate;
 
-import java.io.Serializable;
 import java.util.List;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
@@ -27,10 +26,9 @@ import org.lambico.dao.generic.Page;
  * Methods with the use of criteria for DAOs on Hibernate.
  *
  * @param <T> The entity class type of the DAO.
- * @param <PK> The type of the primary key of the entity.
  * @author Lucio Benfante <lucio.benfante at gmail.com>
  */
-public interface GenericDaoHibernateCriteriaSupport<T, PK extends Serializable> {
+public interface GenericDaoHibernateCriteriaSupport<T> {
 
     /**
      * Search using a set of Criteria.

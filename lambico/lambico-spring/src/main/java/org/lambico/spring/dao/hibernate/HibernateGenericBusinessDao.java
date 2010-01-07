@@ -47,7 +47,7 @@ import org.springframework.dao.support.DataAccessUtils;
  */
 public class HibernateGenericBusinessDao<T, PK extends Serializable>
         extends HibernateDaoSupport
-        implements GenericDaoBase<T, PK>, GenericDaoHibernateCriteriaSupport<T, PK>,
+        implements GenericDaoBase<T, PK>, GenericDaoHibernateCriteriaSupport<T>,
         GenericDaoTypeSupport, GenericDaoHibernateSupport {
 
     /** The entity class type. */

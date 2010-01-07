@@ -134,7 +134,7 @@ public class EntityTCTest extends BaseTest {
     }
 
     public void testFindAllByCriteria() {
-        List<EntityTC> results = ((GenericDaoHibernateCriteriaSupport<EntityTC, Long>) entityTCDao)
+        List<EntityTC> results = ((GenericDaoHibernateCriteriaSupport<EntityTC>) entityTCDao)
                 .searchByCriteria(DetachedCriteria.forClass(EntityTC.class));
         assertSize(5, results);
     }
