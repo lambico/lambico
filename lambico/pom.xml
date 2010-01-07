@@ -153,7 +153,7 @@
     <scm>
         <connection>scm:hg:https://lambico.googlecode.com/hg/lambico</connection>
         <developerConnection>scm:hg:https://lambico.googlecode.com/hg/lambico</developerConnection>
-        <url>http://code.google.com/p/lambico/source/browse/</url>
+        <url>http://code.google.com/p/lambico/source/browse/lambico</url>
     </scm>
     <issueManagement>
         <system>Google Code Issues</system>
