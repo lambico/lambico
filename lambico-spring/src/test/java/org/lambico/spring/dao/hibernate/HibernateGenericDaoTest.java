@@ -18,6 +18,9 @@
 
 package org.lambico.spring.dao.hibernate;
 
+import org.lambico.spring.dao.hibernate.bo.EntityTCBO;
+import org.lambico.spring.dao.hibernate.dao.EntityTCDao;
+import org.lambico.spring.dao.hibernate.po.EntityTC;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Resource;

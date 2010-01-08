@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.lambico.spring.dao.hibernate;
+package org.lambico.spring.dao.hibernate.po;
 
 import org.lambico.po.hibernate.EntityBase;
 import java.util.ArrayList;

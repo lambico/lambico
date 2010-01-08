@@ -47,15 +47,17 @@
         </property>
     </bean>
     
-    <context:component-scan base-package="org.lambico.spring.dao.hibernate"/>
+    <context:component-scan base-package="org.lambico.spring.dao.hibernate.bo"/>
     <!-- Authomatic DAO definition from persistent classes -->
-    <lambico:define-daos basePackage="org.lambico.spring.dao.hibernate"/>
+    <lambico:define-daos baseInterfacePackage="org.lambico.spring.dao.hibernate.dao"
+                         baseEntityPackage="org.lambico.spring.dao.hibernate.po"/>
+    <!-- Authomatic detection of persistent classes -->
+    <lambico:discover-persistent-classes basePackage="org.lambico.spring.dao.hibernate.po" />
     
-    <lambico:discover-persistent-classes basePackage="org.lambico.spring.dao.hibernate" />
 
     <bean id="daos" parent="abstractDaoProvider">
         <property name="proxyInterfaces">
-            <value>org.lambico.spring.dao.hibernate.TestDaos</value>
+            <value>org.lambico.spring.dao.hibernate.dao.TestDaos</value>
         </property>
         <property name="target">
             <bean parent="genericDaoProvider"/>

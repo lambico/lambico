@@ -19,17 +19,27 @@ package org.lambico.spring.xml;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 import javax.persistence.Entity;
+import org.apache.log4j.Logger;
 import org.lambico.dao.generic.Dao;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.annotation.AnnotationClassFilter;
+import org.springframework.beans.PropertyValue;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.beans.factory.parsing.ReaderContext;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.BeanDefinitionParserDelegate;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -48,6 +58,8 @@ import org.w3c.dom.Element;
  */
 public class DaoBeanCreator {
 
+    /** The logger for this class. */
+    private static Logger logger = Logger.getLogger(DaoBeanCreator.class);
     /** The ResourcePatternResolver. */
     private ResourcePatternResolver rl;
     /** The BeanDefinitionRegistry. */
@@ -79,15 +91,19 @@ public class DaoBeanCreator {
      * Create the DAO beans.
      *
      * @param element The DOM of the DAO definition XML fragment.
-     * @param packageName The DAO package name.
+     * @param interfacePackageName The base package of the DAO interfaces.
+     * @param entityPackageName  The base package of the persistent entities.
      * @param genericDaoName The DAO name.
+     * @param sessionFactoryName The session factory bean name.
      * @throws ClassNotFoundException If the class of the base abstract generic DAO can't be found.
      */
-    void createBeans(final Element element, final String packageName,
-            final String genericDaoName) throws ClassNotFoundException {
-        List<Class> allClasses = getAllClasses(packageName);
-        List<Class> persistentClasses = getPersistentClasses(allClasses);
-        List<Class> daoInterfaces = getDaoInterfaces(allClasses);
+    void createBeans(final Element element, final String interfacePackageName,
+            final String entityPackageName,
+            final String genericDaoName, final String sessionFactoryName)
+            throws ClassNotFoundException {
+        Set<Class> daoInterfaces = getDaoInterfaces(interfacePackageName);
+        Set<Class> persistentClasses = getPersistentClasses(entityPackageName, sessionFactoryName,
+                daoInterfaces);
         createBeanDefinitions(persistentClasses, daoInterfaces, genericDaoName);
     }
 
@@ -198,23 +214,71 @@ public class DaoBeanCreator {
     }
 
     /**
-     * Filter the list of classes extracting only the DAO interfaces.
+     * Retrieve the list of persistent classes.
      *
-     * @param classes The full list of classes
-     * @return The filtered list
+     * It search classes in the provided package, in the DAO interface definitions,
+     * and in other possibly places in the Spring context (i.e. in the Hibernate session factory).
+     *
+     * @param entityPackageName The base package of the entity classes.
+     * @param sessionFactoryName The session factory bean name.
+     * @param daoInterfaces The set of DAO interfaces.
+     * @return The set of persistent classes.
      */
-    List<Class> getPersistentClasses(final List<Class> classes) {
-        return getClassesByAnnotation(classes, Entity.class);
+    Set<Class> getPersistentClasses(final String entityPackageName,
+            final String sessionFactoryName, final Set<Class> daoInterfaces) {
+        final List<Class> classes = getAllClasses(entityPackageName);
+        final List<Class> annotatedClasses = getClassesByAnnotation(classes, Entity.class);
+        List<Class> classesFromHibernateSessionFactory =
+                searchInTheHibernateSessionFactory(sessionFactoryName);
+        List<Class> classesFromTheDaoDefinitions = searchInTheDaoDefinitions(daoInterfaces);
+        Set<Class> result = new HashSet<Class>();
+        result.addAll(annotatedClasses);
+        result.addAll(classesFromHibernateSessionFactory);
+        result.addAll(classesFromTheDaoDefinitions);
+        return result;
     }
 
     /**
-     * Filter the list of classes extracting only the DAO interfaces.
+     * Search entity classes, looking in the Hibernate session factory configuration.
      *
-     * @param classes The full list of classes
+     * @param sessionFactoryName The session factory bean name.
+     * @return The list of persistent classes configurated for the session factory.
+     */
+    private List<Class> searchInTheHibernateSessionFactory(final String sessionFactoryName) {
+        final List<Class> result = new LinkedList<Class>();
+        if (registry.containsBeanDefinition(sessionFactoryName)) {
+            BeanDefinition sessionFactoryBeanDefinition =
+                    registry.getBeanDefinition(sessionFactoryName);
+            PropertyValue annotatedClassesProperty =
+                    sessionFactoryBeanDefinition.getPropertyValues().
+                    getPropertyValue("annotatedClasses");
+            if (annotatedClassesProperty != null) {
+                List<TypedStringValue> entitiesFromSession =
+                        (List) annotatedClassesProperty.getValue();
+                for (TypedStringValue className : entitiesFromSession) {
+                    try {
+                        final Class pClass = Class.forName(className.getValue());
+                        result.add(pClass);
+                    } catch (ClassNotFoundException ex) {
+                        // ignore it
+                        logger.debug("Entity class not found.", ex);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Retrieves the set of DAO interfaces.
+     *
+     * @param interfacePackageName The base package of the DAO interfaces.
      * @return The filtered list
      */
-    List<Class> getDaoInterfaces(final List<Class> classes) {
-        return getClassesByAnnotation(classes, Dao.class);
+    Set<Class> getDaoInterfaces(final String interfacePackageName) {
+        final List<Class> allClasses = getAllClasses(interfacePackageName);
+        final List<Class> daoClasses = getClassesByAnnotation(allClasses, Dao.class);
+        return new HashSet<Class>(daoClasses);
     }
 
     /**
@@ -225,8 +289,8 @@ public class DaoBeanCreator {
      * @param genericDaoName The parent DAO name.
      * @throws ClassNotFoundException If the class of the base abstract generic DAO can't be found.
      */
-    void createBeanDefinitions(final List<Class> persistentClasses,
-            final List<Class> daoInterfaces,
+    void createBeanDefinitions(final Set<Class> persistentClasses,
+            final Set<Class> daoInterfaces,
             final String genericDaoName) throws ClassNotFoundException {
         for (Class pClass : persistentClasses) {
             Class daoInterface = findDaoInterface(pClass, daoInterfaces);
@@ -265,7 +329,7 @@ public class DaoBeanCreator {
      * @param daoInterfaces The defined DAO interfaces.
      * @return The DAO interface for the specified persistent class.
      */
-    private Class findDaoInterface(final Class persistentClass, final List<Class> daoInterfaces) {
+    private Class findDaoInterface(final Class persistentClass, final Set<Class> daoInterfaces) {
         Class result = null;
         for (Class dao : daoInterfaces) {
             Dao daoAnnotation = (Dao) dao.getAnnotation(Dao.class);
@@ -274,6 +338,24 @@ public class DaoBeanCreator {
                     result = dao;
                     break;
                 }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Search the persistence classes in the DAO definitions.
+     *
+     * @param daoInterfaces The set of DAO interfaces.
+     * @return The set of persistence classes.
+     */
+    private List<Class> searchInTheDaoDefinitions(final Set<Class> daoInterfaces) {
+        final List<Class> result = new LinkedList<Class>();
+        for (Class daoInterface : daoInterfaces) {
+            Dao annotation = (Dao) daoInterface.getAnnotation(Dao.class);
+            Class entity = annotation.entity();
+            if (entity != null) {
+                result.add(entity);
             }
         }
         return result;

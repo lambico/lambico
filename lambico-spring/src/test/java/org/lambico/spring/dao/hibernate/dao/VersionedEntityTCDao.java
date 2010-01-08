@@ -16,19 +16,18 @@
  * limitations under the License.
  */
 
-package org.lambico.spring.dao.hibernate;
+package org.lambico.spring.dao.hibernate.dao;
 
-import java.util.List;
+import org.lambico.spring.dao.hibernate.po.VersionedEntityTC;
 import org.lambico.dao.generic.Dao;
 import org.lambico.dao.generic.GenericDao;
 
 /**
- * A DAO to be used for the tests M:N relationships.
- * 
- * @author <a href="mailto:michele.franzin@seesaw.it">Michele Franzin</a>
+ * A DAO to be used for the tests of the versioned entities.
+ *
+ * @author <a href="mailto:lucio@benfante.com">Lucio Benfante</a>
  * @version $Revision$
  */
-@Dao(entity = AuthorTC.class)
-public interface AuthorTCDao extends GenericDao<AuthorTC, Long> {
-    List<AuthorTC> findByName(String value);
+@Dao(entity=VersionedEntityTC.class)
+public interface VersionedEntityTCDao extends GenericDao<VersionedEntityTC, Long> {
 }

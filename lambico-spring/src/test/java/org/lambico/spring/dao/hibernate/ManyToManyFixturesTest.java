@@ -18,6 +18,10 @@
 
 package org.lambico.spring.dao.hibernate;
 
+import org.lambico.spring.dao.hibernate.dao.AuthorTCDao;
+import org.lambico.spring.dao.hibernate.dao.BookTCDao;
+import org.lambico.spring.dao.hibernate.po.AuthorTC;
+import org.lambico.spring.dao.hibernate.po.BookTC;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;

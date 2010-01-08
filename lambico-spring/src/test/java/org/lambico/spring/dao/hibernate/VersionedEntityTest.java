@@ -18,6 +18,9 @@
 
 package org.lambico.spring.dao.hibernate;
 
+import org.lambico.spring.dao.hibernate.bo.VersionedEntityTCBO;
+import org.lambico.spring.dao.hibernate.po.VersionedEntityTC;
+import org.lambico.spring.dao.hibernate.po.VersionedEntityDataTC;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;

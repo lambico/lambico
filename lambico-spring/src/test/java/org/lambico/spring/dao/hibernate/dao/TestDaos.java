@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.lambico.spring.dao.hibernate;
+package org.lambico.spring.dao.hibernate.dao;
 
 import org.lambico.dao.DaoProvider;
 

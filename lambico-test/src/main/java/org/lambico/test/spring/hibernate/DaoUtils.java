@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.test.spring.hibernate;
 
 import org.springframework.beans.factory.BeanIsAbstractException;
@@ -26,6 +25,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.lambico.dao.spring.BusinessDao;
 import org.lambico.dao.generic.Dao;
+import org.lambico.dao.generic.GenericDao;
 import org.lambico.dao.generic.GenericDaoBase;
 import org.lambico.dao.generic.GenericDaoTypeSupport;
 
@@ -88,6 +88,11 @@ public final class DaoUtils {
                 return true;
             }
         }
+
+        if (GenericDao.class.isAssignableFrom(o.getClass())) {
+            return true;
+        }
+
         return false;
     }
 
@@ -118,6 +123,12 @@ public final class DaoUtils {
             }
         }
 
+        if (GenericDaoTypeSupport.class.isAssignableFrom(o.getClass())) {
+            if (((GenericDaoTypeSupport) o).getType().equals(daoEntityType)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -130,7 +141,7 @@ public final class DaoUtils {
      *         null if it can't be found.
      */
     public static GenericDaoBase getDaoFor(final Class daoEntityType,
-                                       final ListableBeanFactory beanFactory) {
+            final ListableBeanFactory beanFactory) {
         GenericDaoBase result = null;
         Map<String, Object> daos =
                 DaoUtils.getDaos(beanFactory);

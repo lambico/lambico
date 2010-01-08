@@ -16,13 +16,10 @@
  * limitations under the License.
  */
 
-package org.lambico.spring.dao.hibernate;
+package org.lambico.spring.dao.hibernate.po;
 
-import org.lambico.po.hibernate.VersionedDataBase;
-import java.math.BigDecimal;
-
+import org.lambico.po.hibernate.VersionedEntityBase;
 import javax.persistence.Entity;
-
 /**
  * A test class for a versioned entity.
  *
@@ -30,32 +27,21 @@ import javax.persistence.Entity;
  * @version $Revision$
  */
 @Entity()
-public class VersionedEntityDataTC extends VersionedDataBase<VersionedEntityTC> {
+public class VersionedEntityTC extends VersionedEntityBase<VersionedEntityDataTC> {
+
+    /** A not versioned attribute of VersionedEntityTC */
+    private String name;
     
-    /** A versioned (by time) attribute of VersionedEntityTC */
-    private BigDecimal balance;
-    
-    /** Another versioned (by language) attribute of VersionedEntityTC */
-    private String description;
-    
-    /** Creates a new instance of VersionedEntityDataTC */
-    public VersionedEntityDataTC() {
+    /** Creates a new instance of VersionedEntityTC */
+    public VersionedEntityTC() {
     }
 
-    public BigDecimal getBalance() {
-        return balance;
+    public String getName() {
+        return name;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setName(String name) {
+        this.name = name;
     }
     
 }

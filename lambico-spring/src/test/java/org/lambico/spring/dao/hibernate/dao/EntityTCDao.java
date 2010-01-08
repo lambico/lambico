@@ -16,8 +16,9 @@
  * limitations under the License.
  */
 
-package org.lambico.spring.dao.hibernate;
+package org.lambico.spring.dao.hibernate.dao;
 
+import org.lambico.spring.dao.hibernate.po.EntityTC;
 import org.lambico.dao.generic.Dao;
 import org.lambico.dao.generic.MaxResults;
 import org.lambico.dao.generic.FirstResult;

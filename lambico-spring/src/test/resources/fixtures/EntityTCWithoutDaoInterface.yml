@@ -1,0 +1,43 @@
+#
+# Copyright (C) 2009 Lambico Team <lucio.benfante@gmail.com>
+#
+# This file is part of Lambico Spring.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+- &EntityTCwithoutDaoInterface-etc1
+  fieldOne: "one1"
+  fieldTwo: "two5"
+  fieldThree: "Three1"
+  numericField: 1
+- &EntityTCwithoutDaoInterface-etc2
+  fieldOne: "one2"
+  fieldTwo: "two4"
+  fieldThree: "Three2"
+  numericField: 2
+- &EntityTCwithoutDaoInterface-etc3
+  fieldOne: "one3"
+  fieldTwo: "two3"
+  fieldThree: "Three3"
+  numericField: 3
+- &EntityTCwithoutDaoInterface-etc4
+  fieldOne: "one4"
+  fieldTwo: "two2"
+  fieldThree: "Three4"
+  numericField: 4
+- &EntityTCwithoutDaoInterface-etc5
+  fieldOne: "one3"
+  fieldTwo: "two1"
+  fieldThree: "7hree5"
+  numericField: 5

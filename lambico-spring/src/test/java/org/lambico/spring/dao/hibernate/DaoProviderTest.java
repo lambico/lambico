@@ -18,6 +18,8 @@
 
 package org.lambico.spring.dao.hibernate;
 
+import org.lambico.spring.dao.hibernate.dao.TestDaos;
+import org.lambico.spring.dao.hibernate.po.EntityTC;
 import org.lambico.spring.dao.DaoUtils;
 import java.util.Map;
 import org.lambico.test.spring.hibernate.DBTest;

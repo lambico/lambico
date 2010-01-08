@@ -37,10 +37,14 @@ import org.w3c.dom.Element;
  */
 public class DefineDaosBeanDefinitionParser implements BeanDefinitionParser {
 
-    /** The basePackage attribute. */
-    public static final String BASE_PACKAGE_ATTRIBUTE = "basePackage";
+    /** The baseEntityPackage attribute. */
+    public static final String BASE_ENTITY_PACKAGE_ATTRIBUTE = "baseEntityPackage";
+    /** The baseInterfacePackage attribute. */
+    public static final String BASE_INTERFACE_PACKAGE_ATTRIBUTE = "baseInterfacePackage";
     /** The genericDao attribute. */
     public static final String GENERIC_DAO_ATTRIBUTE = "genericDao";
+    /** The sessionFactoryName attribute. */
+    public static final String SESSION_FACTORY_NAME_ATTRIBUTE = "sessionFactoryName";
     /** The logger for this class. */
     private static Logger logger = Logger.getLogger(DefineDaosBeanDefinitionParser.class);
 
@@ -52,8 +56,10 @@ public class DefineDaosBeanDefinitionParser implements BeanDefinitionParser {
      * @return {@inheritDoc}
      */
     public BeanDefinition parse(final Element element, final ParserContext parserContext) {
-        String packageName = element.getAttribute(BASE_PACKAGE_ATTRIBUTE);
+        String interfacePackageName = element.getAttribute(BASE_INTERFACE_PACKAGE_ATTRIBUTE);
+        String entityPackageName = element.getAttribute(BASE_ENTITY_PACKAGE_ATTRIBUTE);
         String genericDaoName = element.getAttribute(GENERIC_DAO_ATTRIBUTE);
+        String sessionFactoryName = element.getAttribute(SESSION_FACTORY_NAME_ATTRIBUTE);
         BeanDefinitionParserDelegate delegate = parserContext.getDelegate();
         ResourcePatternResolver resourceLoader =
                 (ResourcePatternResolver) parserContext.getReaderContext().getReader().
@@ -62,7 +68,8 @@ public class DefineDaosBeanDefinitionParser implements BeanDefinitionParser {
         DaoBeanCreator daoBeanCreator = new DaoBeanCreator(
                 resourceLoader, registry, delegate, parserContext.getReaderContext());
         try {
-            daoBeanCreator.createBeans(element, packageName, genericDaoName);
+            daoBeanCreator.createBeans(element, interfacePackageName, entityPackageName,
+                    genericDaoName, sessionFactoryName);
         } catch (ClassNotFoundException ex) {
             throw new RuntimeException("Can't create DAO beans.", ex);
         }

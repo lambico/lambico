@@ -18,6 +18,8 @@
 
 package org.lambico.spring.dao.hibernate;
 
+import org.lambico.spring.dao.hibernate.bo.EntityTCBusinessDao;
+import org.lambico.spring.dao.hibernate.po.EntityTC;
 import java.util.List;
 import javax.annotation.Resource;
 

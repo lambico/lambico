@@ -44,7 +44,9 @@
     
     <xsd:element name="define-daos">
         <xsd:complexType>
-            <xsd:attribute name="basePackage" type="xsd:string" use="required" />
+            <xsd:attribute name="baseEntityPackage" type="xsd:string" use="optional" />
+            <xsd:attribute name="baseInterfacePackage" type="xsd:string" use="optional" />
+            <xsd:attribute name="sessionFactoryName" type="xsd:string" default="sessionFactory" />
             <xsd:attribute name="genericDao" type="xsd:string" default="hibernateGenericDao"/>
         </xsd:complexType>
     </xsd:element>

@@ -16,15 +16,20 @@
  * limitations under the License.
  */
 
-package org.lambico.spring.dao.hibernate;
+package org.lambico.spring.dao.hibernate.dao;
 
-import org.lambico.dao.spring.BusinessDao;
+import org.lambico.spring.dao.hibernate.po.AuthorTC;
+import java.util.List;
+import org.lambico.dao.generic.Dao;
+import org.lambico.dao.generic.GenericDao;
 
 /**
- *
- * @author Jacopo Murador <jacopo.murador at seesaw.it>
+ * A DAO to be used for the tests M:N relationships.
+ * 
+ * @author <a href="mailto:michele.franzin@seesaw.it">Michele Franzin</a>
+ * @version $Revision$
  */
-@BusinessDao
-public class EntityTCBusinessDao extends HibernateGenericBusinessDao<EntityTC, Long>{
-
+@Dao(entity = AuthorTC.class)
+public interface AuthorTCDao extends GenericDao<AuthorTC, Long> {
+    List<AuthorTC> findByName(String value);
 }

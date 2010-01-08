@@ -16,8 +16,11 @@
  * limitations under the License.
  */
 
-package org.lambico.spring.dao.hibernate;
+package org.lambico.spring.dao.hibernate.bo;
 
+import org.lambico.spring.dao.hibernate.dao.VersionedEntityTCDao;
+import org.lambico.spring.dao.hibernate.po.VersionedEntityTC;
+import org.lambico.spring.dao.hibernate.po.VersionedEntityDataTC;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

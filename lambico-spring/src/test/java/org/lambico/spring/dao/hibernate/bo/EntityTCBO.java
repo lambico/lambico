@@ -16,8 +16,10 @@
  * limitations under the License.
  */
 
-package org.lambico.spring.dao.hibernate;
+package org.lambico.spring.dao.hibernate.bo;
 
+import org.lambico.spring.dao.hibernate.dao.EntityTCDao;
+import org.lambico.spring.dao.hibernate.po.EntityTC;
 import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -48,15 +50,15 @@ public class EntityTCBO {
         return retrievedEntity;
     }
 
-    List<EntityTC> retrieveEntityByFieldOne(String value) {
+    public List<EntityTC> retrieveEntityByFieldOne(String value) {
         return entityTCDao.findByFieldOne(value);
     }
 
-    List<EntityTC> retrieveEntityByFieldTwo(String value) {
+    public List<EntityTC> retrieveEntityByFieldTwo(String value) {
         return entityTCDao.findByFieldTwo(value);
     }
     
-    List<EntityTC> retrieveEntityByFieldOneAndFieldTwo(String one, String two) {
+    public List<EntityTC> retrieveEntityByFieldOneAndFieldTwo(String one, String two) {
         return entityTCDao.findByFieldOneAndFieldTwo(one, two);
     }
     

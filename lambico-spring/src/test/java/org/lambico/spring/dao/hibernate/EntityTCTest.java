@@ -17,12 +17,13 @@
  */
 package org.lambico.spring.dao.hibernate;
 
+import org.lambico.spring.dao.hibernate.dao.TestDaos;
+import org.lambico.spring.dao.hibernate.dao.EntityTCDao;
+import org.lambico.spring.dao.hibernate.po.EntityTC;
 import java.util.List;
 import javax.annotation.Resource;
 import org.hibernate.criterion.DetachedCriteria;
 import org.lambico.dao.hibernate.GenericDaoHibernateCriteriaSupport;
-import org.springframework.aop.framework.ProxyFactoryBean;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 /**
  * Tests on generic DAO using EntityTC.

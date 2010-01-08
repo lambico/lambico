@@ -15,18 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
-import org.lambico.dao.generic.Dao;
+import java.util.List;
+import javax.annotation.Resource;
 import org.lambico.dao.generic.GenericDao;
+import org.lambico.spring.dao.hibernate.po.EntityTCWithoutDaoInterface;
 
 /**
- * A DAO to be used for the tests of the versioned entities.
+ * Tests on generic DAO without defining a specific DAO interface.
  *
- * @author <a href="mailto:lucio@benfante.com">Lucio Benfante</a>
+ * @author Lucio Benfante <lucio.benfante@gmail.com>
  * @version $Revision$
  */
-@Dao(entity=VersionedEntityTC.class)
-public interface VersionedEntityTCDao extends GenericDao<VersionedEntityTC, Long> {
+public class EntityTCWithoutDaoInterfaceTest extends BaseTest {
+
+    @Resource
+    private GenericDao<EntityTCWithoutDaoInterface, Long> entityTCWithoutDaoInterfaceDao;
+
+    public void testDaoExists() {
+        assertNotNull(entityTCWithoutDaoInterfaceDao);
+    }
+
+    public void testAllSize() {
+        final List<EntityTCWithoutDaoInterface> result = entityTCWithoutDaoInterfaceDao.findAll();
+        assertSize(5, result);
+        EntityTCWithoutDaoInterface testCast = result.get(0);
+    }
 }

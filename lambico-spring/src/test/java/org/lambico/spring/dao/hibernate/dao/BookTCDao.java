@@ -15,23 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lambico.spring.dao.hibernate;
 
-import org.lambico.spring.dao.hibernate.po.AuthorTC;
+package org.lambico.spring.dao.hibernate.dao;
+
 import org.lambico.spring.dao.hibernate.po.BookTC;
-import org.lambico.spring.dao.hibernate.po.EntityTC;
-import org.lambico.spring.dao.hibernate.po.EntityTCWithoutDaoInterface;
-import org.lambico.test.spring.hibernate.DBTest;
+import java.util.List;
+import org.lambico.dao.generic.Dao;
+import org.lambico.dao.generic.GenericDao;
 
 /**
- * A base class for Lambico tests.
- *
- * @author lucio
+ * A DAO to be used for the tests M:N relationships.
+ * 
+ * @author <a href="mailto:michele.franzin@seesaw.it">Michele Franzin</a>
+ * @version $Revision$
  */
-public abstract class BaseTest extends DBTest {
-
-    @Override
-    public Class[] getFixtureClasses() {
-        return new Class[]{EntityTC.class, EntityTCWithoutDaoInterface.class, AuthorTC.class, BookTC.class};
-    }
+@Dao(entity = BookTC.class)
+public interface BookTCDao extends GenericDao<BookTC, Long> {
+    List<BookTC> findByTitle(String value);
 }
