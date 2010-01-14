@@ -309,6 +309,12 @@ public class DaoBeanCreator {
     void createBeanDefinition(final Class persistentClass,
             final Class daoInterface,
             final String genericDaoName) throws ClassNotFoundException {
+        String id =
+                StringUtils.uncapitalize(StringUtils.unqualify(persistentClass.getName())) + "Dao";
+        if (daoInterface == null && registry.containsBeanDefinition(id)) {
+            // don't register a generic DAO (without daoInterface) if it already exists.
+            return;
+        }
         BeanDefinitionBuilder beanDefinitionBuilder =
                 BeanDefinitionBuilder.rootBeanDefinition(ProxyFactoryBean.class);
         BeanDefinitionBuilder genericDaoBDB =
@@ -317,8 +323,6 @@ public class DaoBeanCreator {
         beanDefinitionBuilder.addPropertyValue("proxyInterfaces", genericDaoInterfaces);
         genericDaoBDB.addPropertyValue("type", persistentClass);
         beanDefinitionBuilder.addPropertyValue("target", genericDaoBDB.getBeanDefinition());
-        String id =
-                StringUtils.uncapitalize(StringUtils.unqualify(persistentClass.getName())) + "Dao";
         registry.registerBeanDefinition(id, beanDefinitionBuilder.getBeanDefinition());
     }
 

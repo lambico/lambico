@@ -48,11 +48,14 @@
     </bean>
     
     <context:component-scan base-package="org.lambico.spring.dao.hibernate.bo"/>
+    <!-- Authomatic detection of persistent classes -->
+    <lambico:discover-persistent-classes basePackage="org.lambico.spring.dao.hibernate.po" />
+    <lambico:discover-persistent-classes basePackage="org.lambico.spring.dao.hibernate.pobis" />
     <!-- Authomatic DAO definition from persistent classes -->
     <lambico:define-daos baseInterfacePackage="org.lambico.spring.dao.hibernate.dao"
                          baseEntityPackage="org.lambico.spring.dao.hibernate.po"/>
-    <!-- Authomatic detection of persistent classes -->
-    <lambico:discover-persistent-classes basePackage="org.lambico.spring.dao.hibernate.po" />
+    <lambico:define-daos baseInterfacePackage="org.lambico.spring.dao.hibernate.daobis"
+                         baseEntityPackage="org.lambico.spring.dao.hibernate.pobis"/>
     
 
     <bean id="daos" parent="abstractDaoProvider">

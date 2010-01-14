@@ -17,23 +17,29 @@
  */
 package org.lambico.spring.dao.hibernate;
 
-import org.lambico.spring.dao.hibernate.po.AuthorTC;
-import org.lambico.spring.dao.hibernate.po.BookTC;
-import org.lambico.spring.dao.hibernate.po.EntityTC;
-import org.lambico.spring.dao.hibernate.po.EntityTCWithoutDaoInterface;
+import java.util.List;
+import javax.annotation.Resource;
+import org.lambico.spring.dao.hibernate.daobis.EntityTCBisDao;
 import org.lambico.spring.dao.hibernate.pobis.EntityTCBis;
-import org.lambico.test.spring.hibernate.DBTest;
 
 /**
- * A base class for Lambico tests.
+ * Tests on generic DAO with DAOs and entities in multiple separated packages.
  *
- * @author lucio
+ * @author Lucio Benfante <lucio.benfante@gmail.com>
+ * @version $Revision$
  */
-public abstract class BaseTest extends DBTest {
+public class EntityTCBisTest extends BaseTest {
 
-    @Override
-    public Class[] getFixtureClasses() {
-        return new Class[]{EntityTC.class, EntityTCBis.class, EntityTCWithoutDaoInterface.class,
-                    AuthorTC.class, BookTC.class};
+    @Resource
+    private EntityTCBisDao entityTCBisDao;
+
+    public void testDaoExists() {
+        assertNotNull(entityTCBisDao);
+    }
+
+    public void testAllSize() {
+        final List<EntityTCBis> result = entityTCBisDao.findAll();
+        assertSize(5, result);
+        EntityTCBis testCast = result.get(0);
     }
 }
