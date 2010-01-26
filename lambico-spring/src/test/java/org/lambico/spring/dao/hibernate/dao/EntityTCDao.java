@@ -26,6 +26,7 @@ import org.lambico.dao.generic.Compare;
 import org.lambico.dao.generic.CompareType;
 import java.util.List;
 import org.lambico.dao.generic.GenericDao;
+import org.lambico.dao.generic.NamedParameter;
 
 /**
  * A DAO to be used for the tests of the generic DAO.
@@ -36,6 +37,7 @@ import org.lambico.dao.generic.GenericDao;
 @Dao(entity=EntityTC.class)
 public interface EntityTCDao extends GenericDao<EntityTC, Long> {
     List<EntityTC> findByFieldOne(String value);
+    List<EntityTC> findByFieldOneAndFieldTwoAndFieldThreeWithName(String one, @NamedParameter("a") String two, String three);
     List<EntityTC> findByFieldTwo(String value);
     List<EntityTC> findByFieldThree(@Compare(CompareType.ILIKE) String value);
     List<EntityTC> findByFieldOneAndFieldTwo(String one, String two);

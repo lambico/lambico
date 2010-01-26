@@ -38,6 +38,7 @@ import org.lambico.dao.generic.FirstResult;
 import org.lambico.dao.generic.GenericDao;
 import org.lambico.dao.generic.GenericDaoTypeSupport;
 import org.lambico.dao.generic.MaxResults;
+import org.lambico.dao.generic.NamedParameter;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.util.StringUtils;
@@ -94,10 +95,17 @@ public class HibernateDaoInstrumentation {
                     logger.debug("Named query not found: " + queryName);
                 }
                 if (namedQuery != null) {
+                    int j = 0;
                     for (int i = 0; i < args.length; i++) {
                         if (isQueryParameter(i, parameterTypes, parameterAnnotations)) {
                             Object arg = args[i];
-                            namedQuery.setParameter(i, arg);
+                            if (isNamedParameter(i, parameterAnnotations)) {
+                                namedQuery.setParameter(
+                                        getNamedParameterName(i, parameterAnnotations), arg);
+                            } else {
+                                namedQuery.setParameter(j, arg);
+                                j++;
+                            }
                         }
                     }
                     if (firstResult != null) {
@@ -280,6 +288,44 @@ public class HibernateDaoInstrumentation {
             final Annotation[][] parameterAnnotations) {
         return !isMaxResultsParameter(parameterIndex, parameterTypes, parameterAnnotations)
                 && !isFirstResultParameter(parameterIndex, parameterTypes, parameterAnnotations);
+    }
+
+    /**
+     * Check if a parameter is a named parameter for the query.
+     *
+     * @param parameterIndex index of the parameter as declared in the method
+     * @param parameterAnnotations annotations of parameters of the method
+     * @return true if the parameter is a named parameter for the query
+     */
+    private boolean isNamedParameter(final int parameterIndex,
+            final Annotation[][] parameterAnnotations) {
+        boolean result = false;
+        for (Annotation annotation : parameterAnnotations[parameterIndex]) {
+            if (annotation instanceof NamedParameter) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Get the name of a named parameter for the query.
+     *
+     * @param parameterIndex index of the parameter as declared in the method
+     * @param parameterAnnotations annotations of parameters of the method
+     * @return the name of the named parameter for the query. null if it's not a named parameter.
+     */
+    private String getNamedParameterName(final int parameterIndex,
+            final Annotation[][] parameterAnnotations) {
+        String result = null;
+        for (Annotation annotation : parameterAnnotations[parameterIndex]) {
+            if (annotation instanceof NamedParameter) {
+                result = ((NamedParameter) annotation).value();
+                break;
+            }
+        }
+        return result;
     }
 
     /**

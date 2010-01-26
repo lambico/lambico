@@ -34,6 +34,7 @@ import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.BeanDefinitionParserDelegate;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.util.ClassUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -120,7 +121,7 @@ public class SessionFactoryPopulator {
                 String className = fileName.substring(
                         fileName.indexOf(packagePart),
                         fileName.length() - ".class".length()).replace('/', '.');
-                Class<?> type = Class.forName(className);
+                Class<?> type = ClassUtils.getDefaultClassLoader().loadClass(className);
                 result.add(type);
             }
         } catch (IOException e) {

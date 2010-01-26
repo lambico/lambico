@@ -139,4 +139,9 @@ public class EntityTCTest extends BaseTest {
                 .searchByCriteria(DetachedCriteria.forClass(EntityTC.class));
         assertSize(5, results);
     }
+
+    public void testWithNamedParameters() {
+        List<EntityTC> results = entityTCDao.findByFieldOneAndFieldTwoAndFieldThreeWithName("one3", "two3", "Three3");
+        assertSize(1, results);
+    }
 }

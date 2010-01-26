@@ -19,30 +19,27 @@ package org.lambico.spring.xml;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import javax.persistence.Entity;
 import org.apache.log4j.Logger;
 import org.lambico.dao.generic.Dao;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.annotation.AnnotationClassFilter;
 import org.springframework.beans.PropertyValue;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.beans.factory.parsing.ReaderContext;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.BeanDefinitionParserDelegate;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
@@ -160,7 +157,7 @@ public class DaoBeanCreator {
                 String className = fileName.substring(
                         fileName.indexOf(packagePart),
                         fileName.length() - ".class".length()).replace('/', '.');
-                Class<?> type = Class.forName(className);
+                Class<?> type = ClassUtils.getDefaultClassLoader().loadClass(className);
                 result.add(type);
             }
         } catch (IOException e) {
