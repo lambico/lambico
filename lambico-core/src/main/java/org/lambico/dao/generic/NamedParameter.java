@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
  * @version $Revision$
  */
 @Documented
-@Target({ElementType.PARAMETER})
+@Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface NamedParameter {
