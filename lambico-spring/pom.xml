@@ -4,12 +4,12 @@
     <parent>
         <artifactId>lambico</artifactId>
         <groupId>org.lambico</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-beta-5</version>
     </parent>
     <groupId>org.lambico</groupId>
     <artifactId>lambico-spring</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-beta-5</version>
     <name>Lambico Spring</name>
     <description>Lambico implementation based on the Spring framework.</description>
     <url>http://www.lambico.org</url>
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>org.lambico</groupId>
             <artifactId>lambico-test</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0-beta-5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>org.lambico</groupId>
             <artifactId>lambico-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0-beta-5</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
