@@ -8,8 +8,10 @@
     </parent>
     <groupId>org.lambico</groupId>
     <artifactId>lambico-spring</artifactId>
+    <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>Lambico Spring</name>
+    <description>Lambico implementation based on the Spring framework.</description>
     <url>http://www.lambico.org</url>
     <properties>
         <main.basedir>${basedir}/..</main.basedir>

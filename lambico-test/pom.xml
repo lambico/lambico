@@ -8,8 +8,10 @@
     </parent>
     <groupId>org.lambico</groupId>
     <artifactId>lambico-test</artifactId>
+    <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>Lambico test</name>
+    <description>Lambico's support for unit testing.</description>
     <url>http://www.lambico.org</url>
     <properties>
         <main.basedir>${basedir}/..</main.basedir>

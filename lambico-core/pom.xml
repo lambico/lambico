@@ -8,7 +8,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.lambico</groupId>
     <artifactId>lambico-core</artifactId>
+    <packaging>jar</packaging>
     <name>Lambico Core</name>
+    <description>Base general components of Lambico.</description>
     <version>1.0-SNAPSHOT</version>
     <url>http://www.lambico.org</url>
     <properties>
