@@ -3,7 +3,7 @@
     <parent>
         <artifactId>lambico</artifactId>
         <groupId>org.lambico</groupId>
-        <version>1.0-beta-5</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.lambico</groupId>
@@ -11,7 +11,7 @@
     <packaging>jar</packaging>
     <name>Lambico Core</name>
     <description>Base general components of Lambico.</description>
-    <version>1.0-beta-5</version>
+    <version>1.0-SNAPSHOT</version>
     <url>http://www.lambico.org</url>
     <properties>
         <main.basedir>${basedir}/..</main.basedir>
