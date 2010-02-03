@@ -162,9 +162,11 @@ public class DaoBeanCreator {
                     result.add(type);
                 }
             } catch (IOException e) {
+                logger.error("Error loading classes from the base package " + packageName, e);
                 fatal(e);
                 return null;
             } catch (ClassNotFoundException e) {
+                logger.error("Error loading classes from the base package " + packageName, e);
                 fatal(e);
                 return null;
             }

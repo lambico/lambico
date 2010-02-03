@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import org.apache.log4j.Logger;
 
 import org.springframework.aop.support.annotation.AnnotationClassFilter;
 import org.springframework.beans.PropertyValue;
@@ -52,6 +53,8 @@ import org.w3c.dom.Element;
  */
 public class SessionFactoryPopulator {
 
+    /** The logger for this class. */
+    private static Logger logger = Logger.getLogger(DaoBeanCreator.class);
     /** The ResourcePatternResolver. */
     private ResourcePatternResolver rl;
     /** The BeanDefinition registry. */
@@ -127,9 +130,11 @@ public class SessionFactoryPopulator {
                     result.add(type);
                 }
             } catch (IOException e) {
+                logger.error("Error loading classes from the base package " + packageName, e);
                 fatal(e);
                 return null;
             } catch (ClassNotFoundException e) {
+                logger.error("Error loading classes from the base package " + packageName, e);
                 fatal(e);
                 return null;
             }
