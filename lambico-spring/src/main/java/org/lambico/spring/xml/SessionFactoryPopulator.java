@@ -35,6 +35,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParserDelegate;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -111,25 +112,27 @@ public class SessionFactoryPopulator {
      */
     List<Class> getAllClasses(final String packageName) {
         List<Class> result = new ArrayList<Class>();
-        try {
-            String packagePart = packageName.replace('.', '/');
-            String classPattern = "classpath*:/" + packagePart + "/**/*.class";
-            Resource[] resources = rl.getResources(classPattern);
-            for (int i = 0; i < resources.length; i++) {
-                Resource resource = resources[i];
-                String fileName = resource.getURL().toString();
-                String className = fileName.substring(
-                        fileName.indexOf(packagePart),
-                        fileName.length() - ".class".length()).replace('/', '.');
-                Class<?> type = ClassUtils.getDefaultClassLoader().loadClass(className);
-                result.add(type);
+        if (StringUtils.hasText(packageName)) {
+            try {
+                String packagePart = packageName.replace('.', '/');
+                String classPattern = "classpath*:/" + packagePart + "/**/*.class";
+                Resource[] resources = rl.getResources(classPattern);
+                for (int i = 0; i < resources.length; i++) {
+                    Resource resource = resources[i];
+                    String fileName = resource.getURL().toString();
+                    String className = fileName.substring(
+                            fileName.indexOf(packagePart),
+                            fileName.length() - ".class".length()).replace('/', '.');
+                    Class<?> type = ClassUtils.getDefaultClassLoader().loadClass(className);
+                    result.add(type);
+                }
+            } catch (IOException e) {
+                fatal(e);
+                return null;
+            } catch (ClassNotFoundException e) {
+                fatal(e);
+                return null;
             }
-        } catch (IOException e) {
-            fatal(e);
-            return null;
-        } catch (ClassNotFoundException e) {
-            fatal(e);
-            return null;
         }
         return result;
     }
@@ -173,8 +176,8 @@ public class SessionFactoryPopulator {
     private void addPersistentClasses(final List<Class> persistentClasses,
             final BeanDefinition sessionFactoryBeanDefinition) {
         List<TypedStringValue> result = null;
-        PropertyValue annotatedClassesProperty = sessionFactoryBeanDefinition.
-                getPropertyValues().getPropertyValue("annotatedClasses");
+        PropertyValue annotatedClassesProperty = sessionFactoryBeanDefinition.getPropertyValues().
+                getPropertyValue("annotatedClasses");
         if (annotatedClassesProperty == null) {
             result = new ManagedList();
         } else {

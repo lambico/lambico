@@ -147,25 +147,27 @@ public class DaoBeanCreator {
      */
     List<Class> getAllClasses(final String packageName) {
         List<Class> result = new ArrayList<Class>();
-        try {
-            String packagePart = packageName.replace('.', '/');
-            String classPattern = "classpath*:/" + packagePart + "/**/*.class";
-            Resource[] resources = rl.getResources(classPattern);
-            for (int i = 0; i < resources.length; i++) {
-                Resource resource = resources[i];
-                String fileName = resource.getURL().toString();
-                String className = fileName.substring(
-                        fileName.indexOf(packagePart),
-                        fileName.length() - ".class".length()).replace('/', '.');
-                Class<?> type = ClassUtils.getDefaultClassLoader().loadClass(className);
-                result.add(type);
+        if (StringUtils.hasText(packageName)) {
+            try {
+                String packagePart = packageName.replace('.', '/');
+                String classPattern = "classpath*:/" + packagePart + "/**/*.class";
+                Resource[] resources = rl.getResources(classPattern);
+                for (int i = 0; i < resources.length; i++) {
+                    Resource resource = resources[i];
+                    String fileName = resource.getURL().toString();
+                    String className = fileName.substring(
+                            fileName.indexOf(packagePart),
+                            fileName.length() - ".class".length()).replace('/', '.');
+                    Class<?> type = ClassUtils.getDefaultClassLoader().loadClass(className);
+                    result.add(type);
+                }
+            } catch (IOException e) {
+                fatal(e);
+                return null;
+            } catch (ClassNotFoundException e) {
+                fatal(e);
+                return null;
             }
-        } catch (IOException e) {
-            fatal(e);
-            return null;
-        } catch (ClassNotFoundException e) {
-            fatal(e);
-            return null;
         }
         return result;
     }
@@ -187,7 +189,7 @@ public class DaoBeanCreator {
      * @return true if the class is abstract.
      */
     boolean isAbstract(final Class<?> type) {
-        return (type.getModifiers() ^ Modifier.ABSTRACT) == 0;
+        return Modifier.isAbstract(type.getModifiers());
     }
 
     /**
