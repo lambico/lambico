@@ -26,21 +26,27 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
-    
-    <aop:aspectj-autoproxy/>
-    
-    <!-- Generic Dao -->
-    
-    <bean id="hibernateGenericDaoInstrumentationAspect"
-          class="org.lambico.spring.dao.hibernate.HibernateDaoInstrumentation" />
 
+    <aop:aspectj-autoproxy/>
+
+    <!-- Generic Dao -->
+
+    <bean id="hibernateGenericDaoInstrumentationAspect"
+          class="org.lambico.spring.dao.hibernate.HibernateDaoInstrumentation">
+        <property name="daoExceptionManager">
+            <ref bean="daoExceptionManager"/>
+        </property>
+    </bean>
+
+    <bean id="daoExceptionManager" class="org.lambico.dao.BypassingExceptionManager"/>
+    
     <bean id="hibernateGenericDao"
           class="org.lambico.spring.dao.hibernate.HibernateGenericDaoImpl" abstract="true">
         <property name="sessionFactory">
             <ref bean="sessionFactory"/>
         </property>
     </bean>
-    
+
     <bean id="abstractDao"
           class="org.springframework.aop.framework.ProxyFactoryBean" abstract="true">
     </bean>
@@ -49,16 +55,16 @@
 
     <bean id="daoProviderInstrumentationAspect"
           class="org.lambico.spring.dao.DaoProviderInstrumentation" />
-    
+
     <bean id="daoMap" class="java.util.HashMap"></bean>
-    
+
     <bean id="genericDaoProvider"
           class="org.lambico.spring.dao.BaseDaoProvider">
         <property name="daoMap">
             <ref bean="daoMap" />
         </property>
     </bean>
-    
+
     <bean id="abstractDaoProvider"
           class="org.springframework.aop.framework.ProxyFactoryBean" abstract="true">
     </bean>

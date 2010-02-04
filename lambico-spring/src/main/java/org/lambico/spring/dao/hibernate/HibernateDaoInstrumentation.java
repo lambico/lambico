@@ -32,6 +32,9 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.lambico.dao.BypassingExceptionManager;
+import org.lambico.dao.DaoExceptionManager;
+import org.lambico.dao.LoggingExceptionManager;
 import org.lambico.dao.generic.Compare;
 import org.lambico.dao.generic.CompareType;
 import org.lambico.dao.generic.FirstResult;
@@ -58,6 +61,17 @@ public class HibernateDaoInstrumentation {
     private static final int ORDER_BY_PREFIX_SIZE = "orderBy".length();
     /** The logger for this class. */
     private static Logger logger = Logger.getLogger(HibernateDaoInstrumentation.class);
+    /** The exception manager. */
+    private DaoExceptionManager daoExceptionManager = new BypassingExceptionManager();
+
+    /**
+     * Set the daoException manager.
+     *
+     * @param daoExceptionManager The exception manager for this class.
+     */
+    public void setDaoExceptionManager(final DaoExceptionManager daoExceptionManager) {
+        this.daoExceptionManager = daoExceptionManager;
+    }
 
     /**
      * Executes a finder method in the instrumented class.
@@ -147,14 +161,8 @@ public class HibernateDaoInstrumentation {
                 try {
                     result = pjp.proceed(args);
                 } catch (Throwable throwable) {
-                    // TODO: enhance the exception management.
-                    // For example: capture the AOP-related exceptions, and rethrows the DAO
-                    // implementation-related ones (for example Hibernate/SQL exceptions)
-                    errorMessages.append("Method not starting with \"findBy\".").
-                            append("Trying to call ").append(method.getName()).
-                            append(" method, but the method doesn't exist in the object (").
-                            append(target.getClass().getName()).append(").");
-                    logger.error(errorMessages.toString(), throwable);
+                    daoExceptionManager.process(throwable, method.getName(), target.getClass().
+                            getName());
                 }
             }
         }

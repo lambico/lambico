@@ -29,14 +29,14 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
        http://www.lambico.org/schema/lambico http://www.lambico.org/schema/lambico.xsd">
-    
+
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
         <property name="url" value="jdbc:hsqldb:mem:lambico"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
     </bean>
-    
+
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" parent="abstractSessionFactory">
         <property name="hibernateProperties">
             <props>
@@ -46,7 +46,7 @@
             </props>
         </property>
     </bean>
-    
+
     <context:component-scan base-package="org.lambico.spring.dao.hibernate.bo"/>
     <!-- Authomatic detection of persistent classes -->
     <lambico:discover-persistent-classes basePackage="org.lambico.spring.dao.hibernate.po" />
@@ -56,7 +56,7 @@
                          baseEntityPackage="org.lambico.spring.dao.hibernate.po"/>
     <lambico:define-daos baseInterfacePackage="org.lambico.spring.dao.hibernate.daobis"
                          baseEntityPackage="org.lambico.spring.dao.hibernate.pobis"/>
-    
+
 
     <bean id="daos" parent="abstractDaoProvider">
         <property name="proxyInterfaces">
@@ -66,5 +66,6 @@
             <bean parent="genericDaoProvider"/>
         </property>
     </bean>
-             
+
+    <bean id="daoExceptionManager" class="org.lambico.dao.BypassingExceptionManager"/>
 </beans>
