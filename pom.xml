@@ -19,6 +19,7 @@
         <year>2009</year>
         <lambico.spring.version>3.0.0.RELEASE</lambico.spring.version>
         <lambico.hibernate.version>3.3.2.GA</lambico.hibernate.version>
+        <lambico.hibernate-annotations.version>3.4.0.GA</lambico.hibernate-annotations.version>
         <lambico.log4j.version>1.2.14</lambico.log4j.version>
         <lambico.junit4.version>4.4</lambico.junit4.version>
 
