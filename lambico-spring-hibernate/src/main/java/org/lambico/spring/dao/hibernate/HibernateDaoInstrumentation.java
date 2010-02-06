@@ -35,7 +35,6 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.lambico.dao.BypassingExceptionManager;
 import org.lambico.dao.DaoExceptionManager;
-import org.lambico.dao.LoggingExceptionManager;
 import org.lambico.dao.generic.Compare;
 import org.lambico.dao.generic.CompareType;
 import org.lambico.dao.generic.FirstResult;

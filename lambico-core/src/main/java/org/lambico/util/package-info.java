@@ -15,24 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lambico.util;
-
-import java.util.Properties;
 
 /**
- * Interface for classes that manage exceptions.
+ * Base utility classes.
  *
- * @author Federico Russo <chiccorusso@gmail.com>
  * @author Lucio Benfante <lucio.benfante@gmail.com>
+ * @version $Revision$
  */
-public interface ExceptionManager {
-
-    /**
-     * Process an exception.
-     *
-     * @param throwable The exception to process.
-     * @param properties Properties useful in the exception processin.
-     * @throws Throwable Any needed exception, or maybe a re-throw.
-     */
-    void process(final Throwable throwable, final Properties properties) throws Throwable;
-}
+package org.lambico.util;
