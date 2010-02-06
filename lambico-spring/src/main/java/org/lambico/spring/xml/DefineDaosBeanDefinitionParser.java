@@ -24,6 +24,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.BeanDefinitionParserDelegate;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.util.ClassUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -55,6 +56,7 @@ public class DefineDaosBeanDefinitionParser implements BeanDefinitionParser {
      * @param parserContext {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
     public BeanDefinition parse(final Element element, final ParserContext parserContext) {
         String interfacePackageName = element.getAttribute(BASE_INTERFACE_PACKAGE_ATTRIBUTE);
         String entityPackageName = element.getAttribute(BASE_ENTITY_PACKAGE_ATTRIBUTE);
@@ -65,8 +67,7 @@ public class DefineDaosBeanDefinitionParser implements BeanDefinitionParser {
                 (ResourcePatternResolver) parserContext.getReaderContext().getReader().
                 getResourceLoader();
         BeanDefinitionRegistry registry = parserContext.getReaderContext().getRegistry();
-        DaoBeanCreator daoBeanCreator = new DaoBeanCreator(
-                resourceLoader, registry, delegate, parserContext.getReaderContext());
+        DaoBeanCreator daoBeanCreator = createDaoBeanCreator(parserContext);
         try {
             daoBeanCreator.createBeans(element, interfacePackageName, entityPackageName,
                     genericDaoName, sessionFactoryName);
@@ -74,5 +75,27 @@ public class DefineDaosBeanDefinitionParser implements BeanDefinitionParser {
             throw new RuntimeException("Can't create DAO beans.", ex);
         }
         return null;
+    }
+
+    /**
+     * Creates an instance of the DaoBeanCreator, getting the type form the Spring context.
+     *
+     * @param parserContext The parseContext.
+     * @return The dao bean creator.
+     */
+    private DaoBeanCreator createDaoBeanCreator(final ParserContext parserContext) {
+        String daoBeanCreatorClassName =
+                parserContext.getRegistry().getBeanDefinition("lambico.daoBeanCreatorClass").
+                getBeanClassName();
+        DaoBeanCreator daoBeanCreator = null;
+        try {
+            daoBeanCreator =
+                    (DaoBeanCreator) ClassUtils.getDefaultClassLoader().loadClass(
+                    daoBeanCreatorClassName).getConstructor(ParserContext.class).newInstance(
+                    parserContext);
+        } catch (Exception ex) {
+            logger.error("Can't instantiate the DaoBeanCreator: " + daoBeanCreatorClassName, ex);
+        }
+        return daoBeanCreator;
     }
 }

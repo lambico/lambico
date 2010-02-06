@@ -12,6 +12,7 @@
     <modules>
         <module>lambico-core</module>
         <module>lambico-spring</module>
+        <module>lambico-spring-hibernate</module>
         <module>lambico-test</module>
     </modules>
     <properties>

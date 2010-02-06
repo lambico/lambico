@@ -21,24 +21,19 @@ package org.lambico.spring.xml;
 import org.w3c.dom.Element;
 
 /**
- * The interface for the creators of the dao beans.
+ * The interface for the discoverers of entity classes.
  *
  * @author Lucio Benfante <lucio.benfante@gmail.com>
  */
-public interface DaoBeanCreator {
+public interface EntityDiscoverer {
 
     /**
-     * Create the DAO beans.
+     * Populate the "session factory" with the persistent classes.
      *
-     * @param element The DOM of the DAO definition XML fragment.
-     * @param interfacePackageName The base package of the DAO interfaces.
-     * @param entityPackageName  The base package of the persistent entities.
-     * @param genericDaoName The DAO name.
-     * @param sessionFactoryName The session factory bean name.
-     * @throws ClassNotFoundException If the class of the base abstract generic DAO can't be found.
+     * @param element The DOM definition element.
+     * @param packageName The base package name.
+     * @param sessionFactoryName The session factory name.
      */
-    void createBeans(final Element element, final String interfacePackageName,
-            final String entityPackageName, final String genericDaoName,
-            final String sessionFactoryName) throws ClassNotFoundException;
-
+    void pupulateWithEntities(final Element element, final String packageName,
+            final String sessionFactoryName);
 }

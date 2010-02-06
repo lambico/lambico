@@ -17,12 +17,11 @@
  */
 package org.lambico.spring.xml;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
-import org.springframework.beans.factory.xml.BeanDefinitionParserDelegate;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.util.ClassUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -40,6 +39,8 @@ public class DiscoverPersistentClassesBeanDefinitionParser implements BeanDefini
     public static final String BASE_PACKAGE_ATTRIBUTE = "basePackage";
     /** The sessionFactoryName attribute. */
     public static final String SESSION_FACTORY_NAME_ATTRIBUTE = "sessionFactoryName";
+    /** The logger for this class. */
+    private static Logger logger = Logger.getLogger(DefineDaosBeanDefinitionParser.class);
 
     /**
      * {@inheritDoc}
@@ -48,16 +49,35 @@ public class DiscoverPersistentClassesBeanDefinitionParser implements BeanDefini
      * @param parserContext {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
     public BeanDefinition parse(final Element element, final ParserContext parserContext) {
         String packageName = element.getAttribute(BASE_PACKAGE_ATTRIBUTE);
         String sessionFactoryName = element.getAttribute(SESSION_FACTORY_NAME_ATTRIBUTE);
-        BeanDefinitionParserDelegate delegate = parserContext.getDelegate();
-        ResourcePatternResolver resourceLoader = (ResourcePatternResolver) parserContext.
-                getReaderContext().getReader().getResourceLoader();
-        BeanDefinitionRegistry registry = parserContext.getReaderContext().getRegistry();
-        SessionFactoryPopulator sessionFactoryPopulator = new SessionFactoryPopulator(
-                resourceLoader, registry, delegate, parserContext.getReaderContext());
-        sessionFactoryPopulator.populateSessionFactory(element, packageName, sessionFactoryName);
+        EntityDiscoverer sessionFactoryPopulator = createEntityDiscoverer(parserContext);
+        sessionFactoryPopulator.pupulateWithEntities(element, packageName, sessionFactoryName);
         return null;
+    }
+
+    /**
+     * Creates an instance of the EntityDiscoverer, getting the type form the Spring context.
+     *
+     * @param parserContext The parseContext.
+     * @return The entity discoverer.
+     */
+    private EntityDiscoverer createEntityDiscoverer(final ParserContext parserContext) {
+        String entityDiscovererClassName =
+                parserContext.getRegistry().getBeanDefinition("lambico.entityDiscovererClass").
+                getBeanClassName();
+        EntityDiscoverer entityDiscoverer = null;
+        try {
+            entityDiscoverer =
+                    (EntityDiscoverer) ClassUtils.getDefaultClassLoader().loadClass(
+                    entityDiscovererClassName).getConstructor(ParserContext.class).newInstance(
+                    parserContext);
+        } catch (Exception ex) {
+            logger.error("Can't instantiate the EntityDiscoverer: "
+                    + entityDiscovererClassName, ex);
+        }
+        return entityDiscoverer;
     }
 }
