@@ -16,6 +16,7 @@
         <module>lambico-test</module>
     </modules>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.basedir>${basedir}</main.basedir>
         <year>2009</year>
         <lambico.spring.version>3.0.0.RELEASE</lambico.spring.version>

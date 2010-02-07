@@ -15,19 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
 import org.apache.log4j.Logger;
+import org.lambico.spring.xml.ContextUtils;
 import org.lambico.spring.xml.EntityDiscoverer;
-
-import org.springframework.aop.support.annotation.AnnotationClassFilter;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.TypedStringValue;
@@ -36,10 +31,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.BeanDefinitionParserDelegate;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -108,75 +100,11 @@ public class SessionFactoryPopulator implements EntityDiscoverer {
     @Override
     public void pupulateWithEntities(final Element element, final String packageName,
             final String sessionFactoryName) {
-        List<Class> allClasses = getAllClasses(packageName);
+        List<Class> allClasses = ContextUtils.getAllClasses(rl, readerContext, packageName);
         List<Class> persistentClasses = getPersistentClasses(allClasses);
         BeanDefinition sessionFactoryBeanDefinition =
                 registry.getBeanDefinition(sessionFactoryName);
         addPersistentClasses(persistentClasses, sessionFactoryBeanDefinition);
-    }
-
-    /**
-     * Send a fatal messag to the context.
-     *
-     * @param e The cause.
-     */
-    private void fatal(final Throwable e) {
-        readerContext.fatal(e.getMessage(), null, e);
-    }
-
-    /**
-     * Return all classes in the package subtree.
-     *
-     * @param packageName The base package
-     * @return The listo of all classes
-     */
-    List<Class> getAllClasses(final String packageName) {
-        List<Class> result = new ArrayList<Class>();
-        if (StringUtils.hasText(packageName)) {
-            try {
-                String packagePart = packageName.replace('.', '/');
-                String classPattern = "classpath*:/" + packagePart + "/**/*.class";
-                Resource[] resources = rl.getResources(classPattern);
-                for (int i = 0; i < resources.length; i++) {
-                    Resource resource = resources[i];
-                    String fileName = resource.getURL().toString();
-                    String className = fileName.substring(
-                            fileName.indexOf(packagePart),
-                            fileName.length() - ".class".length()).replace('/', '.');
-                    Class<?> type = ClassUtils.getDefaultClassLoader().loadClass(className);
-                    result.add(type);
-                }
-            } catch (IOException e) {
-                logger.error("Error loading classes from the base package " + packageName, e);
-                fatal(e);
-                return null;
-            } catch (ClassNotFoundException e) {
-                logger.error("Error loading classes from the base package " + packageName, e);
-                fatal(e);
-                return null;
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Filter the list of classes extracting only the classes annotated with a
-     * specific annotation.
-     *
-     * @param classes The full list of classes
-     * @param annotationType The annotation
-     * @return The filtered list
-     */
-    List<Class> getClassesByAnnotation(final List<Class> classes,
-            final Class<? extends Annotation> annotationType) {
-        List<Class> result = new ArrayList<Class>();
-        AnnotationClassFilter filter = new AnnotationClassFilter(annotationType);
-        for (Class type : classes) {
-            if (filter.matches(type)) {
-                result.add(type);
-            }
-        }
-        return result;
     }
 
     /**
@@ -186,7 +114,7 @@ public class SessionFactoryPopulator implements EntityDiscoverer {
      * @return The filtered list
      */
     List<Class> getPersistentClasses(final List<Class> classes) {
-        return getClassesByAnnotation(classes, Entity.class);
+        return ContextUtils.getClassesByAnnotation(classes, Entity.class);
     }
 
     /**

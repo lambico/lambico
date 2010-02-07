@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright (C) 2009 Lambico Team <lucio.benfante@gmail.com>
@@ -58,6 +58,7 @@
 
         <property name="basedir" value="${basedir}"/>
     -->
+<property name="charset" value="UTF-8" default="${file.encoding}"/>
 
     <!-- Checks that each Java package has a Javadoc file used for commenting. -->
 <!-- See http://checkstyle.sf.net/config_javadoc.html#JavadocPackage       -->
