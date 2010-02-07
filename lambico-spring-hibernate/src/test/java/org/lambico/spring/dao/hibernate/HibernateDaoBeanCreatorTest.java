@@ -45,6 +45,6 @@ public class HibernateDaoBeanCreatorTest extends TestCase {
         HibernateDaoBeanCreator instance = createInstance();
         String interfacePackageName = "org.lambico.spring.dao.hibernate";
         Set result = instance.getDaoInterfaces(interfacePackageName);
-        assertEquals(5, result.size());
+        assertEquals(6, result.size());
     }
 }

@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import java.lang.annotation.Annotation;
@@ -35,6 +34,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.lambico.dao.BypassingExceptionManager;
 import org.lambico.dao.DaoExceptionManager;
+import org.lambico.dao.generic.CacheIt;
 import org.lambico.dao.generic.Compare;
 import org.lambico.dao.generic.CompareType;
 import org.lambico.dao.generic.FirstResult;
@@ -128,6 +128,7 @@ public class HibernateDaoInstrumentation {
                     if (maxResults != null && maxResults.intValue() >= 0) {
                         namedQuery.setMaxResults(maxResults.intValue());
                     }
+                    namedQuery.setCacheable(method.isAnnotationPresent(CacheIt.class));
                     return namedQuery.list();
                 } else {
                     errorMessages.append("Named query not found: ").append(queryName).append(". ");
@@ -153,7 +154,9 @@ public class HibernateDaoInstrumentation {
                                 if (maxResults != null && maxResults.intValue() >= 0) {
                                     executableCriteria.setMaxResults(maxResults.intValue());
                                 }
-                                return criteria.getExecutableCriteria(session).list();
+                                final Criteria crit = criteria.getExecutableCriteria(session);
+                                crit.setCacheable(method.isAnnotationPresent(CacheIt.class));
+                                return crit.list();
                             }
                         });
             } else {
