@@ -4,4 +4,5 @@ syntag: regexp
 ^target
 ^lambico-core/target
 ^lambico-spring/target
+^lambico-spring-hibernate/target
 ^lambico-test/target
