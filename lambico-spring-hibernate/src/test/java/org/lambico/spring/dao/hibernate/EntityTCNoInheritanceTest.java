@@ -18,24 +18,31 @@
 
 package org.lambico.spring.dao.hibernate;
 
-import org.lambico.spring.dao.hibernate.po.AuthorTC;
-import org.lambico.spring.dao.hibernate.po.BookTC;
-import org.lambico.spring.dao.hibernate.po.EntityTC;
+import java.util.List;
+import javax.annotation.Resource;
+import org.lambico.dao.generic.GenericDao;
 import org.lambico.spring.dao.hibernate.po.EntityTCNoInheritance;
-import org.lambico.spring.dao.hibernate.po.EntityTCWithoutDaoInterface;
-import org.lambico.spring.dao.hibernate.pobis.EntityTCBis;
-import org.lambico.test.spring.hibernate.DBTest;
 
 /**
- * A base class for Lambico tests.
+ * Tests on generic DAO without defining a specific DAO interface.
  *
- * @author lucio
+ * @author Lucio Benfante <lucio.benfante@gmail.com>
+ * @version $Revision$
  */
-public abstract class BaseTest extends DBTest {
+public class EntityTCNoInheritanceTest extends BaseTest {
 
-    @Override
-    public Class[] getFixtureClasses() {
-        return new Class[]{EntityTC.class, EntityTCBis.class, EntityTCWithoutDaoInterface.class,
-                    EntityTCNoInheritance.class, AuthorTC.class, BookTC.class};
+    @Resource
+    private GenericDao<EntityTCNoInheritance, Short> entityTCNoInheritanceDao;
+
+    public void testDaoExists() {
+        assertNotNull(entityTCNoInheritanceDao);
     }
+
+    public void testAllSize() {
+        final List<EntityTCNoInheritance> result = entityTCNoInheritanceDao.findAll();
+        assertSize(5, result);
+        EntityTCNoInheritance testCast = result.get(0);
+    }
+
+    public void testEmpty() {}
 }
