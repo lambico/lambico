@@ -35,7 +35,9 @@ import javax.persistence.NamedQuery;
 @NamedQuery(name="EntityTC.findByFieldOneAndFieldTwoAndFieldThreeWithName", query="from EntityTC where fieldOne = ? and fieldThree = ? and fieldTwo = :a"),
 @NamedQuery(name="EntityTC.searchAllOrderByFieldOne", query="from EntityTC order by fieldOne"),
 @NamedQuery(name="EntityTC.countByFieldOne", query="select count(etc) from EntityTC etc where etc.fieldOne = ?"),
-@NamedQuery(name="EntityTC.maxByFieldOne", query="select max(etc.numericField) from EntityTC etc where etc.fieldOne = ?")})
+@NamedQuery(name="EntityTC.maxByFieldOne", query="select max(etc.numericField) from EntityTC etc where etc.fieldOne = ?"),
+@NamedQuery(name="EntityTC.searchByFieldOneCollection", query="from EntityTC where fieldOne in (:values)"),
+@NamedQuery(name="EntityTC.searchByFieldOneArray", query="from EntityTC where fieldOne in (:values)")})
 public class EntityTC extends EntityBase {
     private String fieldOne;
     private String fieldTwo;

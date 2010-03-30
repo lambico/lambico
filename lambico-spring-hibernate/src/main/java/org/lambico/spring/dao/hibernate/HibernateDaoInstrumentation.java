@@ -19,6 +19,7 @@ package org.lambico.spring.dao.hibernate;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -114,8 +115,16 @@ public class HibernateDaoInstrumentation {
                         if (isQueryParameter(i, parameterTypes, parameterAnnotations)) {
                             Object arg = args[i];
                             if (isNamedParameter(i, parameterAnnotations)) {
-                                namedQuery.setParameter(
-                                        getNamedParameterName(i, parameterAnnotations), arg);
+                                if (isArrayParameter(i, parameterTypes)) {
+                                    namedQuery.setParameterList(getNamedParameterName(i,
+                                            parameterAnnotations), (Object[]) arg);
+                                } else if (isCollectionParameter(i, parameterTypes)) {
+                                    namedQuery.setParameterList(getNamedParameterName(i,
+                                            parameterAnnotations), (Collection) arg);
+                                } else {
+                                    namedQuery.setParameter(
+                                            getNamedParameterName(i, parameterAnnotations), arg);
+                                }
                             } else {
                                 namedQuery.setParameter(j, arg);
                                 j++;
@@ -262,6 +271,38 @@ public class HibernateDaoInstrumentation {
                 result = true;
                 break;
             }
+        }
+        return result;
+    }
+
+    /**
+     * Check if a parameter is a collection.
+     *
+     * @param parameterIndex index of the parameter as declared in the method
+     * @param parameterTypes types of parameters of the method
+     * @return true if the parameter is a collection.
+     */
+    private boolean isCollectionParameter(final int parameterIndex,
+            final Class<?>[] parameterTypes) {
+        boolean result = false;
+        if (Collection.class.isAssignableFrom(
+                parameterTypes[parameterIndex])) {
+            result = true;
+        }
+        return result;
+    }
+
+    /**
+     * Check if a parameter is an array .
+     *
+     * @param parameterIndex index of the parameter as declared in the method
+     * @param parameterTypes types of parameters of the method
+     * @return true if the parameter is an array
+     */
+    private boolean isArrayParameter(final int parameterIndex, final Class<?>[] parameterTypes) {
+        boolean result = false;
+        if (parameterTypes[parameterIndex].isArray()) {
+            result = true;
         }
         return result;
     }

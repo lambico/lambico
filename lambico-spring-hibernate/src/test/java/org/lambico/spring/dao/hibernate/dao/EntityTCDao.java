@@ -18,6 +18,7 @@
 
 package org.lambico.spring.dao.hibernate.dao;
 
+import java.util.Collection;
 import org.lambico.spring.dao.hibernate.po.EntityTC;
 import org.lambico.dao.generic.Dao;
 import org.lambico.dao.generic.MaxResults;
@@ -49,4 +50,6 @@ public interface EntityTCDao extends GenericDao<EntityTC, Long> {
     List<EntityTC> searchAllOrderByFieldOne(@FirstResult int firstResult, @MaxResults int maxResults);
     Long countByFieldOne(String value);
     Long maxByFieldOne(String value);
+    List<EntityTC> searchByFieldOneCollection(@NamedParameter("values") Collection<String> values);
+    List<EntityTC> searchByFieldOneArray(@NamedParameter("values") String[] values);
 }

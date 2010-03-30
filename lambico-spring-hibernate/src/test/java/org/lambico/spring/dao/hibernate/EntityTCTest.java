@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
+import java.util.ArrayList;
 import org.lambico.spring.dao.hibernate.dao.TestDaos;
 import org.lambico.spring.dao.hibernate.dao.EntityTCDao;
 import org.lambico.spring.dao.hibernate.po.EntityTC;
@@ -54,7 +54,8 @@ public class EntityTCTest extends BaseTest {
         EntityTC old = entities.get(0);
         for (int i = 1; i < entities.size(); i++) {
             EntityTC curr = entities.get(i);
-            assertTrue("Entities not orderd by fieldOne", old.getFieldOne().compareTo(curr.getFieldOne()) <= 0);
+            assertTrue("Entities not orderd by fieldOne", old.getFieldOne().compareTo(curr.
+                    getFieldOne()) <= 0);
             old = curr;
         }
     }
@@ -65,7 +66,8 @@ public class EntityTCTest extends BaseTest {
         EntityTC old = entities.get(0);
         for (int i = 1; i < entities.size(); i++) {
             EntityTC curr = entities.get(i);
-            assertTrue("Entities not orderd by fieldTwo", old.getFieldTwo().compareTo(curr.getFieldTwo()) <= 0);
+            assertTrue("Entities not orderd by fieldTwo", old.getFieldTwo().compareTo(curr.
+                    getFieldTwo()) <= 0);
             old = curr;
         }
     }
@@ -77,9 +79,11 @@ public class EntityTCTest extends BaseTest {
         for (int i = 1; i < entities.size(); i++) {
             EntityTC curr = entities.get(i);
             if (old.getFieldOne().equals(curr.getFieldOne())) {
-                assertTrue("Entities ordered by fieldOne but not orderd by fieldTwo", old.getFieldTwo().compareTo(curr.getFieldTwo()) <= 0);
+                assertTrue("Entities ordered by fieldOne but not orderd by fieldTwo", old.
+                        getFieldTwo().compareTo(curr.getFieldTwo()) <= 0);
             } else {
-                assertTrue("Entities not orderd by fieldOne", old.getFieldOne().compareTo(curr.getFieldOne()) <= 0);
+                assertTrue("Entities not orderd by fieldOne", old.getFieldOne().compareTo(curr.
+                        getFieldOne()) <= 0);
             }
             old = curr;
         }
@@ -136,13 +140,28 @@ public class EntityTCTest extends BaseTest {
     }
 
     public void testFindAllByCriteria() {
-        List<EntityTC> results = ((GenericDaoHibernateCriteriaSupport<EntityTC>) entityTCDao)
-                .searchByCriteria(DetachedCriteria.forClass(EntityTC.class));
+        List<EntityTC> results = ((GenericDaoHibernateCriteriaSupport<EntityTC>) entityTCDao).
+                searchByCriteria(DetachedCriteria.forClass(EntityTC.class));
         assertSize(5, results);
     }
 
     public void testWithNamedParameters() {
-        List<EntityTC> results = entityTCDao.findByFieldOneAndFieldTwoAndFieldThreeWithName("one3", "two3", "Three3");
+        List<EntityTC> results = entityTCDao.findByFieldOneAndFieldTwoAndFieldThreeWithName("one3",
+                "two3", "Three3");
         assertSize(1, results);
+    }
+
+    public void testSearchByFieldOneList() {
+        List<String> values = new ArrayList<String>();
+        values.add("one1");
+        values.add("one3");
+        List<EntityTC> result = entityTCDao.searchByFieldOneCollection(values);
+        assertSize(3, result);
+    }
+
+    public void testSearchByFieldOneArray() {
+        String[] values = {"one1", "one3"};
+        List<EntityTC> result = entityTCDao.searchByFieldOneArray(values);
+        assertSize(3, result);
     }
 }
