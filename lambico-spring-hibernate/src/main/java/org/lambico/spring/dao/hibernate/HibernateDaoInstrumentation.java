@@ -32,6 +32,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.lambico.dao.BypassingExceptionManager;
 import org.lambico.dao.DaoExceptionManager;
@@ -60,6 +61,8 @@ public class HibernateDaoInstrumentation {
     private static final int FIND_BY_PREFIX_SIZE = "findBy".length();
     /** Length of the "orderBy" prefix. */
     private static final int ORDER_BY_PREFIX_SIZE = "orderBy".length();
+    /** Length of the "orderBy" prefix. */
+    private static final int COUNT_BY_PREFIX_SIZE = "countBy".length();
     /** The logger for this class. */
     private static Logger logger = Logger.getLogger(HibernateDaoInstrumentation.class);
     /** The exception manager. */
@@ -154,7 +157,7 @@ public class HibernateDaoInstrumentation {
 
                             public Object doInHibernate(final Session session) {
                                 DetachedCriteria criteria =
-                                        criteriaFromMethod(target, method, args);
+                                        selectionCriteriaFromMethod(target, method, args);
                                 Criteria executableCriteria =
                                         criteria.getExecutableCriteria(session);
                                 if (firstResult != null) {
@@ -169,12 +172,28 @@ public class HibernateDaoInstrumentation {
                             }
                         });
             } else {
-                // Call an instance method
-                try {
-                    result = pjp.proceed(args);
-                } catch (Throwable throwable) {
-                    daoExceptionManager.process(throwable, method.getName(), target.getClass().
-                            getName());
+                if (method.getName().startsWith("countBy")) {
+                    // Query evicting condition from the method name
+                    result = ((GenericDaoHibernateSupport) target).getHibernateTemplate().
+                            executeFind(
+                            new HibernateCallback() {
+
+                                public Object doInHibernate(final Session session) {
+                                    DetachedCriteria criteria =
+                                            countCriteriaFromMethod(target, method, args);
+                                    final Criteria crit = criteria.getExecutableCriteria(session);
+                                    crit.setCacheable(method.isAnnotationPresent(CacheIt.class));
+                                    return crit.list();
+                                }
+                            });
+                } else {
+                    // Call an instance method
+                    try {
+                        result = pjp.proceed(args);
+                    } catch (Throwable throwable) {
+                        daoExceptionManager.process(throwable, method.getName(), target.getClass().
+                                getName());
+                    }
                 }
             }
         }
@@ -208,14 +227,14 @@ public class HibernateDaoInstrumentation {
     }
 
     /**
-     * Create a criteria using the method signature.
+     * Create a criteria for selection using the method signature.
      *
      * @param target The DAO.
      * @param finderMethod The method.
      * @param args The arguments to pass to the criteria.
-     * @return The named query name.
+     * @return The criteria.
      */
-    private DetachedCriteria criteriaFromMethod(final GenericDao target, final Method finderMethod,
+    private DetachedCriteria selectionCriteriaFromMethod(final GenericDao target, final Method finderMethod,
             final Object[] args) {
         Class<?>[] parameterTypes = finderMethod.getParameterTypes();
         Annotation[][] parameterAnnotations = finderMethod.getParameterAnnotations();
@@ -235,21 +254,37 @@ public class HibernateDaoInstrumentation {
             orderParameters = methodName.substring(orderByIdx + ORDER_BY_PREFIX_SIZE).split("And");
         }
         if (parameters != null) {
-            int argIndex = 0;
-            for (int i = 0; i < parameters.length; i++) {
-                while (!isQueryParameter(argIndex, parameterTypes, parameterAnnotations)) {
-                    // skip not query parameters
-                    argIndex++;
-                }
-                addComparison(criteria, StringUtils.uncapitalize(parameters[i]),
-                        args[argIndex], parameterAnnotations[argIndex]);
-                argIndex++;
-            }
+            mergeParametersInCriteria(criteria, parameters, parameterTypes, parameterAnnotations, args);
         }
         if (orderParameters != null) {
             for (String oPar : orderParameters) {
                 criteria.addOrder(Order.asc(StringUtils.uncapitalize(oPar)));
             }
+        }
+        return criteria;
+    }
+
+    /**
+     * Create a criteria for counting using the method signature.
+     *
+     * @param target The DAO.
+     * @param finderMethod The method.
+     * @param args The arguments to pass to the criteria.
+     * @return The criteria.
+     */
+    private DetachedCriteria countCriteriaFromMethod(final GenericDao target,
+            final Method finderMethod,
+            final Object[] args) {
+        Class<?>[] parameterTypes = finderMethod.getParameterTypes();
+        Annotation[][] parameterAnnotations = finderMethod.getParameterAnnotations();
+        DetachedCriteria criteria =
+                DetachedCriteria.forClass(((GenericDaoTypeSupport) target).getType());
+        criteria.setProjection(Projections.rowCount());
+
+        final String methodName = finderMethod.getName();
+        String[] parameters = methodName.substring(COUNT_BY_PREFIX_SIZE).split("And");
+        if (parameters != null) {
+            mergeParametersInCriteria(criteria, parameters, parameterTypes, parameterAnnotations, args);
         }
         return criteria;
     }
@@ -418,6 +453,29 @@ public class HibernateDaoInstrumentation {
             }
         }
         return result;
+    }
+
+    /**
+     * Compose parameter in criteria
+     *
+     * @param criteria Criteria to merge into
+     * @param parameters parameters to merge
+     * @param parameterTypes paramaters types
+     * @param parameterAnnotations paramaters annotations
+     * @param values parameter values
+     */
+    private void mergeParametersInCriteria(DetachedCriteria criteria, String[] parameters,
+            Class<?>[] parameterTypes, Annotation[][] parameterAnnotations, final Object[] values) {
+        int argIndex = 0;
+        for (String parameter : parameters) {
+            while (!isQueryParameter(argIndex, parameterTypes, parameterAnnotations)) {
+                // skip not query parameters
+                argIndex++;
+            }
+            addComparison(criteria, StringUtils.uncapitalize(parameter), values[argIndex],
+                    parameterAnnotations[argIndex]);
+            argIndex++;
+        }
     }
 
     /**

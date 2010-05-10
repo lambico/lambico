@@ -33,13 +33,13 @@ import javax.annotation.Resource;
  * @version $Revision$
  */
 public class HibernateGenericDaoTest extends BaseTest {
-    
+
     @Resource
     private EntityTCBO entityTCBO;
-    
+
     @Resource
     private EntityTCDao entityTCDao;
-        
+
     public void testStoreRetrieve() {
         EntityTC entity = new EntityTC();
         this.entityTCBO.createEntity(entity);
@@ -52,7 +52,7 @@ public class HibernateGenericDaoTest extends BaseTest {
         assertNotNull(list);
         assertSize(5, list);
     }
-    
+
     public void testGetByFieldOne() {
         EntityTC entity = new EntityTC();
         entity.setFieldOne("ONE");
@@ -65,7 +65,7 @@ public class HibernateGenericDaoTest extends BaseTest {
             assertEquals(elem.getFieldOne(), "ONE");
         }
     }
-    
+
     public void testGetByFieldTwo() {
         EntityTC entity = new EntityTC();
         entity.setFieldTwo("TWO");
@@ -95,7 +95,6 @@ public class HibernateGenericDaoTest extends BaseTest {
     }
 
     public void testCountByNamedQuery() {
-        int i = 0;
         Long result = this.entityTCDao.countByFieldOne("one3");
         assertEquals(Long.valueOf(2), result);
     }
@@ -105,4 +104,13 @@ public class HibernateGenericDaoTest extends BaseTest {
         assertEquals(Long.valueOf(5), result);
     }
 
+    public void testCountByFieldTwo() {
+        Integer result = entityTCDao.countByFieldTwo("two4");
+        assertEquals(Integer.valueOf(1), result);
+    }
+
+    public void testCountByFieldOneAndFieldThree() {
+        Integer result = this.entityTCDao.countByFieldOneAndFieldThree("one3", "7hree5");
+        assertEquals(Integer.valueOf(1), result);
+    }
 }
