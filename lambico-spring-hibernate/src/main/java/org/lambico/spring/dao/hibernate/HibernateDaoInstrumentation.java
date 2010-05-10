@@ -150,14 +150,14 @@ public class HibernateDaoInstrumentation {
         });
         if (result == null) {
             // No named query found
-            if (method.getName().startsWith("findBy")) {
+            if (method.getName().startsWith("findBy") || method.getName().startsWith("countBy")) {
                 // Query evicting condition from the method name
                 result = ((GenericDaoHibernateSupport) target).getHibernateTemplate().executeFind(
                         new HibernateCallback() {
 
                             public Object doInHibernate(final Session session) {
                                 DetachedCriteria criteria =
-                                        selectionCriteriaFromMethod(target, method, args);
+                                        criteriaFromMethod(target, method, args);
                                 Criteria executableCriteria =
                                         criteria.getExecutableCriteria(session);
                                 if (firstResult != null) {
@@ -172,28 +172,12 @@ public class HibernateDaoInstrumentation {
                             }
                         });
             } else {
-                if (method.getName().startsWith("countBy")) {
-                    // Query evicting condition from the method name
-                    result = ((GenericDaoHibernateSupport) target).getHibernateTemplate().
-                            executeFind(
-                            new HibernateCallback() {
-
-                                public Object doInHibernate(final Session session) {
-                                    DetachedCriteria criteria =
-                                            countCriteriaFromMethod(target, method, args);
-                                    final Criteria crit = criteria.getExecutableCriteria(session);
-                                    crit.setCacheable(method.isAnnotationPresent(CacheIt.class));
-                                    return crit.list();
-                                }
-                            });
-                } else {
-                    // Call an instance method
-                    try {
-                        result = pjp.proceed(args);
-                    } catch (Throwable throwable) {
-                        daoExceptionManager.process(throwable, method.getName(), target.getClass().
-                                getName());
-                    }
+                // Call an instance method
+                try {
+                    result = pjp.proceed(args);
+                } catch (Throwable throwable) {
+                    daoExceptionManager.process(throwable, method.getName(), target.getClass().
+                            getName());
                 }
             }
         }
@@ -234,8 +218,28 @@ public class HibernateDaoInstrumentation {
      * @param args The arguments to pass to the criteria.
      * @return The criteria.
      */
-    private DetachedCriteria selectionCriteriaFromMethod(final GenericDao target, final Method finderMethod,
+    private DetachedCriteria criteriaFromMethod(final GenericDao target, final Method finderMethod,
             final Object[] args) {
+        final String methodName = finderMethod.getName();
+        if (methodName.startsWith("findBy")) {
+            return selectionCriteriaFromMethod(target, finderMethod, args);
+        }
+        if (methodName.startsWith("countBy")) {
+            return countCriteriaFromMethod(target, finderMethod, args);
+        }
+        return null;
+    }
+
+    /**
+     * Create a criteria for selection using the method signature.
+     *
+     * @param target The DAO.
+     * @param finderMethod The method.
+     * @param args The arguments to pass to the criteria.
+     * @return The criteria.
+     */
+    private DetachedCriteria selectionCriteriaFromMethod(final GenericDao target,
+            final Method finderMethod, final Object[] args) {
         Class<?>[] parameterTypes = finderMethod.getParameterTypes();
         Annotation[][] parameterAnnotations = finderMethod.getParameterAnnotations();
         DetachedCriteria criteria =
@@ -254,7 +258,8 @@ public class HibernateDaoInstrumentation {
             orderParameters = methodName.substring(orderByIdx + ORDER_BY_PREFIX_SIZE).split("And");
         }
         if (parameters != null) {
-            mergeParametersInCriteria(criteria, parameters, parameterTypes, parameterAnnotations, args);
+            mergeParametersInCriteria(criteria, parameters, parameterTypes, parameterAnnotations,
+                    args);
         }
         if (orderParameters != null) {
             for (String oPar : orderParameters) {
@@ -273,8 +278,7 @@ public class HibernateDaoInstrumentation {
      * @return The criteria.
      */
     private DetachedCriteria countCriteriaFromMethod(final GenericDao target,
-            final Method finderMethod,
-            final Object[] args) {
+            final Method finderMethod, final Object[] args) {
         Class<?>[] parameterTypes = finderMethod.getParameterTypes();
         Annotation[][] parameterAnnotations = finderMethod.getParameterAnnotations();
         DetachedCriteria criteria =
@@ -284,7 +288,8 @@ public class HibernateDaoInstrumentation {
         final String methodName = finderMethod.getName();
         String[] parameters = methodName.substring(COUNT_BY_PREFIX_SIZE).split("And");
         if (parameters != null) {
-            mergeParametersInCriteria(criteria, parameters, parameterTypes, parameterAnnotations, args);
+            mergeParametersInCriteria(criteria, parameters, parameterTypes, parameterAnnotations,
+                    args);
         }
         return criteria;
     }
