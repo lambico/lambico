@@ -95,6 +95,15 @@ public class HibernateDaoInstrumentation {
         final StringBuilder errorMessages = new StringBuilder();
         final Integer firstResult = getFirstResultValue(args, parameterTypes, parameterAnnotations);
         final Integer maxResults = getMaxResultsValue(args, parameterTypes, parameterAnnotations);
+
+        if (method.getName().equals("toString")) {
+            return pjp.proceed(args);
+        } else if (method.getName().equals("getHibernateTemplate")) {
+            return pjp.proceed(args);
+        } else if (method.getName().equals("getType")) {
+            return pjp.proceed(args);
+        }
+
         logger.debug("target: " + target);
         logger.debug("method: " + method);
         logger.debug("args: " + args);
