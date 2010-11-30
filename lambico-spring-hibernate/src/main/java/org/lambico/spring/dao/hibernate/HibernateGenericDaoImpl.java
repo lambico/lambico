@@ -15,9 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
+import org.hibernate.SessionFactory;
 import org.lambico.dao.spring.hibernate.HibernateGenericDao;
 import java.io.Serializable;
 import java.util.List;
@@ -26,8 +26,10 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 
 import org.hibernate.criterion.Projections;
+import org.lambico.dao.generic.CacheIt;
 import org.lambico.dao.generic.Page;
 import org.lambico.dao.generic.PageDefaultImpl;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.dao.support.DataAccessUtils;
 
@@ -265,5 +267,14 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     public final void setType(final Class newType) {
         this.type = newType;
+    }
+
+    @Override
+    protected HibernateTemplate createHibernateTemplate(SessionFactory sessionFactory) {
+        final HibernateTemplate result = super.createHibernateTemplate(sessionFactory);
+        if (null != getClass().getAnnotation(CacheIt.class)) {
+            result.setCacheQueries(true);
+        }
+        return result;
     }
 }
