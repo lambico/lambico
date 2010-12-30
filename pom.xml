@@ -158,7 +158,6 @@
         Enable the following repositories if you want to build the project without
         the needing of manually adding some dependencies.
     *********************************************************************************** -->
-    <!--
     <repositories>
         <repository>
             <id>maven2-repository.dev.java.net</id>
@@ -169,11 +168,10 @@
         <repository>
             <id>jboss-maven2-repository</id>
             <name>JBoss Repository for Maven</name>
-            <url>http://repository.jboss.com/maven2/</url>
+            <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
             <layout>default</layout>
         </repository>
     </repositories>
-    -->
     <distributionManagement>
         <snapshotRepository>
             <id>sonatype-nexus-snapshots</id>
