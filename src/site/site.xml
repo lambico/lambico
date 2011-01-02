@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Lambico">
+    <bannerLeft>
+        <name>Lambico</name>
+        <href>http://www.lambico.org/</href>
+    </bannerLeft>
+    <publishDate position="right"/>
+    <version position="right"/>
+    <poweredBy>
+        <logo name="Maven" href="http://maven.apache.org/"
+          img="http://maven.apache.org/images/logos/maven-feather.png"/>
+    </poweredBy>
+    <body>
+        <links>
+            <item name="Development site" href="http://www.lambico.org" />
+        </links>
+        <menu name="General" inherit="top">
+            <item name="Development site" href="http://www.lambico.org" />
+        </menu>
+        <menu ref="parent" inherit="top"/>
+        <menu ref="modules" inherit="top"/>
+        <menu ref="reports" inherit="top"/>
+    </body>
+</project>

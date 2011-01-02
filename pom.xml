@@ -145,12 +145,25 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.4</version>
                 <configuration>
                     <configLocation>${main.basedir}/lambico_checks.xml</configLocation>
+                    <headerLocation>${main.basedir}/LICENSE_HEADER</headerLocation>
                     <encoding>UTF-8</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>2.2</version>
             </plugin>
         </plugins>
     </reporting>
@@ -164,12 +177,18 @@
             <name>Java.net Repository for Maven</name>
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>jboss-maven2-repository</id>
             <name>JBoss Repository for Maven</name>
             <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
             <layout>default</layout>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
     <distributionManagement>
@@ -185,7 +204,7 @@
         </repository>
         <site>
             <id>lambico-org-repository</id>
-            <url>scp://maven2.lambico.org/home/web/maven2.parancoe.org/repository/sites/lambico</url>
+            <url>scp://web3160@doc.lambico.org/home/web/maven2.parancoe.org/repository/sites/lambico/</url>
         </site>
     </distributionManagement>
     <scm>
