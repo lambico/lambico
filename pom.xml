@@ -216,6 +216,10 @@
         <system>Google Code Issues</system>
         <url>http://code.google.com/p/lambico/issues/list</url>
     </issueManagement>
+    <ciManagement>
+        <system>hudson</system>
+        <url>http://hudson.benfante.com/hudson/job/Lambico/</url>
+    </ciManagement>
     <licenses>
         <license>
             <name>Apache 2</name>
