@@ -18,6 +18,8 @@
 package org.lambico.spring.dao.hibernate;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.classic.Session;
 import org.lambico.dao.spring.hibernate.HibernateGenericDao;
 import java.io.Serializable;
 import java.util.List;
@@ -26,7 +28,6 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 
 import org.hibernate.criterion.Projections;
-import org.lambico.dao.generic.CacheIt;
 import org.lambico.dao.generic.Page;
 import org.lambico.dao.generic.PageDefaultImpl;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -55,6 +56,10 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * The DAO entity type.
      */
     private Class type;
+    /**
+     * A customized hibernate template.
+     */
+    private HibernateTemplate customizedHibernateTemplate;
 
     /**
      * {@inheritDoc}
@@ -62,7 +67,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @param o {@inheritDoc}
      */
     public final void create(final T o) {
-        getHibernateTemplate().persist(o);
+        getCustomizedHibernateTemplate().persist(o);
     }
 
     /**
@@ -71,7 +76,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @param o {@inheritDoc}
      */
     public final void store(final T o) {
-        getHibernateTemplate().merge(o);
+        getCustomizedHibernateTemplate().merge(o);
     }
 
     /**
@@ -81,7 +86,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @return {@inheritDoc}
      */
     public final T read(final PK id) {
-        return (T) getHibernateTemplate().load(getType(), id);
+        return (T) getCustomizedHibernateTemplate().load(getType(), id);
     }
 
     /**
@@ -91,7 +96,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @return {@inheritDoc}
      */
     public final T get(final PK id) {
-        return (T) getHibernateTemplate().get(getType(), id);
+        return (T) getCustomizedHibernateTemplate().get(getType(), id);
     }
 
     /**
@@ -100,7 +105,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @param o {@inheritDoc}
      */
     public final void delete(final T o) {
-        getHibernateTemplate().delete(o);
+        getCustomizedHibernateTemplate().delete(o);
     }
 
     /**
@@ -109,7 +114,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @return {@inheritDoc}
      */
     public final List<T> findAll() {
-        return getHibernateTemplate().find(
+        return getCustomizedHibernateTemplate().find(
                 "from " + getType().getName() + " x");
     }
 
@@ -134,7 +139,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @return {@inheritDoc}
      */
     public final List<T> searchByCriteria(final DetachedCriteria criteria) {
-        return getHibernateTemplate().findByCriteria(criteria);
+        return getCustomizedHibernateTemplate().findByCriteria(criteria);
     }
 
     /**
@@ -147,7 +152,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     public final List<T> searchByCriteria(final DetachedCriteria criteria,
             final int firstResult, final int maxResults) {
-        return getHibernateTemplate().
+        return getCustomizedHibernateTemplate().
                 findByCriteria(criteria, firstResult, maxResults);
     }
 
@@ -194,7 +199,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
         criteria.setProjection(null);
         criteria.setResultTransformer(Criteria.ROOT_ENTITY);
 
-        List<T> list = getHibernateTemplate().
+        List<T> list = getCustomizedHibernateTemplate().
                 findByCriteria(criteria, (page - 1) * pageSize, pageSize);
 
         return new PageDefaultImpl<T>(list, page, pageSize, rowCount);
@@ -208,7 +213,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     public int deleteAll() {
         List<T> rows = findAll();
 
-        getHibernateTemplate().deleteAll(rows);
+        getCustomizedHibernateTemplate().deleteAll(rows);
 
         return rows.size();
     }
@@ -220,7 +225,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     public final long count() {
         return DataAccessUtils.intResult(
-                getHibernateTemplate().find(
+                getCustomizedHibernateTemplate().find(
                 "select count(*) from " + getType().getSimpleName()));
     }
 
@@ -232,7 +237,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     public final long countByCriteria(final DetachedCriteria criteria) {
         criteria.setProjection(Projections.rowCount());
-        return DataAccessUtils.intResult(getHibernateTemplate().findByCriteria(
+        return DataAccessUtils.intResult(getCustomizedHibernateTemplate().findByCriteria(
                 criteria));
     }
 
@@ -240,14 +245,14 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * {@inheritDoc}
      */
     public final void rollBackTransaction() {
-        if (getHibernateTemplate().getSessionFactory().getCurrentSession().
-                getTransaction() != null
-                && getHibernateTemplate().getSessionFactory().
-                getCurrentSession().getTransaction().isActive()
-                && !getHibernateTemplate().getSessionFactory().
-                getCurrentSession().getTransaction().wasRolledBack()) {
-            getHibernateTemplate().getSessionFactory().getCurrentSession().
-                    getTransaction().rollback();
+        final SessionFactory currSessionFactory =
+                getCustomizedHibernateTemplate().getSessionFactory();
+        final Session currentSession = currSessionFactory.getCurrentSession();
+        final Transaction transaction = currentSession.getTransaction();
+        if (transaction != null
+                && transaction.isActive()
+                && !transaction.wasRolledBack()) {
+            transaction.rollback();
         }
     }
 
@@ -269,12 +274,27 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
         this.type = newType;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * It creates the instance of customized hibernate template.
+     *
+     * @throws Exception {@inheritDoc}
+     */
     @Override
-    protected HibernateTemplate createHibernateTemplate(SessionFactory sessionFactory) {
-        final HibernateTemplate result = super.createHibernateTemplate(sessionFactory);
-        if (null != getClass().getAnnotation(CacheIt.class)) {
-            result.setCacheQueries(true);
-        }
-        return result;
+    protected void initDao() throws Exception {
+        super.initDao();
+        this.customizedHibernateTemplate = new HibernateTemplate(getSessionFactory());
+    }
+
+    /**
+     * Return an Hibernate template with a customized configuration, usually
+     * obtained from the DAO definition.
+     *
+     * @return A customized hibernate template.
+     */
+    @Override
+    public HibernateTemplate getCustomizedHibernateTemplate() {
+        return this.customizedHibernateTemplate;
     }
 }

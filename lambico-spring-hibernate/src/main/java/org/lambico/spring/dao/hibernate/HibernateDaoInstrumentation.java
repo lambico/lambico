@@ -46,6 +46,7 @@ import org.lambico.dao.generic.MaxResults;
 import org.lambico.dao.generic.NamedParameter;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
 import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.util.StringUtils;
 
 /**
@@ -103,9 +104,11 @@ public class HibernateDaoInstrumentation {
             logger.debug("method: " + method);
             logger.debug("args: " + args);
 
+            HibernateTemplate hibernateTemplate = HibernateDaoUtils.getHibernateTemplate(
+                    ((GenericDaoHibernateSupport) target));
+
             // query using a named query from the method name
-            result = ((GenericDaoHibernateSupport) target).getHibernateTemplate().
-                    executeFind(new HibernateCallback() {
+            result = hibernateTemplate.executeFind(new HibernateCallback() {
 
                 public Object doInHibernate(final Session session) {
                     String queryName = queryNameFromMethod(target, method);
@@ -157,8 +160,7 @@ public class HibernateDaoInstrumentation {
                 // No named query found
                 if (method.getName().startsWith("findBy") || method.getName().startsWith("countBy")) {
                     // Query evicting condition from the method name
-                    result = ((GenericDaoHibernateSupport) target).getHibernateTemplate().
-                            executeFind(
+                    result = hibernateTemplate.executeFind(
                             new HibernateCallback() {
 
                                 public Object doInHibernate(final Session session) {

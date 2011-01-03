@@ -34,4 +34,13 @@ public interface GenericDaoHibernateSupport extends GenericDaoTypeSupport {
      * @return A Spring's Hibernate template.
      */
     HibernateTemplate getHibernateTemplate();
+
+    /**
+     * Gets a customized Spring's Hibernate Template, using the DAO
+     * configuration.
+     *
+     * @return A Spring's Hibernate template.
+     */
+    HibernateTemplate getCustomizedHibernateTemplate();
+
 }

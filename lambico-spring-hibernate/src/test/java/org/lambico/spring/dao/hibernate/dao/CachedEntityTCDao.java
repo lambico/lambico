@@ -31,6 +31,7 @@ import org.lambico.spring.dao.hibernate.po.CachedEntityTC;
  * @author Federico Russo <chiccorusso@gmail.com>
  */
 @Dao(entity = CachedEntityTC.class)
+@CacheIt
 public interface CachedEntityTCDao extends GenericDao<CachedEntityTC, Long> {
 
     @CacheIt

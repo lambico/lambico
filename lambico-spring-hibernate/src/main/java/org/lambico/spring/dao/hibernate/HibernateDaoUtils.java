@@ -19,6 +19,9 @@
 package org.lambico.spring.dao.hibernate;
 
 import java.lang.reflect.Method;
+import org.lambico.dao.generic.CacheIt;
+import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
 /**
  * Utility methods for implementing the Hibernate DAO.
@@ -39,10 +42,24 @@ public class HibernateDaoUtils {
         boolean result = false;
         if (method.getName().equals("toString")) {
             result = true;
+        } else if (method.getName().equals("getCustomizedHibernateTemplate")) {
+            result = true;
         } else if (method.getName().equals("getHibernateTemplate")) {
             result = true;
         } else if (method.getName().equals("getType")) {
             result = true;
+        }
+        return result;
+    }
+
+    public static HibernateTemplate getHibernateTemplate(GenericDaoHibernateSupport genericDao) {
+        HibernateTemplate result = genericDao.getCustomizedHibernateTemplate();
+        Class<?>[] interfaces = genericDao.getClass().getInterfaces();
+        for (Class<?> iface : interfaces) {
+            if (null != iface.getAnnotation(CacheIt.class)) {
+                result.setCacheQueries(true);
+                break;
+            }
         }
         return result;
     }

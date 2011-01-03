@@ -28,14 +28,17 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
+import org.lambico.dao.generic.CacheIt;
 import org.lambico.dao.generic.GenericDaoBase;
 import org.lambico.dao.generic.GenericDaoTypeSupport;
 import org.lambico.dao.generic.Page;
 import org.lambico.dao.generic.PageDefaultImpl;
 import org.lambico.dao.hibernate.GenericDaoHibernateCriteriaSupport;
+import org.lambico.dao.spring.BusinessDao;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
 /**
  * A generic DAO wich can be extended and personalized.
@@ -53,6 +56,10 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
 
     /** The entity class type. */
     private Class<T> persistentClass;
+    /**
+     * A customized hibernate template.
+     */
+    private HibernateTemplate customizedHibernateTemplate;
 
     /**
      * Build the DAO.
@@ -287,4 +294,41 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
             currTransaction.rollback();
         }
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * It creates the instance of customized hibernate template.
+     *
+     * @throws Exception {@inheritDoc}
+     */
+    @Override
+    protected void initDao() throws Exception {
+        super.initDao();
+        this.customizedHibernateTemplate = new HibernateTemplate(getSessionFactory());
+    }
+
+    /**
+     * Return an Hibernate template with a customized configuration, obtained
+     * from the DAO definition.
+     *
+     * If the DAO is annotated with the {@link CacheIt} annotation,
+     * it activate the query cache for the returned template.
+     *
+     * @return A customized hibernate template.
+     */
+    @Override
+    public HibernateTemplate getCustomizedHibernateTemplate() {
+        HibernateTemplate result = this.customizedHibernateTemplate;
+        Class<?>[] interfaces = getClass().getInterfaces();
+        for (Class<?> iface : interfaces) {
+            if (null != iface.getAnnotation(BusinessDao.class)
+                    && null != iface.getAnnotation(CacheIt.class)) {
+                result.setCacheQueries(true);
+                break;
+            }
+        }
+        return result;
+    }
+
 }
