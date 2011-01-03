@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import java.lang.reflect.Method;
@@ -32,13 +31,19 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 public class HibernateDaoUtils {
 
     /**
+     * Private default constructor.
+     */
+    private HibernateDaoUtils() {
+    }
+
+    /**
      * Check if a method of the DAO is a known native method, that can be invoked
      * directly.
      *
      * @param method The method to check for.
      * @return true if the method is known for being native.
      */
-    public static boolean isAKnownNativeMethod(Method method) {
+    public static boolean isAKnownNativeMethod(final Method method) {
         boolean result = false;
         if (method.getName().equals("toString")) {
             result = true;
@@ -52,7 +57,14 @@ public class HibernateDaoUtils {
         return result;
     }
 
-    public static HibernateTemplate getHibernateTemplate(GenericDaoHibernateSupport genericDao) {
+    /**
+     * Get an {@link HibernateTemplate } template customized with the
+     * DAO configuration.
+     *
+     * @param genericDao The DAO uset for customization.
+     * @return The customized {@link HibernateTemplate}.
+     */
+    public static HibernateTemplate getHibernateTemplate(final GenericDaoHibernateSupport genericDao) {
         HibernateTemplate result = genericDao.getCustomizedHibernateTemplate();
         Class<?>[] interfaces = genericDao.getClass().getInterfaces();
         for (Class<?> iface : interfaces) {

@@ -133,7 +133,8 @@ public class HibernateDaoInstrumentation {
                                                 parameterAnnotations), (Collection) arg);
                                     } else {
                                         namedQuery.setParameter(
-                                                getNamedParameterName(i, parameterAnnotations), arg);
+                                                getNamedParameterName(
+                                                i, parameterAnnotations), arg);
                                     }
                                 } else {
                                     namedQuery.setParameter(j, arg);
@@ -158,7 +159,8 @@ public class HibernateDaoInstrumentation {
             });
             if (result == null) {
                 // No named query found
-                if (method.getName().startsWith("findBy") || method.getName().startsWith("countBy")) {
+                if (method.getName().startsWith("findBy")
+                        || method.getName().startsWith("countBy")) {
                     // Query evicting condition from the method name
                     result = hibernateTemplate.executeFind(
                             new HibernateCallback() {
