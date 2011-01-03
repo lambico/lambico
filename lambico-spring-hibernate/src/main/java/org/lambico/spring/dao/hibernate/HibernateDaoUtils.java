@@ -28,7 +28,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
  * @author Lucio Benfante <lucio.benfante@jugpadova.it>
  * @version $Revision$
  */
-public class HibernateDaoUtils {
+public final class HibernateDaoUtils {
 
     /**
      * Private default constructor.
@@ -64,7 +64,8 @@ public class HibernateDaoUtils {
      * @param genericDao The DAO uset for customization.
      * @return The customized {@link HibernateTemplate}.
      */
-    public static HibernateTemplate getHibernateTemplate(final GenericDaoHibernateSupport genericDao) {
+    public static HibernateTemplate getHibernateTemplate(
+            final GenericDaoHibernateSupport genericDao) {
         HibernateTemplate result = genericDao.getCustomizedHibernateTemplate();
         Class<?>[] interfaces = genericDao.getClass().getInterfaces();
         for (Class<?> iface : interfaces) {
