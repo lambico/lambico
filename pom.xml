@@ -265,6 +265,16 @@
             </properties>
         </developer>
     </developers>
+    <contributors>
+        <contributor>
+            <name>Federico Russo</name>
+            <email>chiccorusso@gmail.com</email>
+        </contributor>
+        <contributor>
+            <name>Michele Franzin</name>
+            <email>michele.franzin@jugpadova.it</email>
+        </contributor>
+    </contributors>
     <profiles>
         <profile>
             <id>release-sign-artifacts</id>
