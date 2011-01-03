@@ -41,6 +41,8 @@ public class HibernateDaoUtilsTest extends BaseTest {
         assertTrue(HibernateDaoUtils.isAKnownNativeMethod(entityTCDao.getClass().getDeclaredMethod(
                 "getHibernateTemplate")));
         assertTrue(HibernateDaoUtils.isAKnownNativeMethod(entityTCDao.getClass().getDeclaredMethod(
+                "getCustomizedHibernateTemplate")));
+        assertTrue(HibernateDaoUtils.isAKnownNativeMethod(entityTCDao.getClass().getDeclaredMethod(
                 "getType")));
     }
 
