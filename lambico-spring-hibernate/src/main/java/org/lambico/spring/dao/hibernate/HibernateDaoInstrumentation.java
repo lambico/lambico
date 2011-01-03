@@ -96,109 +96,107 @@ public class HibernateDaoInstrumentation {
         final Integer firstResult = getFirstResultValue(args, parameterTypes, parameterAnnotations);
         final Integer maxResults = getMaxResultsValue(args, parameterTypes, parameterAnnotations);
 
-        if (method.getName().equals("toString")) {
-            return pjp.proceed(args);
-        } else if (method.getName().equals("getHibernateTemplate")) {
-            return pjp.proceed(args);
-        } else if (method.getName().equals("getType")) {
-            return pjp.proceed(args);
-        }
+        if (HibernateDaoUtils.isAKnownNativeMethod(method)) {
+            result = pjp.proceed(args);
+        } else {
+            logger.debug("target: " + target);
+            logger.debug("method: " + method);
+            logger.debug("args: " + args);
 
-        logger.debug("target: " + target);
-        logger.debug("method: " + method);
-        logger.debug("args: " + args);
+            // query using a named query from the method name
+            result = ((GenericDaoHibernateSupport) target).getHibernateTemplate().
+                    executeFind(new HibernateCallback() {
 
-        // query using a named query from the method name
-        result = ((GenericDaoHibernateSupport) target).getHibernateTemplate().
-                executeFind(new HibernateCallback() {
-
-            public Object doInHibernate(final Session session) {
-                String queryName = queryNameFromMethod(target, method);
-                Query namedQuery = null;
-                try {
-                    namedQuery = session.getNamedQuery(queryName);
-                } catch (MappingException e) {
-                    // No such named query
-                    logger.debug("Named query not found: " + queryName);
-                }
-                if (namedQuery != null) {
-                    int j = 0;
-                    for (int i = 0; i < args.length; i++) {
-                        if (isQueryParameter(i, parameterTypes, parameterAnnotations)) {
-                            Object arg = args[i];
-                            if (isNamedParameter(i, parameterAnnotations)) {
-                                if (isArrayParameter(i, parameterTypes)) {
-                                    namedQuery.setParameterList(getNamedParameterName(i,
-                                            parameterAnnotations), (Object[]) arg);
-                                } else if (isCollectionParameter(i, parameterTypes)) {
-                                    namedQuery.setParameterList(getNamedParameterName(i,
-                                            parameterAnnotations), (Collection) arg);
+                public Object doInHibernate(final Session session) {
+                    String queryName = queryNameFromMethod(target, method);
+                    Query namedQuery = null;
+                    try {
+                        namedQuery = session.getNamedQuery(queryName);
+                    } catch (MappingException e) {
+                        // No such named query
+                        logger.debug("Named query not found: " + queryName);
+                    }
+                    if (namedQuery != null) {
+                        int j = 0;
+                        for (int i = 0; i < args.length; i++) {
+                            if (isQueryParameter(i, parameterTypes, parameterAnnotations)) {
+                                Object arg = args[i];
+                                if (isNamedParameter(i, parameterAnnotations)) {
+                                    if (isArrayParameter(i, parameterTypes)) {
+                                        namedQuery.setParameterList(getNamedParameterName(i,
+                                                parameterAnnotations), (Object[]) arg);
+                                    } else if (isCollectionParameter(i, parameterTypes)) {
+                                        namedQuery.setParameterList(getNamedParameterName(i,
+                                                parameterAnnotations), (Collection) arg);
+                                    } else {
+                                        namedQuery.setParameter(
+                                                getNamedParameterName(i, parameterAnnotations), arg);
+                                    }
                                 } else {
-                                    namedQuery.setParameter(
-                                            getNamedParameterName(i, parameterAnnotations), arg);
+                                    namedQuery.setParameter(j, arg);
+                                    j++;
                                 }
-                            } else {
-                                namedQuery.setParameter(j, arg);
-                                j++;
                             }
                         }
+                        if (firstResult != null) {
+                            namedQuery.setFirstResult(firstResult.intValue());
+                        }
+                        if (maxResults != null && maxResults.intValue() >= 0) {
+                            namedQuery.setMaxResults(maxResults.intValue());
+                        }
+                        namedQuery.setCacheable(method.isAnnotationPresent(CacheIt.class));
+                        return namedQuery.list();
+                    } else {
+                        errorMessages.append("Named query not found: ").
+                                append(queryName).append(". ");
                     }
-                    if (firstResult != null) {
-                        namedQuery.setFirstResult(firstResult.intValue());
-                    }
-                    if (maxResults != null && maxResults.intValue() >= 0) {
-                        namedQuery.setMaxResults(maxResults.intValue());
-                    }
-                    namedQuery.setCacheable(method.isAnnotationPresent(CacheIt.class));
-                    return namedQuery.list();
-                } else {
-                    errorMessages.append("Named query not found: ").append(queryName).append(". ");
+                    return null;
                 }
-                return null;
-            }
-        });
-        if (result == null) {
-            // No named query found
-            if (method.getName().startsWith("findBy") || method.getName().startsWith("countBy")) {
-                // Query evicting condition from the method name
-                result = ((GenericDaoHibernateSupport) target).getHibernateTemplate().executeFind(
-                        new HibernateCallback() {
+            });
+            if (result == null) {
+                // No named query found
+                if (method.getName().startsWith("findBy") || method.getName().startsWith("countBy")) {
+                    // Query evicting condition from the method name
+                    result = ((GenericDaoHibernateSupport) target).getHibernateTemplate().
+                            executeFind(
+                            new HibernateCallback() {
 
-                            public Object doInHibernate(final Session session) {
-                                DetachedCriteria criteria =
-                                        criteriaFromMethod(target, method, args);
-                                Criteria executableCriteria =
-                                        criteria.getExecutableCriteria(session);
-                                if (firstResult != null) {
-                                    executableCriteria.setFirstResult(firstResult.intValue());
+                                public Object doInHibernate(final Session session) {
+                                    DetachedCriteria criteria =
+                                            criteriaFromMethod(target, method, args);
+                                    Criteria executableCriteria =
+                                            criteria.getExecutableCriteria(session);
+                                    if (firstResult != null) {
+                                        executableCriteria.setFirstResult(firstResult.intValue());
+                                    }
+                                    if (maxResults != null && maxResults.intValue() >= 0) {
+                                        executableCriteria.setMaxResults(maxResults.intValue());
+                                    }
+                                    final Criteria crit = criteria.getExecutableCriteria(session);
+                                    crit.setCacheable(method.isAnnotationPresent(CacheIt.class));
+                                    return crit.list();
                                 }
-                                if (maxResults != null && maxResults.intValue() >= 0) {
-                                    executableCriteria.setMaxResults(maxResults.intValue());
-                                }
-                                final Criteria crit = criteria.getExecutableCriteria(session);
-                                crit.setCacheable(method.isAnnotationPresent(CacheIt.class));
-                                return crit.list();
-                            }
-                        });
-            } else {
-                // Call an instance method
-                try {
-                    result = pjp.proceed(args);
-                } catch (Throwable throwable) {
-                    daoExceptionManager.process(throwable, method.getName(), target.getClass().
-                            getName());
+                            });
+                } else {
+                    // Call an instance method
+                    try {
+                        result = pjp.proceed(args);
+                    } catch (Throwable throwable) {
+                        daoExceptionManager.process(throwable, method.getName(), target.getClass().
+                                getName());
+                    }
                 }
             }
-        }
-        if (result != null && List.class.isAssignableFrom(result.getClass())
-                && !List.class.isAssignableFrom(method.getReturnType())) {
-            // The return type is not a List, so I return the first result
-            // of the list, or null if the list is empty
-            List listResult = (List) result;
-            if (!listResult.isEmpty()) {
-                result = listResult.get(0);
-            } else {
-                result = null;
+            if (result != null && List.class.isAssignableFrom(result.getClass())
+                    && !List.class.isAssignableFrom(method.getReturnType())) {
+                // The return type is not a List, so I return the first result
+                // of the list, or null if the list is empty
+                List listResult = (List) result;
+                if (!listResult.isEmpty()) {
+                    result = listResult.get(0);
+                } else {
+                    result = null;
+                }
             }
         }
         return result;
@@ -470,7 +468,7 @@ public class HibernateDaoInstrumentation {
     }
 
     /**
-     * Compose parameter in criteria
+     * Compose parameter in criteria.
      *
      * @param criteria Criteria to merge into
      * @param parameters parameters to merge
@@ -478,8 +476,9 @@ public class HibernateDaoInstrumentation {
      * @param parameterAnnotations paramaters annotations
      * @param values parameter values
      */
-    private void mergeParametersInCriteria(DetachedCriteria criteria, String[] parameters,
-            Class<?>[] parameterTypes, Annotation[][] parameterAnnotations, final Object[] values) {
+    private void mergeParametersInCriteria(final DetachedCriteria criteria,
+            final String[] parameters, final Class<?>[] parameterTypes,
+            final Annotation[][] parameterAnnotations, final Object[] values) {
         int argIndex = 0;
         for (String parameter : parameters) {
             while (!isQueryParameter(argIndex, parameterTypes, parameterAnnotations)) {
