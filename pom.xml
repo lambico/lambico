@@ -247,6 +247,13 @@
             <post>lambico-users@googlegroups.com</post>
             <archive>http://groups.google.com/group/lambico-users</archive>
         </mailingList>
+        <mailingList>
+            <name>Users</name>
+            <subscribe>lambico-commits-subscribe@googlegroups.com</subscribe>
+            <unsubscribe>lambico-commits-unsubscribe@googlegroups.com</unsubscribe>
+            <post>lambico-commits@googlegroups.com</post>
+            <archive>http://groups.google.com/group/lambico-commits</archive>
+        </mailingList>
     </mailingLists>
     <developers>
         <developer>
@@ -272,7 +279,11 @@
         </contributor>
         <contributor>
             <name>Michele Franzin</name>
-            <email>michele.franzin@jugpadova.it</email>
+            <email>michele.franzin@gmail.com</email>
+        </contributor>
+        <contributor>
+            <name>Enrico Giurin</name>
+            <email>enricogiurin@gmail.com</email>
         </contributor>
     </contributors>
     <profiles>
