@@ -248,7 +248,7 @@
             <archive>http://groups.google.com/group/lambico-users</archive>
         </mailingList>
         <mailingList>
-            <name>Users</name>
+            <name>Commits</name>
             <subscribe>lambico-commits-subscribe@googlegroups.com</subscribe>
             <unsubscribe>lambico-commits-unsubscribe@googlegroups.com</unsubscribe>
             <post>lambico-commits@googlegroups.com</post>
