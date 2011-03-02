@@ -53,6 +53,8 @@ public final class HibernateDaoUtils {
             result = true;
         } else if (method.getName().equals("getType")) {
             result = true;
+        } else if (method.getName().equals("countByCriteria")) {
+            result = true;
         }
         return result;
     }
