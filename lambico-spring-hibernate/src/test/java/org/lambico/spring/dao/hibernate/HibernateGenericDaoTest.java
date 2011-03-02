@@ -24,6 +24,8 @@ import org.lambico.spring.dao.hibernate.po.EntityTC;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Resource;
+import org.hibernate.criterion.DetachedCriteria;
+import org.lambico.dao.spring.hibernate.HibernateGenericDao;
 
 /**
  * Test case for the generic DAO.
@@ -113,4 +115,11 @@ public class HibernateGenericDaoTest extends BaseTest {
         Integer result = this.entityTCDao.countByFieldOneAndFieldThree("one3", "7hree5");
         assertEquals(Integer.valueOf(1), result);
     }
+
+    public void testCountByCriteria() {
+        long counted =
+                ((HibernateGenericDao) this.entityTCDao).countByCriteria(DetachedCriteria.forClass(EntityTC.class));
+        assertEquals(5, counted);
+    }
+
 }
