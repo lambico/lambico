@@ -18,6 +18,7 @@
 
 package org.lambico.spring.dao.hibernate.daoter;
 
+import java.util.List;
 import org.lambico.dao.generic.Dao;
 import org.lambico.dao.generic.GenericDao;
 import org.lambico.spring.dao.hibernate.poter.EntityTCTer;
@@ -30,4 +31,5 @@ import org.lambico.spring.dao.hibernate.poter.EntityTCTer;
  */
 @Dao(entity = EntityTCTer.class)
 public interface EntityTCTerDao extends GenericDao<EntityTCTer, Long> {
+    List<EntityTCTer> findByFieldOne(String fieldOne);
 }

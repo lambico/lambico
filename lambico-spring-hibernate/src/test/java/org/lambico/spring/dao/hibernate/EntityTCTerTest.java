@@ -43,4 +43,9 @@ public class EntityTCTerTest extends BaseTest {
         assertSize(1, result);
         EntityTCTer testCast = result.get(0);
     }
+
+    public void testFindByFieldOne() {
+        final List<EntityTCTer> result = entityTCTerDao.findByFieldOne("one1");
+        assertSize(1, result);
+    }
 }

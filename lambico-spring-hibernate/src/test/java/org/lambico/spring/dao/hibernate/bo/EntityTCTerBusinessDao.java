@@ -39,4 +39,11 @@ public class EntityTCTerBusinessDao extends HibernateGenericBusinessDao<EntityTC
         return result;
     }
 
+    @Override
+    public List<EntityTCTer> findByFieldOne(String fieldOne) {
+        final LinkedList<EntityTCTer> result =
+                new LinkedList<EntityTCTer>();
+        return result;
+    }
+
 }
