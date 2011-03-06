@@ -20,6 +20,7 @@ package org.lambico.spring.dao.hibernate;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 import javax.annotation.Resource;
 import org.hibernate.Criteria;
@@ -65,8 +66,11 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * Build the DAO.
      */
     public HibernateGenericBusinessDao() {
-        this.persistentClass = (Class<T>) ((ParameterizedType) getClass().
-                getGenericSuperclass()).getActualTypeArguments()[0];
+        Type genericSuperclass = getClass().getGenericSuperclass();
+        if (!(genericSuperclass instanceof ParameterizedType)) {
+            genericSuperclass = ((Class)genericSuperclass).getGenericSuperclass();
+        }
+        this.persistentClass = (Class<T>) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[0];
     }
 
     /**

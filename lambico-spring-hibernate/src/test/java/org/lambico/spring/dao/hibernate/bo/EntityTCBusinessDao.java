@@ -18,15 +18,106 @@
 
 package org.lambico.spring.dao.hibernate.bo;
 
+import java.util.Collection;
+import java.util.List;
 import org.lambico.spring.dao.hibernate.po.EntityTC;
 import org.lambico.dao.spring.BusinessDao;
 import org.lambico.spring.dao.hibernate.HibernateGenericBusinessDao;
+import org.lambico.spring.dao.hibernate.dao.EntityTCDao;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
  *
  * @author Jacopo Murador <jacopo.murador at seesaw.it>
  */
 @BusinessDao
-public class EntityTCBusinessDao extends HibernateGenericBusinessDao<EntityTC, Long>{
+@Qualifier("entityTCBusinessDao")
+public class EntityTCBusinessDao extends HibernateGenericBusinessDao<EntityTC, Long> implements EntityTCDao {
+
+    @Override
+    public List<EntityTC> findByFieldOne(String value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<EntityTC> findByFieldOneAndFieldTwoAndFieldThreeWithName(String one, String two,
+            String three) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<EntityTC> findByFieldTwo(String value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<EntityTC> findByFieldThree(String value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<EntityTC> findByFieldOneAndFieldTwo(String one, String two) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<EntityTC> findByOrderByFieldOne() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<EntityTC> findByOrderByFieldTwo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<EntityTC> findByOrderByFieldOneAndFieldTwo() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public EntityTC findByFieldOneOrderByFieldTwo(String one) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<EntityTC> findByOrderByFieldOne(int firstResult, int maxResults) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<EntityTC> searchAllOrderByFieldOne(int firstResult, int maxResults) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Long countByFieldOne(String value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Integer countByFieldTwo(String two) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Integer countByFieldOneAndFieldThree(String one, String three) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Long maxByFieldOne(String value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<EntityTC> searchByFieldOneCollection(Collection<String> values) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<EntityTC> searchByFieldOneArray(String[] values) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }
