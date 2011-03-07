@@ -21,7 +21,7 @@ package org.lambico.spring.dao.hibernate;
 import org.lambico.spring.dao.hibernate.po.EntityTC;
 import java.util.List;
 import javax.annotation.Resource;
-import org.lambico.spring.dao.hibernate.dao.EntityTCDao;
+import org.lambico.spring.dao.hibernate.bo.EntityTCBusinessDao;
 
 /**
  *
@@ -29,8 +29,8 @@ import org.lambico.spring.dao.hibernate.dao.EntityTCDao;
  */
 public class HibernateGenericBusinessDaoTest  extends BaseTest {
     
-    @Resource(name="entityTCBusinessDao")
-    private EntityTCDao entityTCBusinessDao;
+    @Resource
+    private EntityTCBusinessDao entityTCBusinessDao;
     
     public void testStoreRetrieve() {
         EntityTC entity = new EntityTC();
