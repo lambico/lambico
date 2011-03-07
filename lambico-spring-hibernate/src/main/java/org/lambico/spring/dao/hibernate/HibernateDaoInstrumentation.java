@@ -85,7 +85,7 @@ public class HibernateDaoInstrumentation {
      * @return The result of the execution of the finder method.
      * @throws Throwable In case of error.
      */
-    @Around(value = "execution(* *(..)) && target(org.lambico.dao.generic.GenericDao) && !target(org.lambico.spring.dao.hibernate.HibernateGenericBusinessDao)")
+    @Around(value = "target(org.lambico.dao.generic.GenericDao) && target(org.lambico.dao.AutomaticDao)")
     public Object executeFinder(final ProceedingJoinPoint pjp) throws Throwable {
         Object result = null;
         final GenericDao target = (GenericDao) pjp.getTarget();

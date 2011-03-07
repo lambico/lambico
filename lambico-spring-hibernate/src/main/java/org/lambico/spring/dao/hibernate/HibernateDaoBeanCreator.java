@@ -18,12 +18,15 @@
 
 package org.lambico.spring.dao.hibernate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Entity;
 import org.apache.log4j.Logger;
+import org.lambico.dao.AutomaticDao;
 import org.lambico.dao.generic.Dao;
 import org.lambico.spring.xml.ContextUtils;
 import org.lambico.spring.xml.DaoBeanCreator;
@@ -130,14 +133,14 @@ public class HibernateDaoBeanCreator implements DaoBeanCreator {
         BeanDefinition baseDaoBD = registry.getBeanDefinition(genericDaoName);
         Class<?>[] genericDaoInterfaces =
                 Class.forName(baseDaoBD.getBeanClassName()).getInterfaces();
+        List<Class<?>> newGenericDaoInterfaces =
+                new ArrayList<Class<?>>(genericDaoInterfaces.length + 2);
+        newGenericDaoInterfaces.addAll(Arrays.asList(genericDaoInterfaces));
         if (daoInterface != null) {
-            Class<?>[] newGenericDaoInterfaces = new Class<?>[genericDaoInterfaces.length + 1];
-            System.arraycopy(genericDaoInterfaces, 0,
-                    newGenericDaoInterfaces, 0, genericDaoInterfaces.length);
-            newGenericDaoInterfaces[genericDaoInterfaces.length] = daoInterface;
-            genericDaoInterfaces = newGenericDaoInterfaces;
+            newGenericDaoInterfaces.add(daoInterface);
         }
-        return genericDaoInterfaces;
+        newGenericDaoInterfaces.add(AutomaticDao.class);
+        return newGenericDaoInterfaces.toArray(new Class<?>[newGenericDaoInterfaces.size()]);
     }
 
     /**
