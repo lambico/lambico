@@ -107,13 +107,13 @@ public class HibernateGenericDaoTest extends BaseTest {
     }
 
     public void testCountByFieldTwo() {
-        Integer result = entityTCDao.countByFieldTwo("two4");
-        assertEquals(Integer.valueOf(1), result);
+        Long result = entityTCDao.countByFieldTwo("two4");
+        assertEquals(Long.valueOf(1), result);
     }
 
     public void testCountByFieldOneAndFieldThree() {
-        Integer result = this.entityTCDao.countByFieldOneAndFieldThree("one3", "7hree5");
-        assertEquals(Integer.valueOf(1), result);
+        Long result = this.entityTCDao.countByFieldOneAndFieldThree("one3", "7hree5");
+        assertEquals(Long.valueOf(1), result);
     }
 
     public void testCountByCriteria() {

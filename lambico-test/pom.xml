@@ -64,12 +64,14 @@
             <artifactId>parancoe-yaml</artifactId>
             <version>2.0.2</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-annotations</artifactId>
             <version>${lambico.hibernate-annotations.version}</version>
             <optional>true</optional>
         </dependency>
+        -->
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
@@ -82,6 +84,12 @@
             <type>jar</type>
             <version>1.5.8</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <artifactId>hibernate-core</artifactId>
+            <groupId>org.hibernate</groupId>
+            <type>jar</type>
+            <version>${lambico.hibernate.version}</version>
         </dependency>
     </dependencies>
 </project>

@@ -252,9 +252,10 @@ public class FixtureHelper {
         }
         try {
             for (Object entity : fixtures) {
-                dao.store(entity);
-                ((GenericDaoHibernateSupport) dao).getHibernateTemplate().flush();
+                ((GenericDaoHibernateSupport) dao).getHibernateTemplate().saveOrUpdate(entity);
             }
+            ((GenericDaoHibernateSupport) dao).getHibernateTemplate().flush();
+            ((GenericDaoHibernateSupport) dao).getHibernateTemplate().clear();
         } catch (Exception e) {
             logger.error("Error populating rows in " + getModelName(model)
                     + " table", e);

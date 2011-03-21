@@ -49,8 +49,8 @@ public interface EntityTCDao extends GenericDao<EntityTC, Long> {
     List<EntityTC> findByOrderByFieldOne(@FirstResult int firstResult, @MaxResults int maxResults);
     List<EntityTC> searchAllOrderByFieldOne(@FirstResult int firstResult, @MaxResults int maxResults);
     Long countByFieldOne(String value);
-    Integer countByFieldTwo(String two); // via instrumentation
-    Integer countByFieldOneAndFieldThree(String one, String three); // via instrumentation
+    Long countByFieldTwo(String two); // via instrumentation
+    Long countByFieldOneAndFieldThree(String one, String three); // via instrumentation
     Long maxByFieldOne(String value);
     List<EntityTC> searchByFieldOneCollection(@NamedParameter("values") Collection<String> values);
     List<EntityTC> searchByFieldOneArray(@NamedParameter("values") String[] values);

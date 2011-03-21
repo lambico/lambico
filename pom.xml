@@ -19,9 +19,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.basedir>${basedir}</main.basedir>
         <year>2009</year>
-        <lambico.spring.version>3.0.3.RELEASE</lambico.spring.version>
-        <lambico.hibernate.version>3.3.2.GA</lambico.hibernate.version>
-        <lambico.hibernate-annotations.version>3.4.0.GA</lambico.hibernate-annotations.version>
+        <lambico.spring.version>3.0.5.RELEASE</lambico.spring.version>
+        <lambico.hibernate.version>3.6.2.Final</lambico.hibernate.version>
+        <lambico.hibernate-annotations.version>3.5.1-Final</lambico.hibernate-annotations.version>
         <lambico.log4j.version>1.2.14</lambico.log4j.version>
         <lambico.junit4.version>4.4</lambico.junit4.version>
 
@@ -184,7 +184,7 @@
         <repository>
             <id>jboss-maven2-repository</id>
             <name>JBoss Repository for Maven</name>
-            <url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+            <url>https://repository.jboss.org/nexus/content/groups/public/</url>
             <layout>default</layout>
             <snapshots>
                 <enabled>false</enabled>
