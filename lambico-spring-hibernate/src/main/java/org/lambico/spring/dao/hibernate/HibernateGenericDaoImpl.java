@@ -175,7 +175,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
 
         // row count
         count.setProjection(Projections.rowCount());
-        int rowCount = ((Integer) count.list().get(0)).intValue();
+        int rowCount = ((Number) count.list().get(0)).intValue();
 
         crit.setFirstResult((page - 1) * pageSize);
         crit.setMaxResults(pageSize);
@@ -194,7 +194,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
             final int pageSize, final DetachedCriteria criteria) {
         // Row count
         criteria.setProjection(Projections.rowCount());
-        int rowCount = ((Integer) getHibernateTemplate().
+        int rowCount = ((Number) getHibernateTemplate().
                 findByCriteria(criteria).get(0)).intValue();
         criteria.setProjection(null);
         criteria.setResultTransformer(Criteria.ROOT_ENTITY);
