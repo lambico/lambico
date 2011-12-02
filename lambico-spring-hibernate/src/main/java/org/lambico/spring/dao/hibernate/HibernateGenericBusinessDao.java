@@ -253,6 +253,15 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
         return new PageDefaultImpl<T>(list, page, pageSize, rowCount);
     }
 
+    @Override
+    public Page<T> searchPaginatedByCriteria(int page, int pageSize, int totalRecords,
+            DetachedCriteria criteria) {
+        List<T> list = getHibernateTemplate().
+                findByCriteria(criteria, (page - 1) * pageSize, pageSize);
+
+        return new PageDefaultImpl<T>(list, page, pageSize, totalRecords);
+    }
+    
     /**
      * {@inheritDoc}
      *

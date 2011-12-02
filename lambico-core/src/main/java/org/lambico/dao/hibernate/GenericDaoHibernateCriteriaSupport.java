@@ -77,6 +77,17 @@ public interface GenericDaoHibernateCriteriaSupport<T> {
     Page<T> searchPaginatedByCriteria(int page, int pageSize, DetachedCriteria criteria);
 
     /**
+     * Search using a criteria with pagination without counting the total records.
+     *
+     * @param page The requested page index.
+     * @param pageSize The page width, i.e. the max number of elements on each page.
+     * @param totalRecords The (supposed or pre-calculated) total number of records from the execution of the query.
+     * @param criteria The Criteria.
+     * @return The result of the search with the provided criteria.
+     */
+    Page<T> searchPaginatedByCriteria(int page, int pageSize, int totalRecords, DetachedCriteria criteria);
+    
+    /**
      * Count on the result of a search using a Criteria.
      *
      * @param criteria The Criteria.

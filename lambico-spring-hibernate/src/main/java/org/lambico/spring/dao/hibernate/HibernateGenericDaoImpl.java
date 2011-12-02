@@ -204,6 +204,23 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
 
         return new PageDefaultImpl<T>(list, page, pageSize, rowCount);
     }
+    
+    /**
+     * {@inheritDoc}
+     *
+     * @param page {@inheritDoc}
+     * @param pageSize {@inheritDoc}
+     * @param totalRecords {@inheritDoc}
+     * @param criteria {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    public Page<T> searchPaginatedByCriteria(int page, int pageSize, int totalRecords,
+            DetachedCriteria criteria) {
+        List<T> list = getCustomizedHibernateTemplate().
+                findByCriteria(criteria, (page - 1) * pageSize, pageSize);
+
+        return new PageDefaultImpl<T>(list, page, pageSize, totalRecords);
+    }    
 
     /**
      * {@inheritDoc}
