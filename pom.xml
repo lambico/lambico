@@ -68,7 +68,7 @@
             <dependency>
                 <groupId>org.parancoe</groupId>
                 <artifactId>parancoe-yaml</artifactId>
-                <version>2.0.2</version>
+                <version>3.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>log4j</groupId>
@@ -167,6 +167,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2.1</version>
                 <configuration>
                     <descriptors>
                         <descriptor>src/assembly/bin.xml</descriptor>
@@ -175,7 +176,9 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
@@ -185,6 +188,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.10</version>
                 <configuration>
                     <skip>false</skip>
                     <useFile>true</useFile>
@@ -194,16 +198,21 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
+                <inherited>true</inherited>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
-                <version>1.5.0</version>
+                <version>1.9.0</version>
                 <configuration>
+                    <strictCheck>true</strictCheck>
+                    <aggregate>false</aggregate>
                     <header>${main.basedir}/LICENSE_HEADER</header>
                     <excludes>
                         <exclude>target/**</exclude>
@@ -213,9 +222,12 @@
                         <exclude>nb-configuration.xml</exclude>
                         <exclude>nbactions.xml</exclude>
                         <exclude>profiles.xml</exclude>
+                        <exclude>catalog.xml</exclude>
                         <exclude>**/*.svg</exclude>
                         <exclude>**/testdata/UTF8WithPreamble.txt</exclude>
                         <exclude>**/testdata/UTF8WithoutPreamble.txt</exclude>
+                        <exclude>.hgtags</exclude>
+                        <exclude>.hgignore</exclude>
                     </excludes>
                     <properties>
                         <name>${project.name}</name>
@@ -237,22 +249,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.0-alpha-4</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
         </plugins>
     </build>
     <reporting>
@@ -260,10 +256,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.8</version>
                 <configuration>
                     <configLocation>${main.basedir}/lambico_checks.xml</configLocation>
                     <headerLocation>${main.basedir}/LICENSE_HEADER</headerLocation>
@@ -273,11 +271,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
-                <version>2.2</version>
+                <version>3.0</version>
             </plugin>
         </plugins>
     </reporting>
@@ -414,7 +413,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.0-alpha-4</version>
+                        <version>1.4</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
