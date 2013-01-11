@@ -51,6 +51,11 @@
             <groupId>org.slf4j</groupId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

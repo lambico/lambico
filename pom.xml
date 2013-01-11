@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.basedir>${basedir}</main.basedir>
         <year>2009</year>
-        <lambico.spring.version>3.0.5.RELEASE</lambico.spring.version>
+        <lambico.spring.version>3.0.7.RELEASE</lambico.spring.version>
         <lambico.hibernate.version>3.6.2.Final</lambico.hibernate.version>
         <lambico.hibernate-annotations.version>3.5.1-Final</lambico.hibernate-annotations.version>
         <lambico.log4j.version>1.2.14</lambico.log4j.version>
@@ -133,7 +133,7 @@
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
-                <version>2.4</version>
+                <version>2.6</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>

@@ -122,4 +122,12 @@ public class HibernateGenericDaoTest extends BaseTest {
         assertEquals(5, counted);
     }
 
+    public void testCountByCriteriaReusingCriteria() {
+        final DetachedCriteria crit = DetachedCriteria.forClass(EntityTC.class);
+        long counted = ((HibernateGenericDao) this.entityTCDao).countByCriteria(crit);
+        assertEquals(5, counted);
+        List<EntityTC> items  = ((HibernateGenericDao) this.entityTCDao).searchByCriteria(crit);
+        assertSize(5, items);
+    }
+    
 }
