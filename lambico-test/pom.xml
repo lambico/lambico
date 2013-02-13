@@ -34,6 +34,11 @@
             <artifactId>log4j</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.3</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
             <optional>true</optional>
@@ -48,12 +53,8 @@
             <artifactId>commons-lang</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.parancoe</groupId>
-            <artifactId>parancoe-yaml</artifactId>
+            <groupId>org.lambico</groupId>
+            <artifactId>lambico-pump</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>

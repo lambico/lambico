@@ -27,13 +27,13 @@
 
 # Without anchor
 -
-   nome: "àèéìòù"
-   id: -980000
+  nome: "àèéìòù"
+  id: -980000
 
 - &demo3
-   nome: "Demo3"
-   id: 98000
+  nome: "Demo3"
+  id: 98000
 
 - &demo2
-   nome: "Demo#2"
-   id: -9800
+  nome: "Demo#2"
+  id: -9800

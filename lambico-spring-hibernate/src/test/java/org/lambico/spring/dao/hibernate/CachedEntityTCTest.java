@@ -23,6 +23,7 @@ import org.hibernate.stat.Statistics;
 import org.lambico.dao.spring.hibernate.HibernateGenericDao;
 import org.lambico.spring.dao.hibernate.dao.CachedEntityTCDao;
 import org.lambico.spring.dao.hibernate.po.CachedEntityTC;
+import org.lambico.test.spring.hibernate.DBTest;
 
 /**
  * Tests on caching DAO methods.
@@ -30,18 +31,13 @@ import org.lambico.spring.dao.hibernate.po.CachedEntityTC;
  * @author <a href="mailto:lucio@benfante.com">Lucio Benfante</a>
  * @version $Revision$
  */
-public class CachedEntityTCTest extends BaseTest {
+public class CachedEntityTCTest extends DBTest {
 
     private static Logger logger = Logger.getLogger(CachedEntityTCTest.class);
     public static final int COUNT = 1000;
     public static final String FIELD = "%67%";
     @Resource
     private CachedEntityTCDao cachedEntityTCDao;
-
-    @Override
-    public Class[] getFixtureClasses() {
-        return new Class[]{};
-    }
 
     @Override
     protected void prepareTestInstance() throws Exception {

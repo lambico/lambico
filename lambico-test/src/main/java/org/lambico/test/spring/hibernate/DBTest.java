@@ -19,18 +19,20 @@ package org.lambico.test.spring.hibernate;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.lambico.dao.generic.GenericDaoBase;
+import org.lambico.data.FixtureHelper;
 import org.lambico.test.spring.EnhancedTestCase;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.orm.hibernate3.SessionHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
@@ -41,14 +43,9 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  */
 public abstract class DBTest extends EnhancedTestCase {
 
-    /** The logger for this class. */
-    private static Logger logger = Logger.getLogger(DBTest.class);
-    /** The fixtures. */
-    protected Map<Class, Object[]> fixtures;
-    /** The session factory. */
+    protected Map<Class, List> fixtures;
     @Resource
     protected SessionFactory sessionFactory;
-    /** The map of DAOs. */
     @Resource(name = "daoMap")
     protected HashMap daoMap;
 
@@ -93,25 +90,22 @@ public abstract class DBTest extends EnhancedTestCase {
      */
     @Override
     public void onSetUpBeforeTransaction() throws Exception {
-
         Session session = sessionFactory.openSession();
         session.beginTransaction();
         //Attach transaction to thread
-        TransactionSynchronizationManager.bindResource(sessionFactory,
-                new SessionHolder(session));
+        TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
         TransactionSynchronizationManager.initSynchronization();
 
         try {
             // erase everything
             for (Class model : getReverseOrderFixtureClasses()) {
                 GenericDaoBase dao = DaoUtils.getDaoFor(model, applicationContext);
-                FixtureHelper.eraseDbForModel(model, dao);
+                FixtureUtils.eraseDbForModel(model, dao);
             }
             // repopulate
             for (Class model : getFixtureClasses()) {
-                GenericDaoBase dao = DaoUtils.getDaoFor(model,
-                        applicationContext);
-                FixtureHelper.populateDbForModel(model, fixtures.get(model), dao);
+                GenericDaoBase dao = DaoUtils.getDaoFor(model, applicationContext);
+                FixtureUtils.populateDbForModel(model, fixtures.get(model), dao);
             }
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -120,9 +114,7 @@ public abstract class DBTest extends EnhancedTestCase {
             session.getTransaction().rollback();
         } finally {
             try {
-                if (session != null) {
-                    session.close();
-                }
+                session.close();
             } catch (Exception e) { /*do nothing*/
                 logger.info("Can't close the session! (ignore it)");
             }
@@ -135,18 +127,17 @@ public abstract class DBTest extends EnhancedTestCase {
     @Override
     protected String[] getConfigLocations() {
         return new String[]{
-                    "classpath:org/lambico/spring/dao/hibernate/genericDao.xml",
-                    "classpath:org/lambico/spring/dao/hibernate/applicationContextBase.xml",
-                    "classpath:applicationContext_test.xml"
-                };
+            "classpath:org/lambico/spring/dao/hibernate/genericDao.xml",
+            "classpath:org/lambico/spring/dao/hibernate/applicationContextBase.xml",
+            "classpath:applicationContext_test.xml"
+        };
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void prepareTestInstance() throws Exception {
         super.prepareTestInstance();
-
-        Map ldaos = DaoUtils.getDaos(applicationContext);
-        daoMap.putAll(ldaos);
+        daoMap.putAll(DaoUtils.getDaos(applicationContext));
 
         if (fixtures == null) {
             // carico le fixture se non sono già presenti
@@ -155,7 +146,7 @@ public abstract class DBTest extends EnhancedTestCase {
                 try {
                     fixtures = FixtureHelper.loadFixturesFromResource(
                             (ClassPathResource) applicationContext.getResource(
-                            "classpath:/fixtures/"), fixtureClasses);
+                            ResourceLoader.CLASSPATH_URL_PREFIX + "/fixtures/"), fixtureClasses);
                     logger.info("Loaded fixtures for classes "
                             + fixtures.keySet().toString());
                 } catch (Exception e) {
@@ -169,8 +160,8 @@ public abstract class DBTest extends EnhancedTestCase {
     }
 
     /**
-     * At the end of the test the method endTransaction call a rollback for the transaction
-     * although a explicit rollback call is did. This raise a false exception.
+     * At the end of the test the method endTransaction call a rollback for the transaction although
+     * a explicit rollback call is did. This raise a false exception.
      */
     @Override
     protected void endTransaction() {
