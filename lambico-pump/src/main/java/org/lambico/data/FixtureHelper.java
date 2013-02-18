@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Fixture load / dump facility
  *
- * @author michele franzin <michele at franzin.net
+ * @author michele franzin <michele at franzin.net>
  */
 public class FixtureHelper {
 

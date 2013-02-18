@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import org.lambico.spring.dao.hibernate.dao.AuthorTCDao;
@@ -29,9 +28,8 @@ import javax.annotation.Resource;
 /**
  * Tests fixture load with M:N relationships
  *
- * @author <a href="mailto:michele.franzin@seesaw.it">Michele Franzin</a>
+ * @author michele franzin <michele at franzin.net>
  * @author Jacopo Murador <jacopo.murador at seesaw.it>
- * @version $Revision$
  */
 public class ManyToManyFixturesTest extends BaseTest {
 

@@ -30,9 +30,8 @@ import javax.persistence.NamedQuery;
 
 /**
  * An persistent object to be used for the tests M:N relationships.
- * 
- * @author <a href="mailto:michele.franzin@seesaw.it">Michele Franzin</a>
- * @version $Revision$
+ *
+ * @author michele franzin <michele at franzin.net>
  */
 @javax.persistence.Entity
 @NamedQuery(name = "AuthorTC.findByName", query = "from AuthorTC where name like ?")

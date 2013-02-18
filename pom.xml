@@ -384,7 +384,13 @@
         </contributor>
         <contributor>
             <name>Michele Franzin</name>
-            <email>michele@franzin.net</email>
+            <email>michele.franzin@jugpadova.it</email>
+            <organization>SeeSaw</organization>
+            <organizationUrl>http://www.seesaw.it</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>+1</timezone>
         </contributor>
         <contributor>
             <name>Enrico Giurin</name>

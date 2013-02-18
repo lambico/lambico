@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate.dao;
 
 import org.lambico.spring.dao.hibernate.po.BookTC;
@@ -25,9 +24,8 @@ import org.lambico.dao.generic.GenericDao;
 
 /**
  * A DAO to be used for the tests M:N relationships.
- * 
- * @author <a href="mailto:michele.franzin@seesaw.it">Michele Franzin</a>
- * @version $Revision$
+ *
+ * @author michele franzin <michele at franzin.net>
  */
 @Dao(entity = BookTC.class)
 public interface BookTCDao extends GenericDao<BookTC, Long> {
