@@ -44,11 +44,6 @@
             <artifactId>lambico-pump</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <artifactId>hibernate-core</artifactId>
             <groupId>org.hibernate</groupId>
         </dependency>
