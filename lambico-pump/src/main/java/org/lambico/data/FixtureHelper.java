@@ -88,7 +88,6 @@ public class FixtureHelper {
 //    public static String getFixtureBusinessDaoId(final Class model) {
 //        return StringUtils.uncapitalize(model.getSimpleName()) + "BusinessDao";
 //    }
-
     /**
      * Gets human readable name of a model.
      *
@@ -153,11 +152,8 @@ public class FixtureHelper {
             }
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("### Start of Yaml generated merging the fixtures ###"
-                    + IOUtils.LINE_SEPARATOR + sb.toString() + IOUtils.LINE_SEPARATOR
-                    + "### End of Yaml generated merging the fixtures ###");
-        }
+        logger.debug("### start of merged fixtures dump ###\n{}"
+                + "\n### end of merged fixtures dump ###", sb);
 
         Iterable<Object> loaded = engine.load(sb.toString());
         if (loaded.iterator().hasNext()) {

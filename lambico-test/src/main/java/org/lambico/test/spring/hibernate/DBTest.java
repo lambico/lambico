@@ -25,7 +25,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.lambico.dao.generic.GenericDaoBase;
@@ -40,7 +39,13 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * A base class for tests that populate the DB with the fixture data.
  *
  * @author Jacopo Murador <jacopo.murador at seesaw.it>
+ *
+ * @deprecated as of Spring 3.0, in favor of using the listener-based test context framework
+ * ({@link org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests})
+ * @see AbstractBaseTest
+ * @see FixtureLoaderTestExecutionListener
  */
+@Deprecated
 public abstract class DBTest extends EnhancedTestCase {
 
     protected Map<Class, List> fixtures;
@@ -56,7 +61,7 @@ public abstract class DBTest extends EnhancedTestCase {
      */
     public final Class[] getReverseOrderFixtureClasses() {
         Class[] models = getFixtureClasses();
-        ArrayUtils.reverse(models);
+        CollectionUtils.reverseArray(models);
         return models;
     }
 

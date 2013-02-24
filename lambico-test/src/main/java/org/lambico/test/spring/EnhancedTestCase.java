@@ -18,11 +18,18 @@
 package org.lambico.test.spring;
 
 import java.util.Collection;
+import org.lambico.test.spring.hibernate.junit4.AbstractBaseTest;
 import org.springframework.test.annotation.AbstractAnnotationAwareTransactionalTests;
 
 /**
  * Adds useful assertions to the standard JUnit TestCase.
+ *
+ * @deprecated please use hamcrest.
+ * @see AbstractBaseTest
+ * @see org.hamcrest.CoreMatchers
+ * @see org.hamcrest.MatcherAssert
  */
+@Deprecated
 public abstract class EnhancedTestCase extends AbstractAnnotationAwareTransactionalTests {
 
     /**
