@@ -46,22 +46,19 @@ public class FixtureHelperTest extends TestCase {
     }
 
     public void testShouldNotFailWrongFixtureDir() {
-        Set<Class> models = new LinkedHashSet<Class>(CollectionUtils.arrayToList(new Class[]{
-            DemoBean.class}));
+        Set<Class> models = getClassSet(DemoBean.class);
         Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("nonExistant", models);
         assertTrue("Le fixture non sono vuote", objects.isEmpty());
     }
 
     public void testShouldNotFailIfMissingFixtureFile() {
-        Set<Class> models = new LinkedHashSet<Class>(CollectionUtils.arrayToList(new Class[]{
-            BigDecimal.class}));
+        Set<Class> models = getClassSet(BigDecimal.class);
         Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("fixtures", models);
         assertTrue("Le fixture non sono vuote", objects.isEmpty());
     }
 
     public void testShouldNotFailWhenTrailingSlashPresent() throws Exception {
-        Set<Class> models = new LinkedHashSet<Class>(
-                CollectionUtils.arrayToList(new Class[]{DemoBean.class}));
+        Set<Class> models = getClassSet(DemoBean.class);
         Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("fixtures/", models);
         assertNotNull("Non ha ritornato la mappa di fixtures", objects);
     }
@@ -73,22 +70,21 @@ public class FixtureHelperTest extends TestCase {
     }
 
     public void testShouldNotFailIfEmptyFile() {
-        Set<Class> models = new LinkedHashSet<Class>(CollectionUtils.arrayToList(new Class[]{
-            DemoBean.class}));
+        Set<Class> models = getClassSet(DemoBean.class);
         Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("fixtures/empty", models);
         assertEquals("Non carica tutti i beans", 1, objects.size());
         assertTrue("Le fixture non sono vuote", objects.get(DemoBean.class).isEmpty());
     }
 
     public void testBeanLoading() {
-        Set<Class> models = new LinkedHashSet<Class>(CollectionUtils.arrayToList(new Class[]{
-            DemoBean.class}));
+        Set<Class> models = getClassSet(DemoBean.class);
         Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("fixtures", models);
         assertNotNull("Non ha ritornato la mappa di fixtures", objects);
         assertEquals("Non carica tutti i beans", 1, objects.size());
         assertTrue("Non crea istanze di " + DemoBean.class.getCanonicalName(), objects.containsKey(
                 DemoBean.class));
-        List<DemoBean> result = (List<DemoBean>) objects.get(DemoBean.class);
+        @SuppressWarnings("unchecked")
+        List<DemoBean> result = objects.get(DemoBean.class);
         assertEquals("Non carica tutti i beans", 5, result.size());
         for (int i = 0; i < 5; i++) {
             assertEquals("Non ha caricato correttamente il bean numero " + i, expected[i], result.
@@ -96,9 +92,9 @@ public class FixtureHelperTest extends TestCase {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void testBookLoading() {
-        Set<Class> models = new LinkedHashSet<Class>(CollectionUtils.arrayToList(new Class[]{
-            BookTC.class, AuthorTC.class}));
+        Set<Class> models = getClassSet(BookTC.class, AuthorTC.class);
         Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("fixtures", models);
         assertNotNull("Non ha ritornato la mappa di fixtures", objects);
         assertEquals(2, objects.size());
@@ -108,8 +104,7 @@ public class FixtureHelperTest extends TestCase {
     }
 
     public void testFixtureMerge() {
-        Set<Class> models = new LinkedHashSet<Class>(CollectionUtils.arrayToList(new Class[]{
-            BookTC.class, AuthorTC.class}));
+        Set<Class> models = getClassSet(BookTC.class, AuthorTC.class);
         Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("fixtures", models);
         AuthorTC author = (AuthorTC) objects.get(AuthorTC.class).get(3);
         assertEquals("john", author.getName());
@@ -122,5 +117,10 @@ public class FixtureHelperTest extends TestCase {
                 assertTrue("The book author is not in the author array", authors.contains(author));
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private LinkedHashSet<Class> getClassSet(final Class... models) {
+        return new LinkedHashSet<Class>(CollectionUtils.arrayToList(models));
     }
 }

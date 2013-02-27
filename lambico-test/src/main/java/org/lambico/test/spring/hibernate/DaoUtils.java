@@ -53,8 +53,7 @@ public final class DaoUtils {
      * @return A map of daos. The key is the id of the bean in the container.
      */
     public static Map<String, Object> getDaos(final ListableBeanFactory beanFactory) {
-        Map<String, Object> result =
-                new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<String, Object>();
         String[] beanNames = beanFactory.getBeanDefinitionNames();
         for (int i = 0; i < beanNames.length; i++) {
             try {
@@ -143,8 +142,7 @@ public final class DaoUtils {
     public static GenericDaoBase getDaoFor(final Class daoEntityType,
             final ListableBeanFactory beanFactory) {
         GenericDaoBase result = null;
-        Map<String, Object> daos =
-                DaoUtils.getDaos(beanFactory);
+        Map<String, Object> daos = DaoUtils.getDaos(beanFactory);
         for (Object dao : daos.values()) {
             if (DaoUtils.isDaoFor(dao, daoEntityType)) {
                 result = (GenericDaoBase) dao;

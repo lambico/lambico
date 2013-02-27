@@ -110,6 +110,7 @@ public class HibernateDaoInstrumentation {
             // query using a named query from the method name
             result = hibernateTemplate.executeFind(new HibernateCallback() {
 
+                @Override
                 public Object doInHibernate(final Session session) {
                     String queryName = queryNameFromMethod(target, method);
                     Query namedQuery = null;
@@ -165,6 +166,7 @@ public class HibernateDaoInstrumentation {
                     result = hibernateTemplate.executeFind(
                             new HibernateCallback() {
 
+                                @Override
                                 public Object doInHibernate(final Session session) {
                                     DetachedCriteria criteria =
                                             criteriaFromMethod(target, method, args);

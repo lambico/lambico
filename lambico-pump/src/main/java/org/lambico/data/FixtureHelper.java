@@ -118,6 +118,7 @@ public class FixtureHelper {
      * @param models The set of models.
      * @return The model->values map of fixtures.
      */
+    @SuppressWarnings("unchecked")
     public static Map<Class, List> loadFixturesFromResource(final ClassPathResource fixtureDir,
             final Set<Class> models) {
         // Mantiene l'ordine di inserimento

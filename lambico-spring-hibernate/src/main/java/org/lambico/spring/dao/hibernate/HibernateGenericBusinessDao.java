@@ -65,6 +65,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
     /**
      * Build the DAO.
      */
+    @SuppressWarnings("unchecked")
     public HibernateGenericBusinessDao() {
         Type genericSuperclass = getClass().getGenericSuperclass();
         if (!(genericSuperclass instanceof ParameterizedType)) {
@@ -78,6 +79,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      *
      * @return {@inheritDoc}
      */
+    @Override
     public Class getType() {
         return this.persistentClass;
     }
@@ -87,6 +89,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      *
      * @param type {@inheritDoc}
      */
+    @Override
     public void setType(final Class type) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -107,6 +110,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * @param o {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
+    @Override
     public void create(final T o) {
         getHibernateTemplate().persist(o);
     }
@@ -117,6 +121,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * @param o {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
+    @Override
     public void store(final T o) {
         getHibernateTemplate().merge(o);
     }
@@ -128,6 +133,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * @return {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
+    @Override
     public T read(final PK id) {
         return (T) getHibernateTemplate().load(persistentClass, id);
     }
@@ -139,6 +145,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * @return {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
+    @Override
     public T get(final PK id) {
         return (T) getHibernateTemplate().get(persistentClass, id);
     }
@@ -147,6 +154,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * {@inheritDoc}
      * @param o {@inheritDoc}
      */
+    @Override
     public void delete(final T o) {
         getHibernateTemplate().delete(o);
     }
@@ -157,6 +165,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * @return {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
+    @Override
     public List<T> findAll() {
         return getHibernateTemplate().find("from " + persistentClass.getName() + " x");
     }
@@ -168,6 +177,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * @return {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
+    @Override
     public List<T> searchByCriteria(final Criterion... criterion) {
         Criteria crit = getSession().createCriteria(persistentClass);
         for (Criterion c : criterion) {
@@ -183,6 +193,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * @return {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
+    @Override
     public List<T> searchByCriteria(final DetachedCriteria criteria) {
         return getHibernateTemplate().findByCriteria(criteria);
     }
@@ -196,6 +207,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * @return {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
+    @Override
     public List<T> searchByCriteria(final DetachedCriteria criteria, final int firstResult,
             final int maxResults) {
         return getHibernateTemplate().
@@ -211,6 +223,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * @return {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
+    @Override
     public Page<T> searchPaginatedByCriteria(final int page, final int pageSize,
             final Criterion... criterion) {
         Criteria crit = getSession().createCriteria(persistentClass);
@@ -237,7 +250,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * @param criteria {@inheritDoc}
      * @return {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public Page<T> searchPaginatedByCriteria(final int page, final int pageSize,
             final DetachedCriteria criteria) {
         // Row count
@@ -247,6 +260,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
         criteria.setProjection(null);
         criteria.setResultTransformer(Criteria.ROOT_ENTITY);
 
+        @SuppressWarnings("unchecked")
         List<T> list = getHibernateTemplate().
                 findByCriteria(criteria, (page - 1) * pageSize, pageSize);
 
@@ -256,17 +270,19 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
     @Override
     public Page<T> searchPaginatedByCriteria(int page, int pageSize, int totalRecords,
             DetachedCriteria criteria) {
+        @SuppressWarnings("unchecked")
         List<T> list = getHibernateTemplate().
                 findByCriteria(criteria, (page - 1) * pageSize, pageSize);
 
         return new PageDefaultImpl<T>(list, page, pageSize, totalRecords);
     }
-    
+
     /**
      * {@inheritDoc}
      *
      * @return {@inheritDoc}
      */
+    @Override
     public int deleteAll() {
         List<T> rows = findAll();
 
@@ -280,6 +296,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      *
      * @return {@inheritDoc}
      */
+    @Override
     public long count() {
         return DataAccessUtils.intResult(getHibernateTemplate().find(
                 "select count(*) from " + getType().getSimpleName()));
@@ -291,6 +308,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * @param criteria {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
     public long countByCriteria(final DetachedCriteria criteria) {
         criteria.setProjection(Projections.rowCount());
         return DataAccessUtils.intResult(getHibernateTemplate().findByCriteria(criteria));
@@ -299,6 +317,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
     /**
      * {@inheritDoc}
      */
+    @Override
     public void rollBackTransaction() {
         final Transaction currTransaction =
                 getHibernateTemplate().getSessionFactory().getCurrentSession().getTransaction();

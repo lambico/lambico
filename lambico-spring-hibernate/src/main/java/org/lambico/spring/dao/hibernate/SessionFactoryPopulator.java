@@ -123,15 +123,16 @@ public class SessionFactoryPopulator implements EntityDiscoverer {
      * @param persistentClasses The list of persistent classes.
      * @param sessionFactoryBeanDefinition The session factory bean definition.
      */
+    @SuppressWarnings("unchecked")
     private void addPersistentClasses(final List<Class> persistentClasses,
             final BeanDefinition sessionFactoryBeanDefinition) {
-        List<TypedStringValue> result = null;
+        List<TypedStringValue> result;
         PropertyValue annotatedClassesProperty = sessionFactoryBeanDefinition.getPropertyValues().
                 getPropertyValue("annotatedClasses");
         if (annotatedClassesProperty == null) {
-            result = new ManagedList();
+            result = new ManagedList<TypedStringValue>();
         } else {
-            result = (List) annotatedClassesProperty.getValue();
+            result = (List<TypedStringValue>) annotatedClassesProperty.getValue();
         }
         for (Class current : persistentClasses) {
             TypedStringValue currentValue = new TypedStringValue(current.getName());

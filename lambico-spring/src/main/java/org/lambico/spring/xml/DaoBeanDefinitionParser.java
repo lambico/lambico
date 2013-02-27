@@ -70,6 +70,7 @@ public class DaoBeanDefinitionParser extends AbstractSingleBeanDefinitionParser 
         try {
             Class daoInterfaceClass =
                     Class.forName(daoInterface, true, this.getClass().getClassLoader());
+            @SuppressWarnings("unchecked")
             Dao daoAnnotation = (Dao) daoInterfaceClass.getAnnotation(Dao.class);
             if (daoAnnotation != null) {
                 entityType = daoAnnotation.entity();
@@ -82,7 +83,7 @@ public class DaoBeanDefinitionParser extends AbstractSingleBeanDefinitionParser 
             throw new IllegalArgumentException("Dao interface not found", ex);
         }
         String genericDao = element.getAttribute(GENERIC_DAO_ATTRIBUTE);
-        BeanDefinitionBuilder genericDaoBDB = bean.childBeanDefinition(genericDao);
+        BeanDefinitionBuilder genericDaoBDB = BeanDefinitionBuilder.childBeanDefinition(genericDao);
         genericDaoBDB.addPropertyValue("type", entityType);
         bean.addPropertyValue("target", genericDaoBDB.getBeanDefinition());
     }

@@ -26,11 +26,11 @@
             targetNamespace="http://www.lambico.org/schema/lambico"
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">
-    
+
     <xsd:import namespace="http://www.springframework.org/schema/beans"
-                schemaLocation="http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+                schemaLocation="http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"
     />
-    
+
     <xsd:element name="dao">
         <xsd:complexType>
             <xsd:complexContent>
@@ -41,7 +41,7 @@
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
-    
+
     <xsd:element name="define-daos">
         <xsd:complexType>
             <xsd:attribute name="baseEntityPackage" type="xsd:string" use="optional" />
@@ -57,5 +57,5 @@
             <xsd:attribute name="sessionFactoryName" type="xsd:string" default="sessionFactory" />
         </xsd:complexType>
     </xsd:element>
-    
+
 </xsd:schema>

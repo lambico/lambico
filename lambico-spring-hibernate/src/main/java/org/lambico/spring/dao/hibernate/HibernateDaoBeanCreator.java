@@ -186,8 +186,9 @@ public class HibernateDaoBeanCreator implements DaoBeanCreator {
                     sessionFactoryBeanDefinition.getPropertyValues().
                     getPropertyValue("annotatedClasses");
             if (annotatedClassesProperty != null) {
+                @SuppressWarnings("unchecked")
                 List<TypedStringValue> entitiesFromSession =
-                        (List) annotatedClassesProperty.getValue();
+                        (List<TypedStringValue>) annotatedClassesProperty.getValue();
                 for (TypedStringValue className : entitiesFromSession) {
                     try {
                         final Class pClass = Class.forName(className.getValue());
@@ -270,6 +271,7 @@ public class HibernateDaoBeanCreator implements DaoBeanCreator {
     private Class findDaoInterface(final Class persistentClass, final Set<Class> daoInterfaces) {
         Class result = null;
         for (Class dao : daoInterfaces) {
+            @SuppressWarnings("unchecked")
             Dao daoAnnotation = (Dao) dao.getAnnotation(Dao.class);
             if (daoAnnotation != null) {
                 if (daoAnnotation.entity().getName().equals(persistentClass.getName())) {
@@ -290,6 +292,7 @@ public class HibernateDaoBeanCreator implements DaoBeanCreator {
     private List<Class> searchInTheDaoDefinitions(final Set<Class> daoInterfaces) {
         final List<Class> result = new LinkedList<Class>();
         for (Class daoInterface : daoInterfaces) {
+            @SuppressWarnings("unchecked")
             Dao annotation = (Dao) daoInterface.getAnnotation(Dao.class);
             Class entity = annotation.entity();
             if (entity != null) {

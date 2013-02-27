@@ -28,7 +28,7 @@ import org.lambico.dao.hibernate.GenericDaoHibernateCriteriaSupport;
 
 /**
  * Tests on generic DAO using EntityTC.
- * 
+ *
  * @author <a href="mailto:lucio@benfante.com">Lucio Benfante</a>
  * @version $Revision$
  */
@@ -140,6 +140,7 @@ public class EntityTCTest extends BaseTest {
     }
 
     public void testFindAllByCriteria() {
+        @SuppressWarnings("unchecked")
         List<EntityTC> results = ((GenericDaoHibernateCriteriaSupport<EntityTC>) entityTCDao).
                 searchByCriteria(DetachedCriteria.forClass(EntityTC.class));
         assertSize(5, results);

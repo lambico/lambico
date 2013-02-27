@@ -32,7 +32,7 @@ public class PageDefaultImpl<T> implements Page<T> {
     /**
      * The content of the page.
      */
-    private List results;
+    private List<T> results;
     /**
      * The size of the page, i.e. the max number of rows in a single page.
      */
@@ -48,6 +48,7 @@ public class PageDefaultImpl<T> implements Page<T> {
     /**
      * An empty page.
      */
+    @SuppressWarnings("unchecked")
     public static final PageDefaultImpl EMPTY =
             new PageDefaultImpl(Collections.EMPTY_LIST, 1, 1, 0);
 
@@ -72,6 +73,7 @@ public class PageDefaultImpl<T> implements Page<T> {
      *
      * @return {@inheritDoc}
      */
+    @Override
     public int getPage() {
         return page;
     }
@@ -81,6 +83,7 @@ public class PageDefaultImpl<T> implements Page<T> {
      *
      * @return {@inheritDoc}
      */
+    @Override
     public boolean isNextPage() {
         return page < getLastPage();
     }
@@ -90,6 +93,7 @@ public class PageDefaultImpl<T> implements Page<T> {
      *
      * @return {@inheritDoc}
      */
+    @Override
     public boolean isPreviousPage() {
         return page > 1;
     }
@@ -99,6 +103,7 @@ public class PageDefaultImpl<T> implements Page<T> {
      *
      * @return {@inheritDoc}
      */
+    @Override
     public List<T> getList() {
         return results;
     }
@@ -108,6 +113,7 @@ public class PageDefaultImpl<T> implements Page<T> {
      *
      * @return {@inheritDoc}
      */
+    @Override
     public int getLastPage() {
         int lastPage = rowCount / pageSize;
         if (rowCount % pageSize > 0) {
@@ -121,6 +127,7 @@ public class PageDefaultImpl<T> implements Page<T> {
      *
      * @return {@inheritDoc}
      */
+    @Override
     public int getRowCount() {
         return rowCount;
     }

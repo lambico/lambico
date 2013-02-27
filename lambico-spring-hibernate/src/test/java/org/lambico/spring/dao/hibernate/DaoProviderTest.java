@@ -31,23 +31,23 @@ import org.lambico.test.spring.hibernate.DBTest;
  * @version $Revision$
  */
 public class DaoProviderTest extends DBTest {
-    
+
     /**
      * Test the retrieval of the DAO map.
      */
     public void testGetDaoMap() {
-        Map daoMap = (Map) getApplicationContext().getBean("daoMap");
-        assertNotNull(daoMap);
-        assertTrue("Test DAO map shouldn't be empty", !daoMap.isEmpty());
+        Map contextDaoMap = (Map) getApplicationContext().getBean("daoMap");
+        assertNotNull(contextDaoMap);
+        assertTrue("Test DAO map shouldn't be empty", !contextDaoMap.isEmpty());
     }
 
     /**
      * Test the retrieval of a DAO from the DAO map.
      */
     public void testGetDaoFromMap() {
-        Map daoMap = (Map) getApplicationContext().getBean("daoMap");
-        assertNotNull(daoMap);
-        Object dao = daoMap.get("entityTCDao");
+        Map contextDaoMap = (Map) getApplicationContext().getBean("daoMap");
+        assertNotNull(contextDaoMap);
+        Object dao = contextDaoMap.get("entityTCDao");
         assertNotNull(dao);
         assertTrue(DaoUtils.isDao(dao));
     }
@@ -58,9 +58,9 @@ public class DaoProviderTest extends DBTest {
     public void testGetDaoMapFromProvider() {
         TestDaos baseDaoProvider = (TestDaos) getApplicationContext().getBean("daos");
         assertNotNull(baseDaoProvider);
-        Map daoMap = baseDaoProvider.getDaoMap();
-        assertNotNull(daoMap);
-        assertTrue("Test DAO map shouldn't be empty", !daoMap.isEmpty());
+        Map contextDaoMap = baseDaoProvider.getDaoMap();
+        assertNotNull(contextDaoMap);
+        assertTrue("Test DAO map shouldn't be empty", !contextDaoMap.isEmpty());
     }
 
     /**
@@ -95,5 +95,5 @@ public class DaoProviderTest extends DBTest {
         assertNotNull(dao);
         assertTrue(DaoUtils.isDao(dao));
     }
-    
+
 }

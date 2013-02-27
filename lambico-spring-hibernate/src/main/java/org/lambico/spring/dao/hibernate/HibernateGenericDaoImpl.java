@@ -55,7 +55,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     /**
      * The DAO entity type.
      */
-    private Class type;
+    private Class<T> type;
     /**
      * A customized hibernate template.
      */
@@ -66,6 +66,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      *
      * @param o {@inheritDoc}
      */
+    @Override
     public final void create(final T o) {
         getCustomizedHibernateTemplate().persist(o);
     }
@@ -75,6 +76,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      *
      * @param o {@inheritDoc}
      */
+    @Override
     public final void store(final T o) {
         getCustomizedHibernateTemplate().merge(o);
     }
@@ -85,6 +87,8 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @param id {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public final T read(final PK id) {
         return (T) getCustomizedHibernateTemplate().load(getType(), id);
     }
@@ -95,6 +99,8 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @param id {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public final T get(final PK id) {
         return (T) getCustomizedHibernateTemplate().get(getType(), id);
     }
@@ -104,6 +110,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      *
      * @param o {@inheritDoc}
      */
+    @Override
     public final void delete(final T o) {
         getCustomizedHibernateTemplate().delete(o);
     }
@@ -113,6 +120,8 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      *
      * @return {@inheritDoc}
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public final List<T> findAll() {
         return getCustomizedHibernateTemplate().find(
                 "from " + getType().getName() + " x");
@@ -124,6 +133,8 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @param criterion {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public final List<T> searchByCriteria(final Criterion... criterion) {
         Criteria crit = getSession().createCriteria(getType());
         for (Criterion c : criterion) {
@@ -138,6 +149,8 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @param criteria {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public final List<T> searchByCriteria(final DetachedCriteria criteria) {
         return getCustomizedHibernateTemplate().findByCriteria(criteria);
     }
@@ -150,6 +163,8 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @param maxResults {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public final List<T> searchByCriteria(final DetachedCriteria criteria,
             final int firstResult, final int maxResults) {
         return getCustomizedHibernateTemplate().
@@ -164,6 +179,8 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @param criterion {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public final Page<T> searchPaginatedByCriteria(final int page,
             final int pageSize, final Criterion... criterion) {
         Criteria crit = getSession().createCriteria(getType());
@@ -190,6 +207,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @param criteria {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
     public final Page<T> searchPaginatedByCriteria(final int page,
             final int pageSize, final DetachedCriteria criteria) {
         // Row count
@@ -199,12 +217,13 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
         criteria.setProjection(null);
         criteria.setResultTransformer(Criteria.ROOT_ENTITY);
 
+        @SuppressWarnings("unchecked")
         List<T> list = getCustomizedHibernateTemplate().
                 findByCriteria(criteria, (page - 1) * pageSize, pageSize);
 
         return new PageDefaultImpl<T>(list, page, pageSize, rowCount);
     }
-    
+
     /**
      * {@inheritDoc}
      *
@@ -214,19 +233,22 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @param criteria {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
     public Page<T> searchPaginatedByCriteria(int page, int pageSize, int totalRecords,
             DetachedCriteria criteria) {
+        @SuppressWarnings("unchecked")
         List<T> list = getCustomizedHibernateTemplate().
                 findByCriteria(criteria, (page - 1) * pageSize, pageSize);
 
         return new PageDefaultImpl<T>(list, page, pageSize, totalRecords);
-    }    
+    }
 
     /**
      * {@inheritDoc}
      *
      * @return {@inheritDoc}
      */
+    @Override
     public int deleteAll() {
         List<T> rows = findAll();
 
@@ -240,6 +262,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      *
      * @return {@inheritDoc}
      */
+    @Override
     public final long count() {
         return DataAccessUtils.intResult(
                 getCustomizedHibernateTemplate().find(
@@ -252,6 +275,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @param criteria {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
     public final long countByCriteria(final DetachedCriteria criteria) {
         criteria.setProjection(Projections.rowCount());
         return DataAccessUtils.intResult(getCustomizedHibernateTemplate().findByCriteria(
@@ -261,6 +285,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void rollBackTransaction() {
         final SessionFactory currSessionFactory =
                 getCustomizedHibernateTemplate().getSessionFactory();
@@ -278,6 +303,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      *
      * @return {@inheritDoc}
      */
+    @Override
     public final Class getType() {
         return type;
     }
@@ -287,6 +313,8 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      *
      * @param newType {@inheritDoc}
      */
+    @Override
+    @SuppressWarnings("unchecked")
     public final void setType(final Class newType) {
         this.type = newType;
     }
