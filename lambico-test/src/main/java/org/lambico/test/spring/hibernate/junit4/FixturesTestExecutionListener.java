@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import org.lambico.dao.generic.GenericDaoBase;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
-import org.lambico.data.FixtureHelper;
+import org.lambico.data.YamlFixtureHelper;
 import org.lambico.po.hibernate.Entity;
 import org.lambico.test.spring.hibernate.DaoUtils;
 import org.lambico.test.spring.hibernate.junit4.FixtureSet.LoadMode;
@@ -122,7 +122,7 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
         try {
             ClassPathResource path = (ClassPathResource) testContext.getApplicationContext().
                     getResource(ResourceLoader.CLASSPATH_URL_PREFIX + config.getRootFolder());
-            fixtures.putAll(FixtureHelper.loadFixturesFromResource(path, classes));
+            fixtures.putAll(YamlFixtureHelper.loadFixturesFromResource(path, classes));
             if (logger.isInfoEnabled()) {
                 HashMap<String, Integer> map = new HashMap<String, Integer>(fixtures.size());
                 for (Class model : classes) {

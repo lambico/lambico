@@ -30,7 +30,7 @@ import org.springframework.util.CollectionUtils;
 /**
  * @author michele franzin <michele at franzin.net>
  */
-public class FixtureHelperTest extends TestCase {
+public class YamlFixtureHelperTest extends TestCase {
 
     private DemoBean[] expected;
 
@@ -47,38 +47,38 @@ public class FixtureHelperTest extends TestCase {
 
     public void testShouldNotFailWrongFixtureDir() {
         Set<Class> models = getClassSet(DemoBean.class);
-        Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("nonExistant", models);
+        Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("nonExistant", models);
         assertTrue("Le fixture non sono vuote", objects.isEmpty());
     }
 
     public void testShouldNotFailIfMissingFixtureFile() {
         Set<Class> models = getClassSet(BigDecimal.class);
-        Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("fixtures", models);
+        Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures", models);
         assertTrue("Le fixture non sono vuote", objects.isEmpty());
     }
 
     public void testShouldNotFailWhenTrailingSlashPresent() throws Exception {
         Set<Class> models = getClassSet(DemoBean.class);
-        Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("fixtures/", models);
+        Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures/", models);
         assertNotNull("Non ha ritornato la mappa di fixtures", objects);
     }
 
     public void testShouldNotFailIfNoFile() {
         Set<Class> models = new LinkedHashSet<Class>();
-        Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("emptyDir", models);
+        Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("emptyDir", models);
         assertTrue("Le fixture non sono vuote", objects.isEmpty());
     }
 
     public void testShouldNotFailIfEmptyFile() {
         Set<Class> models = getClassSet(DemoBean.class);
-        Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("fixtures/empty", models);
+        Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures/empty", models);
         assertEquals("Non carica tutti i beans", 1, objects.size());
         assertTrue("Le fixture non sono vuote", objects.get(DemoBean.class).isEmpty());
     }
 
     public void testBeanLoading() {
         Set<Class> models = getClassSet(DemoBean.class);
-        Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("fixtures", models);
+        Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures", models);
         assertNotNull("Non ha ritornato la mappa di fixtures", objects);
         assertEquals("Non carica tutti i beans", 1, objects.size());
         assertTrue("Non crea istanze di " + DemoBean.class.getCanonicalName(), objects.containsKey(
@@ -95,7 +95,7 @@ public class FixtureHelperTest extends TestCase {
     @SuppressWarnings("unchecked")
     public void testBookLoading() {
         Set<Class> models = getClassSet(BookTC.class, AuthorTC.class);
-        Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("fixtures", models);
+        Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures", models);
         assertNotNull("Non ha ritornato la mappa di fixtures", objects);
         assertEquals(2, objects.size());
         assertEquals(3, objects.get(BookTC.class).size());
@@ -105,7 +105,7 @@ public class FixtureHelperTest extends TestCase {
 
     public void testFixtureMerge() {
         Set<Class> models = getClassSet(BookTC.class, AuthorTC.class);
-        Map<Class, List> objects = FixtureHelper.loadFixturesFromResource("fixtures", models);
+        Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures", models);
         AuthorTC author = (AuthorTC) objects.get(AuthorTC.class).get(3);
         assertEquals("john", author.getName());
         assertEquals("Java manual", author.getBooks().get(0).getTitle());

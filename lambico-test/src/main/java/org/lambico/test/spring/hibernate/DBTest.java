@@ -28,7 +28,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.lambico.dao.generic.GenericDaoBase;
-import org.lambico.data.FixtureHelper;
+import org.lambico.data.YamlFixtureHelper;
 import org.lambico.test.spring.EnhancedTestCase;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
@@ -149,7 +149,7 @@ public abstract class DBTest extends EnhancedTestCase {
             Set<Class> fixtureClasses = getFixtureClassSet();
             if (fixtureClasses != null && fixtureClasses.size() > 0) {
                 try {
-                    fixtures = FixtureHelper.loadFixturesFromResource(
+                    fixtures = YamlFixtureHelper.loadFixturesFromResource(
                             (ClassPathResource) applicationContext.getResource(
                             ResourceLoader.CLASSPATH_URL_PREFIX + "/fixtures/"), fixtureClasses);
                     logger.info("Loaded fixtures for classes "

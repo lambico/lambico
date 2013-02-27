@@ -21,7 +21,7 @@ import java.util.List;
 import org.hibernate.cfg.DefaultComponentSafeNamingStrategy;
 import org.lambico.dao.generic.GenericDaoBase;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
-import org.lambico.data.FixtureHelper;
+import org.lambico.data.YamlFixtureHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -45,10 +45,10 @@ public class FixtureUtils {
      */
     public static void populateDbForModel(final Class model, final List fixtures,
             final GenericDaoBase dao) {
-        logger.debug("Populating table for {}", FixtureHelper.getModelName(model));
+        logger.debug("Populating table for {}", YamlFixtureHelper.getModelName(model));
         if (fixtures == null) {
             logger.warn("No data for {}, did you created the fixture file?",
-                    FixtureHelper.getModelName(model));
+                    YamlFixtureHelper.getModelName(model));
             return;
         }
         final HibernateTemplate template = ((GenericDaoHibernateSupport) dao).getHibernateTemplate();
@@ -59,7 +59,7 @@ public class FixtureUtils {
             template.flush();
             template.clear();
         } catch (Exception e) {
-            logger.error("Error populating rows in {} table", FixtureHelper.getModelName(model), e);
+            logger.error("Error populating rows in {} table", YamlFixtureHelper.getModelName(model), e);
         }
     }
 
@@ -70,7 +70,7 @@ public class FixtureUtils {
      * @param dao The DAO tp use.
      */
     public static void eraseDbForModel(final Class model, final GenericDaoBase dao) {
-        logger.debug("Erasing table for {}", FixtureHelper.getModelName(model));
+        logger.debug("Erasing table for {}", YamlFixtureHelper.getModelName(model));
         try {
             if (dao == null) {
                 throw new IllegalArgumentException("Dao associated to " + model.getName()
@@ -82,7 +82,7 @@ public class FixtureUtils {
             template.bulkUpdate("DELETE FROM "
                     + DefaultComponentSafeNamingStrategy.INSTANCE.tableName(model.getSimpleName()));
         } catch (Exception e) {
-            logger.error("Error deleting rows in {} table", FixtureHelper.getModelName(model), e);
+            logger.error("Error deleting rows in {} table", YamlFixtureHelper.getModelName(model), e);
         }
     }
 }

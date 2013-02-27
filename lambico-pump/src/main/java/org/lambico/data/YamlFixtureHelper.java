@@ -37,18 +37,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Fixture load / dump facility
+ * Yaml fixture load / dump helper
  *
  * @author michele franzin <michele at franzin.net>
  */
-public class FixtureHelper {
+public class YamlFixtureHelper {
 
-    private static Logger logger = LoggerFactory.getLogger(FixtureHelper.class);
+    private static Logger logger = LoggerFactory.getLogger(YamlFixtureHelper.class);
     private static final Pattern HEADER_MATCH = Pattern.compile("^-\\s??(\\S*)\\s*?$",
             Pattern.MULTILINE);
     private static final Pattern LINE_MATCH = Pattern.compile("^(.+)$", Pattern.MULTILINE);
 
-    private FixtureHelper() {
+    private YamlFixtureHelper() {
     }
 
 //    /**
