@@ -6,3 +6,4 @@ syntag: regexp
 ^lambico-spring/target
 ^lambico-spring-hibernate/target
 ^lambico-test/target
+^lambico-pump/target

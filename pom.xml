@@ -14,6 +14,7 @@
         <module>lambico-spring</module>
         <module>lambico-spring-hibernate</module>
         <module>lambico-test</module>
+        <module>lambico-pump</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -61,18 +62,23 @@
             </dependency>
             <dependency>
                 <groupId>org.lambico</groupId>
-                <artifactId>lambico-test</artifactId>
+                <artifactId>lambico-pump</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.parancoe</groupId>
-                <artifactId>parancoe-yaml</artifactId>
-                <version>3.0-SNAPSHOT</version>
+                <groupId>org.lambico</groupId>
+                <artifactId>lambico-test</artifactId>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>${lambico.log4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${lambico.spring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>

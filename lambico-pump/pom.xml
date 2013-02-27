@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>lambico</artifactId>
+        <groupId>org.lambico</groupId>
+        <version>1.1-SNAPSHOT</version>
+    </parent>
+    <groupId>org.lambico</groupId>
+    <artifactId>lambico-pump</artifactId>
+    <packaging>jar</packaging>
+    <name>Lambico Data Pump</name>
+    <description>Lambico's support for data loading.</description>
+    <version>1.1-SNAPSHOT</version>
+    <url>http://www.lambico.org</url>
+    <inceptionYear>2013</inceptionYear>
+    <properties>
+        <main.basedir>${basedir}/..</main.basedir>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <properties>
+                        <year>${project.inceptionYear}</year>
+                        <contact>michele@franzin.net</contact>
+                    </properties>
+                    <mapping>
+                        <json>SLASHSTAR_STYLE</json>
+                    </mapping>
+                    <excludes>
+                        <exclude>target/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.lambico</groupId>
+            <artifactId>lambico-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.11</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+
