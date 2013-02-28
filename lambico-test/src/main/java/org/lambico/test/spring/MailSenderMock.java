@@ -18,21 +18,19 @@
 package org.lambico.test.spring;
 
 import javax.mail.internet.MimeMessage;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 /**
- * Mock implementation of JavaMailSender for test porpouse.
+ * Mock implementation of JavaMailSender for testing porpouse.
  *
  * @author Enrico Giurin
  * @author Lucio Benfante
- * @version $Revision$
  */
 public class MailSenderMock extends JavaMailSenderImpl {
 
-    /** The logger for this class. */
-    private static Logger logger = Logger.getLogger(
-            MailSenderMock.class);
+    private static Logger logger = LoggerFactory.getLogger(MailSenderMock.class);
 
     /**
      * {@inheritDoc}
@@ -45,7 +43,7 @@ public class MailSenderMock extends JavaMailSenderImpl {
         if (mimeMessages != null) {
             for (MimeMessage mimeMessage : mimeMessages) {
                 try {
-                    logger.info(mimeMessage.getContent());
+                    logger.info(mimeMessage.getContent().toString());
                 } catch (Exception ex) {
                     logger.error("Can't get message content", ex);
                 }
@@ -53,7 +51,7 @@ public class MailSenderMock extends JavaMailSenderImpl {
         }
         if (originalMessages != null) {
             for (Object o : originalMessages) {
-                logger.info(o);
+                logger.info(o.toString());
             }
         }
     }

@@ -23,7 +23,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.annotation.AnnotationClassFilter;
 import org.springframework.beans.factory.parsing.ReaderContext;
 import org.springframework.core.io.Resource;
@@ -38,14 +39,13 @@ import org.springframework.util.StringUtils;
  */
 public final class ContextUtils {
 
+    private static Logger logger = LoggerFactory.getLogger(ContextUtils.class);
+
     /**
      * The constructor.
      */
     private ContextUtils() {
     }
-
-    /** The logger for this class. */
-    private static Logger logger = Logger.getLogger(ContextUtils.class);
 
     /**
      * Return all classes in the package subtree.

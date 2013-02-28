@@ -19,7 +19,8 @@
 package org.lambico.dao;
 
 import java.util.Properties;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An exception manager that simply log its exception.
@@ -30,7 +31,7 @@ import org.apache.log4j.Logger;
 public class LoggingExceptionManager extends DaoExceptionManagerBase {
 
     /** The logger for this class. */
-    private final Logger logger = Logger.getLogger(LoggingExceptionManager.class);
+    private final Logger logger = LoggerFactory.getLogger(LoggingExceptionManager.class);
 
     /**
      * {@inheritDoc}

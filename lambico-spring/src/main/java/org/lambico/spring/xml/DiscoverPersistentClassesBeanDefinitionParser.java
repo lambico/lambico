@@ -17,7 +17,8 @@
  */
 package org.lambico.spring.xml;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
@@ -35,12 +36,11 @@ import org.w3c.dom.Element;
  */
 public class DiscoverPersistentClassesBeanDefinitionParser implements BeanDefinitionParser {
 
+    private static Logger logger = LoggerFactory.getLogger(DefineDaosBeanDefinitionParser.class);
     /** The basePackage attribute. */
     public static final String BASE_PACKAGE_ATTRIBUTE = "basePackage";
     /** The sessionFactoryName attribute. */
     public static final String SESSION_FACTORY_NAME_ATTRIBUTE = "sessionFactoryName";
-    /** The logger for this class. */
-    private static Logger logger = Logger.getLogger(DefineDaosBeanDefinitionParser.class);
 
     /**
      * {@inheritDoc}

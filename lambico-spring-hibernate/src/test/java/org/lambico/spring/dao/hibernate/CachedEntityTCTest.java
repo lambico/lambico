@@ -18,7 +18,6 @@
 package org.lambico.spring.dao.hibernate;
 
 import javax.annotation.Resource;
-import org.apache.log4j.Logger;
 import org.hibernate.stat.Statistics;
 import org.lambico.dao.spring.hibernate.HibernateGenericDao;
 import org.lambico.spring.dao.hibernate.dao.CachedEntityTCDao;
@@ -33,7 +32,6 @@ import org.lambico.test.spring.hibernate.DBTest;
  */
 public class CachedEntityTCTest extends DBTest {
 
-    private static Logger logger = Logger.getLogger(CachedEntityTCTest.class);
     public static final int COUNT = 1000;
     public static final String FIELD = "%67%";
     @Resource

@@ -21,7 +21,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
-import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -45,6 +44,8 @@ import org.lambico.dao.generic.GenericDaoTypeSupport;
 import org.lambico.dao.generic.MaxResults;
 import org.lambico.dao.generic.NamedParameter;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.util.StringUtils;
@@ -58,14 +59,13 @@ import org.springframework.util.StringUtils;
 @Aspect
 public class HibernateDaoInstrumentation {
 
+    private static Logger logger = LoggerFactory.getLogger(HibernateDaoInstrumentation.class);
     /** Length of the "findBy"prefix. */
     private static final int FIND_BY_PREFIX_SIZE = "findBy".length();
     /** Length of the "orderBy" prefix. */
     private static final int ORDER_BY_PREFIX_SIZE = "orderBy".length();
     /** Length of the "orderBy" prefix. */
     private static final int COUNT_BY_PREFIX_SIZE = "countBy".length();
-    /** The logger for this class. */
-    private static Logger logger = Logger.getLogger(HibernateDaoInstrumentation.class);
     /** The exception manager. */
     private DaoExceptionManager daoExceptionManager = new BypassingExceptionManager();
 

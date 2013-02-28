@@ -23,11 +23,12 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.log4j.Logger;
 import org.lambico.dao.spring.BusinessDao;
 import org.lambico.dao.generic.Dao;
 import org.lambico.dao.generic.GenericDaoBase;
 import org.lambico.dao.generic.GenericDaoTypeSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utils for the DAO tools.
@@ -37,8 +38,7 @@ import org.lambico.dao.generic.GenericDaoTypeSupport;
  */
 public final class DaoUtils {
 
-    /** The logger for this class. **/
-    private static Logger logger = Logger.getLogger(DaoUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(DaoUtils.class);
 
     /**
      * Creates a new instance of DaoUtils.

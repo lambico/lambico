@@ -71,6 +71,12 @@
             <artifactId>hibernate-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${lambico.slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
 

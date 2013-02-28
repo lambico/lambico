@@ -25,13 +25,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Entity;
-import org.apache.log4j.Logger;
 import org.lambico.dao.AutomaticDao;
 import org.lambico.dao.generic.Dao;
 import org.lambico.spring.xml.ContextUtils;
 import org.lambico.spring.xml.DaoBeanCreator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.PropertyValue;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.beans.factory.parsing.ReaderContext;
@@ -55,8 +57,7 @@ import org.w3c.dom.Element;
  */
 public class HibernateDaoBeanCreator implements DaoBeanCreator {
 
-    /** The logger for this class. */
-    private static Logger logger = Logger.getLogger(HibernateDaoBeanCreator.class);
+    private static Logger logger = LoggerFactory.getLogger(HibernateDaoBeanCreator.class);
     /** The ResourcePatternResolver. */
     private ResourcePatternResolver rl;
     /** The BeanDefinitionRegistry. */

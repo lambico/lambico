@@ -18,12 +18,13 @@
 package org.lambico.spring.dao;
 
 import java.lang.reflect.Method;
-import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.lambico.dao.DaoProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 /**
@@ -35,10 +36,9 @@ import org.springframework.util.StringUtils;
 @Aspect()
 public class DaoProviderInstrumentation {
 
+    private static Logger logger = LoggerFactory.getLogger(DaoProviderInstrumentation.class);
     /** Prefix of the get&lt;DAO&gt; method. */
     private static final String METHOD_PREFIX = "get";
-    /** The logger for this class. */
-    private static Logger logger = Logger.getLogger(DaoProviderInstrumentation.class);
 
     /**
      * Executes a get&lt;DAO&gt; method in the instrumented class.
@@ -53,9 +53,11 @@ public class DaoProviderInstrumentation {
         final DaoProvider target = (DaoProvider) pjp.getTarget();
         final Method method = ((MethodSignature) pjp.getSignature()).getMethod();
         final Object[] args = pjp.getArgs();
-        logger.debug("target: " + target);
-        logger.debug("method: " + method);
-        logger.debug("args: " + args);
+        if (logger.isDebugEnabled()) {
+            logger.debug("target: {}", target);
+            logger.debug("method: {}", method);
+            logger.debug("args: {}", args);
+        }
 
         if (method.getName().startsWith(METHOD_PREFIX)) {
             result = target.getDaoMap().get(daoNameFromMethod(method));

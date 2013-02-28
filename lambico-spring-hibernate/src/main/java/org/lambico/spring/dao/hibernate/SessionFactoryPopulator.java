@@ -20,9 +20,10 @@ package org.lambico.spring.dao.hibernate;
 import java.util.List;
 
 import javax.persistence.Entity;
-import org.apache.log4j.Logger;
 import org.lambico.spring.xml.ContextUtils;
 import org.lambico.spring.xml.EntityDiscoverer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.TypedStringValue;
@@ -48,8 +49,7 @@ import org.w3c.dom.Element;
  */
 public class SessionFactoryPopulator implements EntityDiscoverer {
 
-    /** The logger for this class. */
-    private static Logger logger = Logger.getLogger(SessionFactoryPopulator.class);
+    private static Logger logger = LoggerFactory.getLogger(SessionFactoryPopulator.class);
     /** The ResourcePatternResolver. */
     private ResourcePatternResolver rl;
     /** The BeanDefinition registry. */

@@ -22,7 +22,7 @@
         <year>2009</year>
         <lambico.spring.version>3.0.7.RELEASE</lambico.spring.version>
         <lambico.hibernate.version>3.6.7.Final</lambico.hibernate.version>
-        <lambico.log4j.version>1.2.14</lambico.log4j.version>
+        <lambico.slf4j.version>1.7.2</lambico.slf4j.version>
         <lambico.junit4.version>4.11</lambico.junit4.version>
 
         <!-- NetBeans IDE properties -->
@@ -71,9 +71,14 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>${lambico.log4j.version}</version>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${lambico.slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${lambico.slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -144,16 +149,6 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.4</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.2</version>
             </dependency>
             <dependency>
                 <groupId>cglib</groupId>

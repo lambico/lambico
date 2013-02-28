@@ -20,7 +20,6 @@ package org.lambico.data;
 import java.io.File;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.FileNotFoundException;
@@ -34,6 +33,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.lambico.data.EngineFactory.EngineType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Fixture load / dump facility
@@ -42,7 +43,7 @@ import org.lambico.data.EngineFactory.EngineType;
  */
 public class FixtureHelper {
 
-    private static Logger logger = Logger.getLogger(FixtureHelper.class);
+    private static Logger logger = LoggerFactory.getLogger(FixtureHelper.class);
     private static final Pattern HEADER_MATCH = Pattern.compile("^-\\s??(\\S*)\\s*?$",
             Pattern.MULTILINE);
     private static final Pattern LINE_MATCH = Pattern.compile("^(.+)$", Pattern.MULTILINE);

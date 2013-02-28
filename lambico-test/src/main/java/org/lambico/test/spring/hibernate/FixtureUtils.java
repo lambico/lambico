@@ -18,22 +18,23 @@
 package org.lambico.test.spring.hibernate;
 
 import java.util.List;
-import org.apache.log4j.Logger;
 import org.hibernate.cfg.DefaultComponentSafeNamingStrategy;
 import org.lambico.dao.generic.GenericDaoBase;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
 import static org.lambico.data.FixtureHelper.getFixtureFileName;
 import static org.lambico.data.FixtureHelper.getModelName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 /**
  * Fixture utility class.
  *
- * @author michele franzin <michele @ franzin.net
+ * @author michele franzin <michele at franzin.net>
  */
 public class FixtureUtils {
 
-    private static Logger logger = Logger.getLogger(FixtureUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(FixtureUtils.class);
 
     /**
      * Populate the DB with the fixtures data.
@@ -44,12 +45,10 @@ public class FixtureUtils {
      */
     public static void populateDbForModel(final Class model, final List fixtures,
             final GenericDaoBase dao) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Populating table for " + getModelName(model));
-        }
+        logger.debug("Populating table for {}", getModelName(model));
         if (fixtures == null) {
-            logger.warn("No fixtures for " + getModelName(model) + ", did you created the file '"
-                    + getFixtureFileName(model) + "'?");
+            logger.warn("No fixtures for {}, did you created the file '{}' ?", getModelName(model),
+                    getFixtureFileName(model));
             return;
         }
         final HibernateTemplate template = ((GenericDaoHibernateSupport) dao).getHibernateTemplate();
@@ -60,7 +59,7 @@ public class FixtureUtils {
             template.flush();
             template.clear();
         } catch (Exception e) {
-            logger.error("Error populating rows in " + getModelName(model) + " table", e);
+            logger.error("Error populating rows in {} table", getModelName(model), e);
         }
     }
 
@@ -71,19 +70,18 @@ public class FixtureUtils {
      * @param dao The DAO tp use.
      */
     public static void eraseDbForModel(final Class model, final GenericDaoBase dao) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Erasing table for " + getModelName(model));
-        }
+        logger.debug("Erasing table for {}", getModelName(model));
         try {
             if (dao == null) {
                 throw new IllegalArgumentException("Dao associated to " + model.getName()
                         + " PO is null!");
             }
 
-            /* int deleted = */ ((GenericDaoHibernateSupport) dao).getHibernateTemplate().bulkUpdate("DELETE FROM "
+            final HibernateTemplate template = ((GenericDaoHibernateSupport) dao).getHibernateTemplate();
+            template.bulkUpdate("DELETE FROM "
                     + DefaultComponentSafeNamingStrategy.INSTANCE.tableName(model.getSimpleName()));
         } catch (Exception e) {
-            logger.error("Error deleting rows in " + getModelName(model) + " table", e);
+            logger.error("Error deleting rows in {} table", getModelName(model), e);
         }
     }
 }
