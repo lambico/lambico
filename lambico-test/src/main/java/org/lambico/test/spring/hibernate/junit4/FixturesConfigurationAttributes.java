@@ -17,10 +17,13 @@
  */
 package org.lambico.test.spring.hibernate.junit4;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.lambico.test.spring.hibernate.junit4.FixtureSet.LoadMode;
+import org.springframework.core.annotation.AnnotationUtils;
 
 /**
  * Configuration attributes for configuring fixture enable tests.
@@ -29,9 +32,21 @@ import org.lambico.test.spring.hibernate.junit4.FixtureSet.LoadMode;
  */
 public class FixturesConfigurationAttributes {
 
+    private static final Class[] defaultModelClasses = (Class[]) AnnotationUtils.getDefaultValue(
+            FixtureSet.class, "modelClasses");
+    private static final String defaultRootFolder = (String) AnnotationUtils.getDefaultValue(
+            FixtureSet.class, "rootFolder");
+    private static final LoadMode defaultloadMode = (LoadMode) AnnotationUtils.getDefaultValue(
+            FixtureSet.class, "loadMode");
     private Class[] modelClasses;
     private String rootFolder;
     private LoadMode loadMode;
+
+    public FixturesConfigurationAttributes() {
+        this.modelClasses = defaultModelClasses;
+        this.rootFolder = defaultRootFolder;
+        this.loadMode = defaultloadMode;
+    }
 
     public FixturesConfigurationAttributes(Class[] modelClasses, String rootFolder,
             LoadMode loadMode) {
@@ -84,5 +99,20 @@ public class FixturesConfigurationAttributes {
         Set<Class> result = new LinkedHashSet<Class>(modelClasses.length);
         CollectionUtils.addAll(result, modelClasses);
         return result;
+    }
+
+    public void merge(Annotation annotation) {
+        Class[] models = (Class[]) AnnotationUtils.getValue(annotation, "modelClasses");
+        if (!Arrays.equals(defaultModelClasses, models)) {
+            this.modelClasses = models;
+        }
+        String folder = (String) AnnotationUtils.getValue(annotation, "rootFolder");
+        if (!defaultRootFolder.equals(folder)) {
+            this.rootFolder = folder;
+        }
+        LoadMode mode = (LoadMode) AnnotationUtils.getValue(annotation, "loadMode");
+        if (!defaultloadMode.equals(mode)) {
+            this.loadMode = mode;
+        }
     }
 }

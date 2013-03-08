@@ -17,11 +17,13 @@
  */
 package org.lambico.test.spring.hibernate.junit4;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.lang.ArrayUtils;
 import org.lambico.dao.generic.GenericDaoBase;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
 import org.lambico.data.YamlFixtureHelper;
@@ -30,7 +32,6 @@ import org.lambico.test.spring.hibernate.DaoUtils;
 import org.lambico.test.spring.hibernate.junit4.FixtureSet.LoadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -90,7 +91,12 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
             GenericDaoBase dao = DaoUtils.getDaoFor(model, testContext.getApplicationContext());
             final HibernateTemplate template = ((GenericDaoHibernateSupport) dao).
                     getHibernateTemplate();
-            for (Object entity : fixtures.get(model)) {
+            List<Object> data = fixtures.get(model);
+            if (data == null) {
+                logger.warn("No fixtures stored for {} model", model.getSimpleName());
+                continue;
+            }
+            for (Object entity : data) {
                 if (LoadMode.CLASS.equals(loadMode)) {
                     // transaction will be rollbacked, but session cache lives
                     ((Entity) entity).setId(null);
@@ -145,26 +151,37 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
      */
     private FixturesConfigurationAttributes retrieveConfigurationAttributes(TestContext testContext) {
         if (this.configurationAttributes == null) {
-            Class<?> clazz = testContext.getTestClass();
-            Class<FixtureSet> annotationType = FixtureSet.class;
-            FixtureSet config = clazz.getAnnotation(annotationType);
+            this.configurationAttributes = new FixturesConfigurationAttributes();
 
-            Class[] classes;
-            String folder;
-            LoadMode loadMode;
-            if (config != null) {
-                classes = config.modelClasses();
-                folder = config.rootFolder();
-                loadMode = config.loadMode();
-            } else {
-                classes = (Class[]) AnnotationUtils.getDefaultValue(annotationType, "modelClasses");
-                folder = (String) AnnotationUtils.getDefaultValue(annotationType, "rootFolder");
-                loadMode = (LoadMode) AnnotationUtils.
-                        getDefaultValue(annotationType, "loadMode");
+            Class<?>[] classes = getSuperClasses(testContext.getTestClass());
+            ArrayUtils.reverse(classes);
+            for (Class<?> c : classes) {
+                FixtureSet annotation = c.getAnnotation(FixtureSet.class);
+                if (annotation != null) {
+                    configurationAttributes.merge(annotation);
+                }
             }
-            this.configurationAttributes =
-                    new FixturesConfigurationAttributes(classes, folder, loadMode);
         }
         return this.configurationAttributes;
+    }
+
+    /**
+     * Gets all superclasses of the supplied {@link Class class}, including the class itself. The
+     * ordering of the returned list will begin with the supplied class and continue up the class
+     * hierarchy.
+     * <p>Note: This code has been borrowed from
+     * {@link org.junit.internal.runners.TestClass#getSuperClasses(Class)} and adapted.
+     *
+     * @param clazz the class for which to retrieve the superclasses.
+     * @return all superclasses of the supplied class.
+     */
+    private Class<?>[] getSuperClasses(Class<?> clazz) {
+        ArrayList<Class<?>> results = new ArrayList<Class<?>>();
+        Class<?> current = clazz;
+        while (current != null) {
+            results.add(current);
+            current = current.getSuperclass();
+        }
+        return results.toArray(new Class<?>[]{});
     }
 }
