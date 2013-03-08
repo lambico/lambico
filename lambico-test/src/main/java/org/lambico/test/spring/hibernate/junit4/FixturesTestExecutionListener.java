@@ -131,7 +131,7 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
                 logger.info("Loaded fixtures for models {}", map);
             }
         } catch (Exception e) {
-            logger.warn("I can't load all fixture for {}", classes, e);
+            logger.error("I can't load all fixture for {}", classes, e);
         }
     }
 
