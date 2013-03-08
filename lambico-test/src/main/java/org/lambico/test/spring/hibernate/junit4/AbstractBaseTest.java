@@ -33,5 +33,4 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
     "/applicationContext-test.xml"})
 @TestExecutionListeners(listeners = {FixturesTestExecutionListener.class})
 public abstract class AbstractBaseTest extends AbstractTransactionalJUnit4SpringContextTests {
-// TODO move to parancoe-test project
 }
