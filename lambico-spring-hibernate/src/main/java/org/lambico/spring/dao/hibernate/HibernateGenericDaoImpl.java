@@ -23,6 +23,7 @@ import org.hibernate.classic.Session;
 import org.lambico.dao.spring.hibernate.HibernateGenericDao;
 import java.io.Serializable;
 import java.util.List;
+import org.apache.commons.lang.SerializationUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
@@ -277,9 +278,10 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     @Override
     public final long countByCriteria(final DetachedCriteria criteria) {
-        criteria.setProjection(Projections.rowCount());
+        DetachedCriteria countCriteria = (DetachedCriteria) SerializationUtils.clone(criteria);
+        countCriteria.setProjection(Projections.rowCount());
         return DataAccessUtils.intResult(getCustomizedHibernateTemplate().findByCriteria(
-                criteria));
+                countCriteria));
     }
 
     /**

@@ -74,6 +74,7 @@
                     <excludes>
                         <exclude>**/META-INF/spring.handlers</exclude>
                         <exclude>**/META-INF/spring.schemas</exclude>
+                        <exclude>nb-configuration.xml</exclude>
                     </excludes>
                 </configuration>
             </plugin>
