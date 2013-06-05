@@ -52,6 +52,9 @@ public class PageDefaultImpl<T> implements Page<T> {
     public static final PageDefaultImpl EMPTY =
             new PageDefaultImpl(Collections.EMPTY_LIST, 1, 1, 0);
 
+    public PageDefaultImpl() {
+    }
+    
     /**
      * The constructor of a page.
      *
