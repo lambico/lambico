@@ -99,7 +99,11 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
             for (Object entity : data) {
                 if (LoadMode.CLASS.equals(loadMode)) {
                     // transaction will be rollbacked, but session cache lives
-                    ((Entity) entity).setId(null);
+                    if (entity instanceof Entity) {
+                        ((Entity) entity).setId(null);
+                    } else {
+                        // TODO: find an alternative for entities that don't have Entity as base class!
+                    }
                 }
                 template.save(entity);
             }
