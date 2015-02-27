@@ -15,12 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import org.lambico.spring.dao.hibernate.dao.EntityTCDao;
 import javax.annotation.Resource;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * Tests on the HibernateDaoUtils methods.
@@ -35,6 +35,7 @@ public class HibernateDaoUtilsTest extends BaseTest {
     /**
      * Test of isAKnownNativeMethod method, of class HibernateDaoUtils.
      */
+    @Test
     public void testIsAKnownNativeMethod() throws NoSuchMethodException {
         assertTrue(HibernateDaoUtils.isAKnownNativeMethod(entityTCDao.getClass().getDeclaredMethod(
                 "toString")));

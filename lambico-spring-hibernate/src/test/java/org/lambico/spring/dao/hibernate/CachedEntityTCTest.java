@@ -18,11 +18,23 @@
 package org.lambico.spring.dao.hibernate;
 
 import javax.annotation.Resource;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import org.hibernate.stat.Statistics;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.lambico.dao.spring.hibernate.HibernateGenericDao;
 import org.lambico.spring.dao.hibernate.dao.CachedEntityTCDao;
 import org.lambico.spring.dao.hibernate.po.CachedEntityTC;
-import org.lambico.test.spring.hibernate.DBTest;
+import org.lambico.test.spring.hibernate.junit4.AbstractBaseTest;
+import org.springframework.test.context.transaction.AfterTransaction;
+import org.springframework.test.context.transaction.BeforeTransaction;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
  * Tests on caching DAO methods.
@@ -30,31 +42,61 @@ import org.lambico.test.spring.hibernate.DBTest;
  * @author <a href="mailto:lucio@benfante.com">Lucio Benfante</a>
  * @version $Revision$
  */
-public class CachedEntityTCTest extends DBTest {
+public class CachedEntityTCTest extends AbstractBaseTest {
 
     public static final int COUNT = 1000;
     public static final String FIELD = "%67%";
     @Resource
     private CachedEntityTCDao cachedEntityTCDao;
 
-    @Override
-    protected void prepareTestInstance() throws Exception {
-        super.prepareTestInstance();
-        for (long i = 0; i < COUNT; i++) {
-            cachedEntityTCDao.create(new CachedEntityTC("" + i, "" + i, "" + i, i));
+    @BeforeTransaction
+    @Transactional
+    public void prepareTestInstance() throws Exception {
+        PlatformTransactionManager txManager
+                = this.applicationContext.getBean(PlatformTransactionManager.class);
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setName("refreshDatabaseWithFixtures");
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
+        TransactionStatus status = txManager.getTransaction(def);
+        try {
+            for (long i = 0; i < COUNT; i++) {
+                cachedEntityTCDao.create(new CachedEntityTC("" + i, "" + i, "" + i, i));
+            }
+        } catch (Exception e) {
+            txManager.rollback(status);
+            throw e;
         }
+        txManager.commit(status);
     }
 
-    @Override
-    protected void endTransaction() {
-        cachedEntityTCDao.deleteAll();
-        super.endTransaction();
+    @AfterTransaction
+    @Transactional
+    public void endTransaction() throws Exception {
+        PlatformTransactionManager txManager
+                = this.applicationContext.getBean(PlatformTransactionManager.class);
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setName("refreshDatabaseWithFixtures");
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
+        TransactionStatus status = txManager.getTransaction(def);
+        try {
+            cachedEntityTCDao.deleteAll();
+        } catch (Exception e) {
+            txManager.rollback(status);
+            throw e;
+        }
+        txManager.commit(status);
     }
 
+    @Test
+    @Transactional
     public void testAllSize() {
-        assertSize(COUNT, cachedEntityTCDao.findAll());
+        assertThat(COUNT, is(cachedEntityTCDao.findAll().size()));
     }
 
+    @Test
+    @Transactional
     public void test1() {
         final Statistics statistics =
                 ((HibernateGenericDao) cachedEntityTCDao).getCustomizedHibernateTemplate().

@@ -34,14 +34,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 /**
- * Spring test framework TestExecutionListener which looks for the
- * <code>FixtureSet</code> annotation and if found, attempts to load test fixture before the test is
- * run.
+ * Spring test framework TestExecutionListener which looks for the <code>FixtureSet</code>
+ * annotation and if found, attempts to load test fixture before the test is run.
  *
  * @author michele franzin <michele at franzin.net>
  * @see FixtureSet
@@ -74,11 +77,24 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
     }
 
     @Override
-    public void afterTestClass(final TestContext testContext) {
-        LoadMode mode = retrieveConfigurationAttributes(testContext).getLoadMode();
-        if (LoadMode.CLASS.equals(mode)) {
-            emptyDatabaseFixtures(testContext);
+    public void afterTestClass(final TestContext testContext) throws Exception {
+        PlatformTransactionManager txManager
+                = testContext.getApplicationContext().getBean(PlatformTransactionManager.class);
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setName("refreshDatabaseWithFixtures");
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
+        TransactionStatus status = txManager.getTransaction(def);
+        try {
+            LoadMode mode = retrieveConfigurationAttributes(testContext).getLoadMode();
+            if (LoadMode.CLASS.equals(mode)) {
+                emptyDatabaseFixtures(testContext);
+            }
+        } catch (Exception e) {
+            txManager.rollback(status);
+            throw e;
         }
+        txManager.commit(status);
     }
 
     /**
@@ -86,28 +102,41 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
      */
     @SuppressWarnings("unchecked")
     private void refreshDatabaseWithFixtures(final TestContext testContext) throws Exception {
-        LoadMode loadMode = retrieveConfigurationAttributes(testContext).getLoadMode();
-        for (Class model : retrieveConfigurationAttributes(testContext).getModelClasses()) {
-            GenericDaoBase dao = DaoUtils.getDaoFor(model, testContext.getApplicationContext());
-            final HibernateTemplate template = ((GenericDaoHibernateSupport) dao).
-                    getHibernateTemplate();
-            List<Object> data = fixtures.get(model);
-            if (data == null) {
-                logger.warn("No fixtures stored for {} model", model.getSimpleName());
-                continue;
-            }
-            for (Object entity : data) {
-                if (LoadMode.CLASS.equals(loadMode)) {
-                    // transaction will be rollbacked, but session cache lives
-                    if (entity instanceof Entity) {
-                        ((Entity) entity).setId(null);
-                    } else {
-                        // TODO: find an alternative for entities that don't have Entity as base class!
-                    }
+        PlatformTransactionManager txManager
+                = testContext.getApplicationContext().getBean(PlatformTransactionManager.class);
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setName("refreshDatabaseWithFixtures");
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+
+        TransactionStatus status = txManager.getTransaction(def);
+        try {
+            LoadMode loadMode = retrieveConfigurationAttributes(testContext).getLoadMode();
+            for (Class model : retrieveConfigurationAttributes(testContext).getModelClasses()) {
+                GenericDaoBase dao = DaoUtils.getDaoFor(model, testContext.getApplicationContext());
+                final HibernateTemplate template = ((GenericDaoHibernateSupport) dao).
+                        getHibernateTemplate();
+                List<Object> data = fixtures.get(model);
+                if (data == null) {
+                    logger.warn("No fixtures stored for {} model", model.getSimpleName());
+                    continue;
                 }
-                template.save(entity);
+                for (Object entity : data) {
+                    if (LoadMode.CLASS.equals(loadMode)) {
+                        // transaction will be rollbacked, but session cache lives
+                        if (entity instanceof Entity) {
+                            ((Entity) entity).setId(null);
+                        } else {
+                            // TODO: find an alternative for entities that don't have Entity as base class!
+                        }
+                    }
+                    template.save(entity);
+                }
             }
+        } catch (Exception e) {
+            txManager.rollback(status);
+            throw e;
         }
+        txManager.commit(status);
     }
 
     private void emptyDatabaseFixtures(final TestContext testContext) {
@@ -173,7 +202,8 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
      * Gets all superclasses of the supplied {@link Class class}, including the class itself. The
      * ordering of the returned list will begin with the supplied class and continue up the class
      * hierarchy.
-     * <p>Note: This code has been borrowed from
+     * <p>
+     * Note: This code has been borrowed from
      * {@link org.junit.internal.runners.TestClass#getSuperClasses(Class)} and adapted.
      *
      * @param clazz the class for which to retrieve the superclasses.

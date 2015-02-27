@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import org.lambico.spring.dao.hibernate.bo.VersionedEntityTCBO;
@@ -25,6 +24,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Resource;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  * A test case for a versioned entity.
@@ -37,6 +38,7 @@ public class VersionedEntityTest extends BaseTest {
     @Resource
     private VersionedEntityTCBO versionedEntityTCBO;
 
+    @Test
     public void testStoreRetrieve() {
         VersionedEntityTC versionedEntity = new VersionedEntityTC();
         versionedEntity.setName("Test name");
@@ -49,6 +51,7 @@ public class VersionedEntityTest extends BaseTest {
         assertEquals(versionedEntity, retrievedEntity);
     }
 
+    @Test
     public void testUpdateNewVersionedData() {
         VersionedEntityTC versionedEntity = new VersionedEntityTC();
         versionedEntity.setName("Test name");
@@ -66,6 +69,7 @@ public class VersionedEntityTest extends BaseTest {
         assertNull(versionedEntity.findLastVersionedData().getDateTo());
     }
 
+    @Test
     public void testUpdateExistentVersionedData() throws InterruptedException {
         VersionedEntityTC versionedEntity = new VersionedEntityTC();
         versionedEntity.setName("Test name");
@@ -83,11 +87,12 @@ public class VersionedEntityTest extends BaseTest {
         List<VersionedEntityDataTC> entityDataVersions = retrievedEntity.getVersionedData();
         assertTrue(!entityDataVersions.isEmpty());
         assertEquals(2, entityDataVersions.size());
-        assertTrue(versionedEntityData.getId().equals(retrievedEntity.findLastVersionedData().getId()));
+        assertTrue(versionedEntityData.getDateFrom().equals(retrievedEntity.findLastVersionedData().getDateFrom()));
         assertTrue(entityDataVersions.get(entityDataVersions.size() - 1).getDateFrom().compareTo(
                 entityDataVersions.get(entityDataVersions.size() - 2).getDateFrom()) > 0);
     }
 
+    @Test
     public void testUpdateExistentVersionedDataWithLocales() throws InterruptedException {
         VersionedEntityTC versionedEntity = new VersionedEntityTC();
         versionedEntity.setDefaultLocale(Locale.ITALIAN.getLanguage());
@@ -107,20 +112,20 @@ public class VersionedEntityTest extends BaseTest {
         italianVersionedEntityData.setLocale(Locale.ITALIAN.getLanguage());
         italianVersionedEntityData.setBalance(new BigDecimal("200.00"));
         italianVersionedEntityData.setDescription("Descrizione in italiano modificata");
-        Thread.sleep(300);
+        Thread.sleep(3000);
         VersionedEntityTC updatedEntity = this.versionedEntityTCBO.updateVersionedData(versionedEntity.getId(), italianVersionedEntityData);
         englishVersionedEntityData = new VersionedEntityDataTC();
         englishVersionedEntityData.setLocale(Locale.ENGLISH.getLanguage());
         englishVersionedEntityData.setBalance(new BigDecimal("200.00"));
         englishVersionedEntityData.setDescription("Updated english description");
-        Thread.sleep(300);
+        Thread.sleep(3000);
         updatedEntity = this.versionedEntityTCBO.updateVersionedData(versionedEntity.getId(), englishVersionedEntityData);
         VersionedEntityTC retrievedEntity = this.versionedEntityTCBO.retrieveEntity(versionedEntity.getId());
         List<VersionedEntityDataTC> entityDataVersions = retrievedEntity.getVersionedData();
         assertTrue(!entityDataVersions.isEmpty());
         assertEquals(4, entityDataVersions.size());
-        assertTrue(italianVersionedEntityData.getId().equals(retrievedEntity.findLastVersionedData().getId()));
-        assertTrue(englishVersionedEntityData.getId().equals(
-                retrievedEntity.findLastVersionedData(Locale.ENGLISH.getLanguage()).getId()));
+        assertTrue(italianVersionedEntityData.getDateFrom().equals(retrievedEntity.findLastVersionedData().getDateFrom()));
+        assertTrue(englishVersionedEntityData.getDateFrom().equals(
+                retrievedEntity.findLastVersionedData(Locale.ENGLISH.getLanguage()).getDateFrom()));
     }
 }

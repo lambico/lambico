@@ -15,13 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import java.util.List;
 import javax.annotation.Resource;
 import org.lambico.spring.dao.hibernate.daobis.EntityTCBisDao;
 import org.lambico.spring.dao.hibernate.pobis.EntityTCBis;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import static org.lambico.test.ExtraAssert.*;
 
 /**
  * Tests on generic DAO with DAOs and entities in multiple separated packages.
@@ -34,10 +36,12 @@ public class EntityTCBisTest extends BaseTest {
     @Resource
     private EntityTCBisDao entityTCBisDao;
 
+    @Test
     public void testDaoExists() {
         assertNotNull(entityTCBisDao);
     }
 
+    @Test
     public void testAllSize() {
         final List<EntityTCBis> result = entityTCBisDao.findAll();
         assertSize(5, result);

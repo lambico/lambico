@@ -18,7 +18,6 @@
     limitations under the License.
 
 -->
-
 <xsd:schema xmlns="http://www.lambico.org/schema/lambico"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"

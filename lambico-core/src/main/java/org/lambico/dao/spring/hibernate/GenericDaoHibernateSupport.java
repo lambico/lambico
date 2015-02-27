@@ -15,11 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.dao.spring.hibernate;
 
 import org.lambico.dao.generic.GenericDaoTypeSupport;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.orm.hibernate4.HibernateTemplate;
 
 /**
  * Methods of a generic DAO with support for hibernate.

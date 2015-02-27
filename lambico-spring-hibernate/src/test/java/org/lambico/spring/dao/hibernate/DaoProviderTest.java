@@ -15,14 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import org.lambico.spring.dao.hibernate.dao.TestDaos;
 import org.lambico.spring.dao.hibernate.po.EntityTC;
 import org.lambico.spring.dao.DaoUtils;
 import java.util.Map;
-import org.lambico.test.spring.hibernate.DBTest;
+import org.junit.Test;
+import org.lambico.test.spring.hibernate.junit4.AbstractBaseTest;
+import static org.junit.Assert.*;
 
 /**
  * Tests for the DaoProvider classes.
@@ -30,13 +31,14 @@ import org.lambico.test.spring.hibernate.DBTest;
  * @author <a href="mailto:lucio.benfante@jugpadova.it">Lucio Benfante</a>
  * @version $Revision$
  */
-public class DaoProviderTest extends DBTest {
+public class DaoProviderTest extends AbstractBaseTest {
 
     /**
      * Test the retrieval of the DAO map.
      */
+    @Test
     public void testGetDaoMap() {
-        Map contextDaoMap = (Map) getApplicationContext().getBean("daoMap");
+        Map contextDaoMap = (Map) this.applicationContext.getBean("daoMap");
         assertNotNull(contextDaoMap);
         assertTrue("Test DAO map shouldn't be empty", !contextDaoMap.isEmpty());
     }
@@ -44,8 +46,9 @@ public class DaoProviderTest extends DBTest {
     /**
      * Test the retrieval of a DAO from the DAO map.
      */
+    @Test
     public void testGetDaoFromMap() {
-        Map contextDaoMap = (Map) getApplicationContext().getBean("daoMap");
+        Map contextDaoMap = (Map) this.applicationContext.getBean("daoMap");
         assertNotNull(contextDaoMap);
         Object dao = contextDaoMap.get("entityTCDao");
         assertNotNull(dao);
@@ -55,8 +58,9 @@ public class DaoProviderTest extends DBTest {
     /**
      * Test the retrieval of the DAO map from the generic dao provider.
      */
+    @Test
     public void testGetDaoMapFromProvider() {
-        TestDaos baseDaoProvider = (TestDaos) getApplicationContext().getBean("daos");
+        TestDaos baseDaoProvider = (TestDaos) this.applicationContext.getBean("daos");
         assertNotNull(baseDaoProvider);
         Map contextDaoMap = baseDaoProvider.getDaoMap();
         assertNotNull(contextDaoMap);
@@ -66,8 +70,9 @@ public class DaoProviderTest extends DBTest {
     /**
      * Test the retrieval of a DAO from the generic dao provider.
      */
+    @Test
     public void testGetDaoFromProvider() {
-        TestDaos baseDaoProvider = (TestDaos) getApplicationContext().getBean("daos");
+        TestDaos baseDaoProvider = (TestDaos) this.applicationContext.getBean("daos");
         assertNotNull(baseDaoProvider);
         Object dao = baseDaoProvider.getDao("entityTCDao");
         assertNotNull(dao);
@@ -77,8 +82,9 @@ public class DaoProviderTest extends DBTest {
     /**
      * Test the retrieval of a DAO for an entity from the generic dao provider.
      */
+    @Test
     public void testGetDaoByEntityFromProvider() {
-        TestDaos baseDaoProvider = (TestDaos) getApplicationContext().getBean("daos");
+        TestDaos baseDaoProvider = (TestDaos) this.applicationContext.getBean("daos");
         assertNotNull(baseDaoProvider);
         Object dao = baseDaoProvider.getDao(EntityTC.class);
         assertNotNull(dao);
@@ -88,8 +94,9 @@ public class DaoProviderTest extends DBTest {
     /**
      * Test the retrieval of a DAO for an entity from the generic dao provider.
      */
+    @Test
     public void testGetDaoByMethodFromProvider() {
-        TestDaos baseDaoProvider = (TestDaos) getApplicationContext().getBean("daos");
+        TestDaos baseDaoProvider = (TestDaos) this.applicationContext.getBean("daos");
         assertNotNull(baseDaoProvider);
         Object dao = baseDaoProvider.getEntityTCDao();
         assertNotNull(dao);

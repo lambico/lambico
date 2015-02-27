@@ -15,13 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import java.util.List;
 import javax.annotation.Resource;
 import org.lambico.dao.generic.GenericDao;
 import org.lambico.spring.dao.hibernate.po.EntityTCNoInheritance;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import static org.lambico.test.ExtraAssert.*;
 
 /**
  * Tests on generic DAO without defining a specific DAO interface.
@@ -34,15 +36,18 @@ public class EntityTCNoInheritanceTest extends BaseTest {
     @Resource
     private GenericDao<EntityTCNoInheritance, Short> entityTCNoInheritanceDao;
 
+    @Test
     public void testDaoExists() {
         assertNotNull(entityTCNoInheritanceDao);
     }
 
+    @Test
     public void testAllSize() {
         final List<EntityTCNoInheritance> result = entityTCNoInheritanceDao.findAll();
         assertSize(5, result);
         EntityTCNoInheritance testCast = result.get(0);
     }
 
+    @Test
     public void testEmpty() {}
 }

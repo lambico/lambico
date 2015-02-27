@@ -15,13 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import org.lambico.spring.dao.hibernate.po.EntityTC;
 import java.util.List;
 import javax.annotation.Resource;
 import org.lambico.spring.dao.hibernate.bo.EntityTCBusinessDao;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -32,6 +33,7 @@ public class HibernateGenericBusinessDaoTest  extends BaseTest {
     @Resource
     private EntityTCBusinessDao entityTCBusinessDao;
     
+    @Test
     public void testStoreRetrieve() {
         EntityTC entity = new EntityTC();
         entityTCBusinessDao.store(entity);
@@ -42,6 +44,7 @@ public class HibernateGenericBusinessDaoTest  extends BaseTest {
         assertEquals("pippo", entity.getFieldOne());
     }
 
+    @Test
     public void testFindAll(){
         List<EntityTC> list = entityTCBusinessDao.findAll();
         assertNotNull(list);

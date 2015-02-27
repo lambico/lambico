@@ -19,21 +19,21 @@ package org.lambico.spring.dao.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.classic.Session;
 import org.lambico.dao.spring.hibernate.HibernateGenericDao;
 import java.io.Serializable;
 import java.util.List;
 import org.apache.commons.lang.SerializationUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 
 import org.hibernate.criterion.Projections;
 import org.lambico.dao.generic.Page;
 import org.lambico.dao.generic.PageDefaultImpl;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 
 /**
  * Hibernate implementation of the generic DAO.
@@ -124,7 +124,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @Override
     @SuppressWarnings("unchecked")
     public final List<T> findAll() {
-        return getCustomizedHibernateTemplate().find(
+        return (List<T>) getCustomizedHibernateTemplate().find(
                 "from " + getType().getName() + " x");
     }
 
@@ -137,7 +137,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @Override
     @SuppressWarnings("unchecked")
     public final List<T> searchByCriteria(final Criterion... criterion) {
-        Criteria crit = getSession().createCriteria(getType());
+        Criteria crit = currentSession().createCriteria(getType());
         for (Criterion c : criterion) {
             crit.add(c);
         }
@@ -153,7 +153,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @Override
     @SuppressWarnings("unchecked")
     public final List<T> searchByCriteria(final DetachedCriteria criteria) {
-        return getCustomizedHibernateTemplate().findByCriteria(criteria);
+        return (List<T>) getCustomizedHibernateTemplate().findByCriteria(criteria);
     }
 
     /**
@@ -168,7 +168,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @SuppressWarnings("unchecked")
     public final List<T> searchByCriteria(final DetachedCriteria criteria,
             final int firstResult, final int maxResults) {
-        return getCustomizedHibernateTemplate().
+        return (List<T>) getCustomizedHibernateTemplate().
                 findByCriteria(criteria, firstResult, maxResults);
     }
 
@@ -184,8 +184,8 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @SuppressWarnings("unchecked")
     public final Page<T> searchPaginatedByCriteria(final int page,
             final int pageSize, final Criterion... criterion) {
-        Criteria crit = getSession().createCriteria(getType());
-        Criteria count = getSession().createCriteria(getType());
+        Criteria crit = currentSession().createCriteria(getType());
+        Criteria count = currentSession().createCriteria(getType());
         for (Criterion c : criterion) {
             crit.add(c);
             count.add(c);
@@ -219,7 +219,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
         criteria.setResultTransformer(Criteria.ROOT_ENTITY);
 
         @SuppressWarnings("unchecked")
-        List<T> list = getCustomizedHibernateTemplate().
+        List<T> list = (List<T>) getCustomizedHibernateTemplate().
                 findByCriteria(criteria, (page - 1) * pageSize, pageSize);
 
         return new PageDefaultImpl<T>(list, page, pageSize, rowCount);
@@ -238,7 +238,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     public Page<T> searchPaginatedByCriteria(int page, int pageSize, int totalRecords,
             DetachedCriteria criteria) {
         @SuppressWarnings("unchecked")
-        List<T> list = getCustomizedHibernateTemplate().
+        List<T> list = (List<T>) getCustomizedHibernateTemplate().
                 findByCriteria(criteria, (page - 1) * pageSize, pageSize);
 
         return new PageDefaultImpl<T>(list, page, pageSize, totalRecords);

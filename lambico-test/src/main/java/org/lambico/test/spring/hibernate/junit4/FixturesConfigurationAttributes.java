@@ -21,7 +21,7 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.lambico.test.spring.hibernate.junit4.FixtureSet.LoadMode;
 import org.springframework.core.annotation.AnnotationUtils;
 

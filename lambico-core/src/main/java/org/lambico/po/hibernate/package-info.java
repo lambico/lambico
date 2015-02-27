@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
  * Classes simplifying the creation and manipulation of Hibenrate entities.
  *

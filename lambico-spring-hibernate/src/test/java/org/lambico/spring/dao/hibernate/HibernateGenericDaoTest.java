@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import org.lambico.spring.dao.hibernate.bo.EntityTCBO;
@@ -26,6 +25,9 @@ import java.util.List;
 import javax.annotation.Resource;
 import org.hibernate.criterion.DetachedCriteria;
 import org.lambico.dao.spring.hibernate.HibernateGenericDao;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import static org.lambico.test.ExtraAssert.*;
 
 /**
  * Test case for the generic DAO.
@@ -42,6 +44,7 @@ public class HibernateGenericDaoTest extends BaseTest {
     @Resource
     private EntityTCDao entityTCDao;
 
+    @Test
     public void testStoreRetrieve() {
         EntityTC entity = new EntityTC();
         this.entityTCBO.createEntity(entity);
@@ -49,12 +52,14 @@ public class HibernateGenericDaoTest extends BaseTest {
         assertEquals(entity, retrievedEntity);
     }
 
+    @Test
     public void testFindAll(){
         List<EntityTC> list = entityTCDao.findAll();
         assertNotNull(list);
         assertSize(5, list);
     }
 
+    @Test
     public void testGetByFieldOne() {
         EntityTC entity = new EntityTC();
         entity.setFieldOne("ONE");
@@ -68,6 +73,7 @@ public class HibernateGenericDaoTest extends BaseTest {
         }
     }
 
+    @Test
     public void testGetByFieldTwo() {
         EntityTC entity = new EntityTC();
         entity.setFieldTwo("TWO");
@@ -81,6 +87,7 @@ public class HibernateGenericDaoTest extends BaseTest {
         }
     }
 
+    @Test
     public void testGetByFieldOneAndFieldTwo() {
         EntityTC entity = new EntityTC();
         entity.setFieldOne("ONEONE");
@@ -96,32 +103,38 @@ public class HibernateGenericDaoTest extends BaseTest {
         }
     }
 
+    @Test
     public void testCountByNamedQuery() {
         Long result = this.entityTCDao.countByFieldOne("one3");
         assertEquals(Long.valueOf(2), result);
     }
 
+    @Test
     public void testMaxByNamedQuery() {
         Long result = this.entityTCDao.maxByFieldOne("one3");
         assertEquals(Long.valueOf(5), result);
     }
 
+    @Test
     public void testCountByFieldTwo() {
         Long result = entityTCDao.countByFieldTwo("two4");
         assertEquals(Long.valueOf(1), result);
     }
 
+    @Test
     public void testCountByFieldOneAndFieldThree() {
         Long result = this.entityTCDao.countByFieldOneAndFieldThree("one3", "7hree5");
         assertEquals(Long.valueOf(1), result);
     }
 
+    @Test
     public void testCountByCriteria() {
         long counted =
                 ((HibernateGenericDao) this.entityTCDao).countByCriteria(DetachedCriteria.forClass(EntityTC.class));
         assertEquals(5, counted);
     }
 
+    @Test
     public void testCountByCriteriaReusingCriteria() {
         final DetachedCriteria crit = DetachedCriteria.forClass(EntityTC.class);
         long counted = ((HibernateGenericDao) this.entityTCDao).countByCriteria(crit);

@@ -15,13 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate;
 
 import java.util.List;
 import javax.annotation.Resource;
 import org.lambico.spring.dao.hibernate.daoter.EntityTCTerDao;
 import org.lambico.spring.dao.hibernate.poter.EntityTCTer;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import static org.lambico.test.ExtraAssert.*;
 
 /**
  * Tests on generic DAO with DAOs and entities in multiple separated packages.
@@ -34,16 +36,19 @@ public class EntityTCTerTest extends BaseTest {
     @Resource
     private EntityTCTerDao entityTCTerDao;
 
+    @Test
     public void testDaoExists() {
         assertNotNull(entityTCTerDao);
     }
 
+    @Test
     public void testAllSize() {
         final List<EntityTCTer> result = entityTCTerDao.findAll();
         assertSize(1, result);
         EntityTCTer testCast = result.get(0);
     }
 
+    @Test
     public void testFindByFieldOne() {
         final List<EntityTCTer> result = entityTCTerDao.findByFieldOne("one1");
         assertSize(0, result);

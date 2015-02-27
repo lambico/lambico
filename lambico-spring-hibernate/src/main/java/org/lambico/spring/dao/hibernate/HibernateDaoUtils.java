@@ -20,7 +20,7 @@ package org.lambico.spring.dao.hibernate;
 import java.lang.reflect.Method;
 import org.lambico.dao.generic.CacheIt;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.orm.hibernate4.HibernateTemplate;
 
 /**
  * Utility methods for implementing the Hibernate DAO.

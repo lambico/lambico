@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
  * Generic DAO classes, without any relationship with the specific implementation, or
  * support for a persistence technology.

@@ -25,6 +25,9 @@ import java.util.List;
 import javax.annotation.Resource;
 import org.hibernate.criterion.DetachedCriteria;
 import org.lambico.dao.hibernate.GenericDaoHibernateCriteriaSupport;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import static org.lambico.test.ExtraAssert.*;
 
 /**
  * Tests on generic DAO using EntityTC.
@@ -39,15 +42,18 @@ public class EntityTCTest extends BaseTest {
     @Resource
     private EntityTCDao entityTCDao;
 
+    @Test
     public void testDaoExists() {
         assertNotNull(this.daos);
         assertNotNull(this.daos.getEntityTCDao());
     }
 
+    @Test
     public void testAllSize() {
         assertSize(5, this.daos.getEntityTCDao().findAll());
     }
 
+    @Test
     public void testOrderByFieldOne() {
         List<EntityTC> entities = this.daos.getEntityTCDao().findByOrderByFieldOne();
         assertNotEmpty(entities);
@@ -60,6 +66,7 @@ public class EntityTCTest extends BaseTest {
         }
     }
 
+    @Test
     public void testOrderByFieldTwo() {
         List<EntityTC> entities = this.daos.getEntityTCDao().findByOrderByFieldTwo();
         assertNotEmpty(entities);
@@ -72,6 +79,7 @@ public class EntityTCTest extends BaseTest {
         }
     }
 
+    @Test
     public void testOrderByFieldOneAndFieldTwo() {
         List<EntityTC> entities = this.daos.getEntityTCDao().findByOrderByFieldOneAndFieldTwo();
         assertNotEmpty(entities);
@@ -89,12 +97,14 @@ public class EntityTCTest extends BaseTest {
         }
     }
 
+    @Test
     public void testFindSingleRecord() {
         EntityTC entityTC = this.daos.getEntityTCDao().findByFieldOneOrderByFieldTwo("one1");
         assertNotNull(entityTC);
         assertEquals("one1", entityTC.getFieldOne());
     }
 
+    @Test
     public void testFindOrderedSingleRecord() {
         EntityTCDao dao = this.daos.getEntityTCDao();
         List<EntityTC> entities = dao.findByFieldOne("one3");
@@ -105,6 +115,7 @@ public class EntityTCTest extends BaseTest {
         assertEquals("two1", entityTC.getFieldTwo());
     }
 
+    @Test
     public void testFindByOrderByFieldTwoWithFirstRecordAndMaxRecords() {
         EntityTCDao dao = this.daos.getEntityTCDao();
         List<EntityTC> entities = dao.findByOrderByFieldOne(1, 2);
@@ -112,13 +123,15 @@ public class EntityTCTest extends BaseTest {
         assertEquals("one2", entities.get(0).getFieldOne());
     }
 
+    @Test
     public void testFindByOrderByFieldTwoWithFirstRecordAndNoMaxRecords() {
-        EntityTCDao dao = this.daos.getEntityTCDao();
+        EntityTCDao dao = entityTCDao;
         List<EntityTC> entities = dao.findByOrderByFieldOne(1, -1);
         assertSize(4, entities);
         assertEquals("one2", entities.get(0).getFieldOne());
     }
 
+    @Test
     public void testSearchAllOrderByFieldTwoWithFirstRecordAndMaxRecords() {
         EntityTCDao dao = this.daos.getEntityTCDao();
         List<EntityTC> entities = dao.searchAllOrderByFieldOne(1, 2);
@@ -126,6 +139,7 @@ public class EntityTCTest extends BaseTest {
         assertEquals("one2", entities.get(0).getFieldOne());
     }
 
+    @Test
     public void testSearchAllOrderByFieldTwoWithFirstRecordAndNoMaxRecords() {
         EntityTCDao dao = this.daos.getEntityTCDao();
         List<EntityTC> entities = dao.searchAllOrderByFieldOne(1, -1);
@@ -133,12 +147,14 @@ public class EntityTCTest extends BaseTest {
         assertEquals("one2", entities.get(0).getFieldOne());
     }
 
+    @Test
     public void testFindByFieldThree() {
         EntityTCDao dao = this.daos.getEntityTCDao();
         List<EntityTC> entities = dao.findByFieldThree("t%");
         assertSize(4, entities);
     }
 
+    @Test
     public void testFindAllByCriteria() {
         @SuppressWarnings("unchecked")
         List<EntityTC> results = ((GenericDaoHibernateCriteriaSupport<EntityTC>) entityTCDao).
@@ -146,12 +162,14 @@ public class EntityTCTest extends BaseTest {
         assertSize(5, results);
     }
 
+    @Test
     public void testWithNamedParameters() {
         List<EntityTC> results = entityTCDao.findByFieldOneAndFieldTwoAndFieldThreeWithName("one3",
                 "two3", "Three3");
         assertSize(1, results);
     }
 
+    @Test
     public void testSearchByFieldOneList() {
         List<String> values = new ArrayList<String>();
         values.add("one1");
@@ -160,6 +178,7 @@ public class EntityTCTest extends BaseTest {
         assertSize(3, result);
     }
 
+    @Test
     public void testSearchByFieldOneArray() {
         String[] values = {"one1", "one3"};
         List<EntityTC> result = entityTCDao.searchByFieldOneArray(values);

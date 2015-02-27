@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.lambico.spring.dao.hibernate.po;
 
 import org.lambico.po.hibernate.VersionedEntityBase;

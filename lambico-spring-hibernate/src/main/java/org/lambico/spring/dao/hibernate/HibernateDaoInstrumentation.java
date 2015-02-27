@@ -46,8 +46,8 @@ import org.lambico.dao.generic.NamedParameter;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.util.StringUtils;
 
 /**
@@ -106,9 +106,10 @@ public class HibernateDaoInstrumentation {
 
             HibernateTemplate hibernateTemplate = HibernateDaoUtils.getHibernateTemplate(
                     ((GenericDaoHibernateSupport) target));
+            hibernateTemplate.setExposeNativeSession(true);
 
             // query using a named query from the method name
-            result = hibernateTemplate.executeFind(new HibernateCallback() {
+            result = hibernateTemplate.execute(new HibernateCallback() {
 
                 @Override
                 public Object doInHibernate(final Session session) {
@@ -163,7 +164,7 @@ public class HibernateDaoInstrumentation {
                 if (method.getName().startsWith("findBy")
                         || method.getName().startsWith("countBy")) {
                     // Query evicting condition from the method name
-                    result = hibernateTemplate.executeFind(
+                    result = hibernateTemplate.execute(
                             new HibernateCallback() {
 
                                 @Override

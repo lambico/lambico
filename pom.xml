@@ -20,10 +20,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <main.basedir>${basedir}</main.basedir>
         <year>2009</year>
-        <lambico.spring.version>3.0.7.RELEASE</lambico.spring.version>
-        <lambico.hibernate.version>3.6.10.Final</lambico.hibernate.version>
-        <lambico.slf4j.version>1.7.2</lambico.slf4j.version>
-        <lambico.junit4.version>4.11</lambico.junit4.version>
+        <lambico.spring.version>4.1.5.RELEASE</lambico.spring.version>
+        <lambico.hibernate.version>4.3.6.Final</lambico.hibernate.version>
+        <lambico.slf4j.version>1.7.10</lambico.slf4j.version>
+        <lambico.junit4.version>4.12</lambico.junit4.version>
         <lambico.hsqldb.version>2.2.9</lambico.hsqldb.version>
 
         <!-- NetBeans IDE properties -->
@@ -114,7 +114,7 @@
             <dependency>
                 <groupId>org.aspectj</groupId>
                 <artifactId>aspectjweaver</artifactId>
-                <version>1.7.1</version>
+                <version>1.8.5</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
@@ -122,9 +122,14 @@
                 <version>${lambico.hibernate.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-testing</artifactId>
+                <version>${lambico.hibernate.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.javassist</groupId>
                 <artifactId>javassist</artifactId>
-                <version>3.17.1-GA</version>
+                <version>3.19.0-GA</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -152,14 +157,19 @@
                 <version>2.4</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>4.0</version>
+            </dependency>
+            <dependency>
                 <groupId>cglib</groupId>
                 <artifactId>cglib</artifactId>
-                <version>2.2.2</version>
+                <version>3.1</version>
             </dependency>
             <dependency>
                 <groupId>javax.mail</groupId>
                 <artifactId>mail</artifactId>
-                <version>1.4.5</version>
+                <version>1.4.7</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

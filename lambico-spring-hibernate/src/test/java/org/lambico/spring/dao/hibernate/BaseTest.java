@@ -24,7 +24,10 @@ import org.lambico.spring.dao.hibernate.po.EntityTCNoInheritance;
 import org.lambico.spring.dao.hibernate.po.EntityTCWithoutDaoInterface;
 import org.lambico.spring.dao.hibernate.pobis.EntityTCBis;
 import org.lambico.spring.dao.hibernate.poter.EntityTCTer;
-import org.lambico.test.spring.hibernate.DBTest;
+import org.lambico.test.spring.hibernate.junit4.AbstractBaseTest;
+import org.lambico.test.spring.hibernate.junit4.FixtureSet;
+import org.springframework.test.context.transaction.AfterTransaction;
+import org.springframework.test.context.transaction.BeforeTransaction;
 
 /**
  * A base class for lambico tests.
@@ -32,19 +35,18 @@ import org.lambico.test.spring.hibernate.DBTest;
  * @author lucio
  * @author michele franzin <michele at franzin.net>
  */
-public abstract class BaseTest extends DBTest {
+@FixtureSet(modelClasses = {EntityTC.class, EntityTCBis.class, EntityTCTer.class,
+    EntityTCWithoutDaoInterface.class, EntityTCNoInheritance.class, BookTC.class, AuthorTC.class})
+public abstract class BaseTest extends AbstractBaseTest {
 
-    @Override
-    public Class[] getFixtureClasses() {
-        return new Class[]{EntityTC.class, EntityTCBis.class, EntityTCTer.class,
-            EntityTCWithoutDaoInterface.class, EntityTCNoInheritance.class,
-            BookTC.class, AuthorTC.class};
+    @BeforeTransaction
+    public void beforeTransaction() throws Exception {
+        this.jdbcTemplate.execute("SET DATABASE REFERENTIAL INTEGRITY FALSE");
     }
-
-    @Override
-    public void onSetUpBeforeTransaction() throws Exception {
-        this.getJdbcTemplate().execute("SET DATABASE REFERENTIAL INTEGRITY FALSE");
-        super.onSetUpBeforeTransaction();
-        this.getJdbcTemplate().execute("SET DATABASE REFERENTIAL INTEGRITY TRUE");
+    
+    @AfterTransaction
+    public void afterTransaction() throws Exception {
+        this.jdbcTemplate.execute("SET DATABASE REFERENTIAL INTEGRITY TRUE");
     }
+    
 }
