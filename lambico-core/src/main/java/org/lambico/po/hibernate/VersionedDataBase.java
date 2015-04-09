@@ -64,6 +64,7 @@ public class VersionedDataBase<T extends VersionedEntity> extends EntityBase
      * @return {@inheritDoc}
      */
     @Temporal(TemporalType.TIMESTAMP)
+    @Override
     public Date getDateFrom() {
         return this.dateFrom;
     }
@@ -74,6 +75,7 @@ public class VersionedDataBase<T extends VersionedEntity> extends EntityBase
      * @return {@inheritDoc}
      */
     @Temporal(TemporalType.TIMESTAMP)
+    @Override
     public Date getDateTo() {
         return this.dateTo;
     }
@@ -84,6 +86,7 @@ public class VersionedDataBase<T extends VersionedEntity> extends EntityBase
      * @return {@inheritDoc}
      */
     @ManyToOne(cascade = { CascadeType.ALL })
+    @Override
     public T getEntity() {
         return this.entity;
     }
@@ -93,6 +96,7 @@ public class VersionedDataBase<T extends VersionedEntity> extends EntityBase
      *
      * @return {@inheritDoc}
      */
+    @Override
     public String getLocale() {
         return this.locale;
     }
@@ -102,6 +106,7 @@ public class VersionedDataBase<T extends VersionedEntity> extends EntityBase
      *
      * @param dateFrom {@inheritDoc}
      */
+    @Override
     public void setDateFrom(final Date dateFrom) {
         this.dateFrom = dateFrom;
     }
@@ -111,6 +116,7 @@ public class VersionedDataBase<T extends VersionedEntity> extends EntityBase
      *
      * @param dateTo {@inheritDoc}
      */
+    @Override
     public void setDateTo(final Date dateTo) {
         this.dateTo = dateTo;
     }
@@ -120,6 +126,7 @@ public class VersionedDataBase<T extends VersionedEntity> extends EntityBase
      *
      * @param entity {@inheritDoc}
      */
+    @Override
     public void setEntity(final T entity) {
         this.entity = entity;
     }
@@ -129,6 +136,7 @@ public class VersionedDataBase<T extends VersionedEntity> extends EntityBase
      *
      * @param locale {@inheritDoc}
      */
+    @Override
     public void setLocale(final String locale) {
         this.locale = locale;
     }

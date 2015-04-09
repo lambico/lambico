@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.lambico.dao.spring.BusinessDao;
 import org.lambico.dao.generic.Dao;
+import org.lambico.dao.generic.GenericDao;
 import org.lambico.dao.generic.GenericDaoBase;
 import org.lambico.dao.generic.GenericDaoTypeSupport;
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class DaoUtils {
 
-    private static Logger logger = LoggerFactory.getLogger(DaoUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(DaoUtils.class);
 
     /**
      * Creates a new instance of DaoUtils.
@@ -46,21 +47,20 @@ public final class DaoUtils {
     }
 
     /**
-     * Return a map  of DAOs from a bean container.
+     * Return a map of DAOs from a bean container.
      *
      * @param beanFactory The bean container.
      * @return A map of daos. The key is the id of the bean in the container.
      */
     public static Map<String, Object> getDaos(
             final ListableBeanFactory beanFactory) {
-        Map<String, Object> result =
-                new HashMap<String, Object>();
+        Map<String, Object> result = new HashMap<String, Object>();
         String[] beanNames = beanFactory.getBeanDefinitionNames();
-        for (int i = 0; i < beanNames.length; i++) {
+        for (String beanName : beanNames) {
             try {
-                Object bean = beanFactory.getBean(beanNames[i]);
+                Object bean = beanFactory.getBean(beanName);
                 if (DaoUtils.isDao(bean)) {
-                    result.put(beanNames[i], bean);
+                    result.put(beanName, bean);
                 }
             } catch (BeanIsAbstractException ex) {
                 // ignore it
@@ -84,8 +84,8 @@ public final class DaoUtils {
         }
 
         Class[] objInterfaces = o.getClass().getInterfaces();
-        for (int i = 0; i < objInterfaces.length; i++) {
-            if (objInterfaces[i].getAnnotation(Dao.class) != null) {
+        for (Class objInterface : objInterfaces) {
+            if (objInterface.getAnnotation(Dao.class) != null) {
                 return true;
             }
         }
@@ -109,10 +109,9 @@ public final class DaoUtils {
         }
 
         Class[] objInterfaces = o.getClass().getInterfaces();
-        for (int i = 0; i < objInterfaces.length; i++) {
+        for (Class objInterface : objInterfaces) {
             @SuppressWarnings(value = "unchecked")
-            Dao daoAnnotation =
-                    (Dao) objInterfaces[i].getAnnotation(Dao.class);
+            Dao daoAnnotation = (Dao) objInterface.getAnnotation(Dao.class);
             if (daoAnnotation != null) {
                 if (daoAnnotation.entity().getName().
                         equals(daoEntityType.getName())) {
@@ -129,14 +128,12 @@ public final class DaoUtils {
      *
      * @param daoEntityType The entity class type.
      * @param beanFactory The context in wich searching for the DAO.
-     * @return The DAO fot the specific entity class type.
-     *         null if it can't be found.
+     * @return The DAO fot the specific entity class type. null if it can't be found.
      */
     public static GenericDaoBase getDaoFor(final Class daoEntityType,
             final ListableBeanFactory beanFactory) {
         GenericDaoBase result = null;
-        Map<String, Object> daos =
-                DaoUtils.getDaos(beanFactory);
+        Map<String, Object> daos = DaoUtils.getDaos(beanFactory);
         for (Object dao : daos.values()) {
             if (DaoUtils.isDaoFor(dao, daoEntityType)) {
                 result = (GenericDaoBase) dao;

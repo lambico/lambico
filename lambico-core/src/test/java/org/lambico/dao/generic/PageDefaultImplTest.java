@@ -19,7 +19,6 @@ package org.lambico.dao.generic;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lambico.po.hibernate.EntityBase;
@@ -32,18 +31,18 @@ import static org.junit.Assert.*;
 public class PageDefaultImplTest {
 
     /** The full set of data. */
-    private static List<EntityBase> allData = new LinkedList<EntityBase>();
+    private static final List<EntityBase> allData = new LinkedList<EntityBase>();
 
     /**
      * Initialize the full set of data.
      */
     @BeforeClass
     public static void setUpClass() {
-        allData.add(new EntityBaseImpl(Long.valueOf(1)));
-        allData.add(new EntityBaseImpl(Long.valueOf(2)));
-        allData.add(new EntityBaseImpl(Long.valueOf(3)));
-        allData.add(new EntityBaseImpl(Long.valueOf(4)));
-        allData.add(new EntityBaseImpl(Long.valueOf(5)));
+        allData.add(new EntityBaseImpl(1L));
+        allData.add(new EntityBaseImpl(2L));
+        allData.add(new EntityBaseImpl(3L));
+        allData.add(new EntityBaseImpl(4L));
+        allData.add(new EntityBaseImpl(5L));
     }
 
     /**

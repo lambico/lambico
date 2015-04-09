@@ -55,7 +55,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
         GenericDaoTypeSupport, GenericDaoHibernateSupport {
 
     /** The entity class type. */
-    private Class<T> persistentClass;
+    private final Class<T> persistentClass;
     /**
      * A customized hibernate template.
      */

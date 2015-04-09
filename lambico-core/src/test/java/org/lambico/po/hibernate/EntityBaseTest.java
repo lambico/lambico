@@ -42,7 +42,7 @@ public class EntityBaseTest {
     @Test
     public void testSetId() {
         // Not a really useful test
-        Long id = Long.valueOf(1);
+        Long id = 1L;
         EntityBase instance = new EntityBaseImpl();
         instance.setId(id);
         assertNotNull(instance.getId());
@@ -65,8 +65,8 @@ public class EntityBaseTest {
      */
     @Test
     public void testEqualsWithTheSameId() {
-        Long idA = new Long(1);
-        Long idB = new Long(1);
+        Long idA = 1L;
+        Long idB = 1L;
         EntityBase instanceA = new EntityBaseImpl();
         instanceA.setId(idA);
         EntityBase instanceB = new EntityBaseImpl();
@@ -79,8 +79,8 @@ public class EntityBaseTest {
      */
     @Test
     public void testEqualsWithDifferentIds() {
-        Long idA = new Long(1);
-        Long idB = new Long(2);
+        Long idA = 1L;
+        Long idB = 2L;
         EntityBase instanceA = new EntityBaseImpl();
         instanceA.setId(idA);
         EntityBase instanceB = new EntityBaseImpl();
@@ -93,7 +93,7 @@ public class EntityBaseTest {
      */
     @Test
     public void testEqualsWithANullId() {
-        Long idA = new Long(1);
+        Long idA = 1L;
         Long idB = null;
         EntityBase instanceA = new EntityBaseImpl();
         instanceA.setId(idA);
@@ -107,8 +107,8 @@ public class EntityBaseTest {
      */
     @Test
     public void testHashCode() {
-        Long idA = new Long(1);
-        Long idB = new Long(1);
+        Long idA = 1L;
+        Long idB = 1L;
         EntityBase instanceA = new EntityBaseImpl();
         instanceA.setId(idA);
         EntityBase instanceB = new EntityBaseImpl();
@@ -131,7 +131,7 @@ public class EntityBaseTest {
      */
     @Test
     public void testToString() {
-        Long id = new Long(1);
+        Long id = 1L;
         EntityBase instance = new EntityBaseImpl();
         instance.setId(id);
         assertEquals(instance.getClass().getName() + "[id=1]", instance.toString());

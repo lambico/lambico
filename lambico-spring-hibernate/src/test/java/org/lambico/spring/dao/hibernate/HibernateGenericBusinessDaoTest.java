@@ -38,10 +38,10 @@ public class HibernateGenericBusinessDaoTest  extends BaseTest {
         EntityTC entity = new EntityTC();
         entityTCBusinessDao.store(entity);
         assert(entity.getId() > 0);
-        entity.setFieldOne("pippo");
+        entity.setFieldOne("something");
         entityTCBusinessDao.store(entity);
         entity = entityTCBusinessDao.read(entity.getId());
-        assertEquals("pippo", entity.getFieldOne());
+        assertEquals("something", entity.getFieldOne());
     }
 
     @Test

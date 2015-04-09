@@ -32,6 +32,7 @@ public class BypassingExceptionManager extends DaoExceptionManagerBase {
      *
      * @param throwable {@inheritDoc}
      * @param properties {@inheritDoc}
+     * @throws java.lang.Throwable
      */
     @Override
     public void process(final Throwable throwable, final Properties properties)

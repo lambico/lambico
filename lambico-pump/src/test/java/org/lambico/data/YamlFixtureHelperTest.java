@@ -38,11 +38,11 @@ public class YamlFixtureHelperTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         expected = new DemoBean[5];
-        expected[0] = new DemoBean("first one", new Long(356));
-        expected[1] = new DemoBean("Demo 1", new Long(6789));
-        expected[2] = new DemoBean("àèéìòù", new Long(-980000));
-        expected[3] = new DemoBean("Demo3", new Long(98000));
-        expected[4] = new DemoBean("Demo#2", new Long(-9800));
+        expected[0] = new DemoBean("first one", (long) 356);
+        expected[1] = new DemoBean("Demo 1", (long) 6789);
+        expected[2] = new DemoBean("àèéìòù", (long) -980000);
+        expected[3] = new DemoBean("Demo3", (long) 98000);
+        expected[4] = new DemoBean("Demo#2", (long) -9800);
     }
 
     public void testShouldNotFailWrongFixtureDir() {

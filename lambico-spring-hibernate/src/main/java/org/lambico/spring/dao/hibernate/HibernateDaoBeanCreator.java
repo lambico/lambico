@@ -56,13 +56,13 @@ import org.w3c.dom.Element;
  */
 public class HibernateDaoBeanCreator implements DaoBeanCreator {
 
-    private static Logger logger = LoggerFactory.getLogger(HibernateDaoBeanCreator.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateDaoBeanCreator.class);
     /** The ResourcePatternResolver. */
-    private ResourcePatternResolver rl;
+    private final ResourcePatternResolver rl;
     /** The BeanDefinitionRegistry. */
-    private BeanDefinitionRegistry registry;
+    private final BeanDefinitionRegistry registry;
     /** The BeanDefinitionParserDelegate. */
-    private BeanDefinitionParserDelegate delegate;
+    private final BeanDefinitionParserDelegate delegate;
     /** The ReaderContext. */
     private final ReaderContext readerContext;
 

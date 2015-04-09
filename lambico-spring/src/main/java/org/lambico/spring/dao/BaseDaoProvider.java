@@ -17,7 +17,6 @@
  */
 package org.lambico.spring.dao;
 
-import java.util.Iterator;
 import java.util.Map;
 import org.lambico.dao.DaoProvider;
 
@@ -41,6 +40,7 @@ public class BaseDaoProvider implements DaoProvider {
      *
      * @return {@inheritDoc}
      */
+    @Override
     public Map<String, ? extends Object> getDaoMap() {
         return daoMap;
     }
@@ -59,6 +59,7 @@ public class BaseDaoProvider implements DaoProvider {
      *
      * @return {@inheritDoc}
      */
+    @Override
     public Object getDao(final String daoName) {
         return daoMap.get(daoName);
     }
@@ -69,11 +70,10 @@ public class BaseDaoProvider implements DaoProvider {
      * @param daoEntityType {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
     public Object getDao(final Class daoEntityType) {
         Object result = null;
-        Iterator it = daoMap.values().iterator();
-        while (it.hasNext()) {
-            Object elem = (Object) it.next();
+        for (Object elem : daoMap.values()) {
             if (DaoUtils.isDaoFor(elem, daoEntityType)) {
                 result = elem;
                 break;

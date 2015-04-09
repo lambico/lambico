@@ -36,7 +36,7 @@ import org.springframework.util.StringUtils;
 @Aspect()
 public class DaoProviderInstrumentation {
 
-    private static Logger logger = LoggerFactory.getLogger(DaoProviderInstrumentation.class);
+    private static final Logger logger = LoggerFactory.getLogger(DaoProviderInstrumentation.class);
     /** Prefix of the get&lt;DAO&gt; method. */
     private static final String METHOD_PREFIX = "get";
 
