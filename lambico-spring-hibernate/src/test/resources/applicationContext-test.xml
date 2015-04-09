@@ -58,6 +58,7 @@
     <lambico:discover-persistent-classes basePackage="org.lambico.spring.dao.hibernate.po" />
     <lambico:discover-persistent-classes basePackage="org.lambico.spring.dao.hibernate.pobis" />
     <lambico:discover-persistent-classes basePackage="org.lambico.spring.dao.hibernate.poter" />
+    <lambico:discover-persistent-classes basePackage="org.lambico.spring.po" />
     <!-- Authomatic DAO definition from persistent classes -->
     <lambico:define-daos baseInterfacePackage="org.lambico.spring.dao.hibernate.dao"
                          baseEntityPackage="org.lambico.spring.dao.hibernate.po"/>
@@ -65,6 +66,8 @@
                          baseEntityPackage="org.lambico.spring.dao.hibernate.pobis"/>
     <lambico:define-daos baseInterfacePackage="org.lambico.spring.dao.hibernate.daoter"
                          baseEntityPackage="org.lambico.spring.dao.hibernate.poter"/>
+    <lambico:define-daos baseInterfacePackage="org.lambico.spring.dao"
+                         baseEntityPackage="org.lambico.spring.po"/>
 
     <bean id="entityTCTerDao" class="org.lambico.spring.dao.hibernate.bo.EntityTCTerBusinessDao" />
 

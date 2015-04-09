@@ -19,14 +19,10 @@ package org.lambico.spring.dao;
 
 import org.springframework.beans.factory.BeanIsAbstractException;
 import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.core.annotation.AnnotationUtils;
 import java.util.HashMap;
 import java.util.Map;
-import org.lambico.dao.spring.BusinessDao;
-import org.lambico.dao.generic.Dao;
-import org.lambico.dao.generic.GenericDao;
 import org.lambico.dao.generic.GenericDaoBase;
-import org.lambico.dao.generic.GenericDaoTypeSupport;
+import org.lambico.util.DaoHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,14 +48,13 @@ public final class DaoUtils {
      * @param beanFactory The bean container.
      * @return A map of daos. The key is the id of the bean in the container.
      */
-    public static Map<String, Object> getDaos(
-            final ListableBeanFactory beanFactory) {
+    public static Map<String, Object> getDaos(final ListableBeanFactory beanFactory) {
         Map<String, Object> result = new HashMap<String, Object>();
         String[] beanNames = beanFactory.getBeanDefinitionNames();
         for (String beanName : beanNames) {
             try {
                 Object bean = beanFactory.getBean(beanName);
-                if (DaoUtils.isDao(bean)) {
+                if (DaoHelper.isDao(bean)) {
                     result.put(beanName, bean);
                 }
             } catch (BeanIsAbstractException ex) {
@@ -68,59 +63,6 @@ public final class DaoUtils {
             }
         }
         return result;
-    }
-
-    /**
-     * Check if an object is a DAO.
-     *
-     * @param o The object to check.
-     * @return true if the object is recognized as a DAO.
-     */
-    @SuppressWarnings(value = "unchecked")
-    public static boolean isDao(final Object o) {
-        if (AnnotationUtils.findAnnotation(o.getClass(), BusinessDao.class)
-                != null) {
-            return true;
-        }
-
-        Class[] objInterfaces = o.getClass().getInterfaces();
-        for (Class objInterface : objInterfaces) {
-            if (objInterface.getAnnotation(Dao.class) != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Check if an object is a DAO for a specific entity class.
-     *
-     * @param o The object to check.
-     * @param daoEntityType The entity class type.
-     * @return true if the object is o DAO for the entity.
-     */
-    public static boolean isDaoFor(final Object o, final Class daoEntityType) {
-        if (AnnotationUtils.findAnnotation(o.getClass(), BusinessDao.class)
-                != null) {
-            if (((GenericDaoTypeSupport) o).getType().getName().
-                    equals(daoEntityType.getName())) {
-                return true;
-            }
-        }
-
-        Class[] objInterfaces = o.getClass().getInterfaces();
-        for (Class objInterface : objInterfaces) {
-            @SuppressWarnings(value = "unchecked")
-            Dao daoAnnotation = (Dao) objInterface.getAnnotation(Dao.class);
-            if (daoAnnotation != null) {
-                if (daoAnnotation.entity().getName().
-                        equals(daoEntityType.getName())) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -133,9 +75,8 @@ public final class DaoUtils {
     public static GenericDaoBase getDaoFor(final Class daoEntityType,
             final ListableBeanFactory beanFactory) {
         GenericDaoBase result = null;
-        Map<String, Object> daos = DaoUtils.getDaos(beanFactory);
-        for (Object dao : daos.values()) {
-            if (DaoUtils.isDaoFor(dao, daoEntityType)) {
+        for (Object dao : getDaos(beanFactory).values()) {
+            if (DaoHelper.isDaoFor(dao, daoEntityType)) {
                 result = (GenericDaoBase) dao;
                 break;
             }

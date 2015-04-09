@@ -19,11 +19,11 @@ package org.lambico.spring.dao.hibernate;
 
 import org.lambico.spring.dao.hibernate.dao.TestDaos;
 import org.lambico.spring.dao.hibernate.po.EntityTC;
-import org.lambico.spring.dao.DaoUtils;
 import java.util.Map;
 import org.junit.Test;
 import org.lambico.test.spring.hibernate.junit4.AbstractBaseTest;
 import static org.junit.Assert.*;
+import org.lambico.util.DaoHelper;
 
 /**
  * Tests for the DaoProvider classes.
@@ -52,7 +52,7 @@ public class DaoProviderTest extends AbstractBaseTest {
         assertNotNull(contextDaoMap);
         Object dao = contextDaoMap.get("entityTCDao");
         assertNotNull(dao);
-        assertTrue(DaoUtils.isDao(dao));
+        assertTrue(DaoHelper.isDao(dao));
     }
 
     /**
@@ -76,7 +76,7 @@ public class DaoProviderTest extends AbstractBaseTest {
         assertNotNull(baseDaoProvider);
         Object dao = baseDaoProvider.getDao("entityTCDao");
         assertNotNull(dao);
-        assertTrue(DaoUtils.isDao(dao));
+        assertTrue(DaoHelper.isDao(dao));
     }
 
     /**
@@ -88,7 +88,7 @@ public class DaoProviderTest extends AbstractBaseTest {
         assertNotNull(baseDaoProvider);
         Object dao = baseDaoProvider.getDao(EntityTC.class);
         assertNotNull(dao);
-        assertTrue(DaoUtils.isDao(dao));
+        assertTrue(DaoHelper.isDao(dao));
     }
 
     /**
@@ -100,7 +100,7 @@ public class DaoProviderTest extends AbstractBaseTest {
         assertNotNull(baseDaoProvider);
         Object dao = baseDaoProvider.getEntityTCDao();
         assertNotNull(dao);
-        assertTrue(DaoUtils.isDao(dao));
+        assertTrue(DaoHelper.isDao(dao));
     }
 
     private Map getDaoMapFromContext() {

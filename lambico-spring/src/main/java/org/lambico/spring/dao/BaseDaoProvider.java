@@ -19,6 +19,7 @@ package org.lambico.spring.dao;
 
 import java.util.Map;
 import org.lambico.dao.DaoProvider;
+import org.lambico.util.DaoHelper;
 
 /**
  * A class for retrieving DAOs from the context.
@@ -74,7 +75,7 @@ public class BaseDaoProvider implements DaoProvider {
     public Object getDao(final Class daoEntityType) {
         Object result = null;
         for (Object elem : daoMap.values()) {
-            if (DaoUtils.isDaoFor(elem, daoEntityType)) {
+            if (DaoHelper.isDaoFor(elem, daoEntityType)) {
                 result = elem;
                 break;
             }
