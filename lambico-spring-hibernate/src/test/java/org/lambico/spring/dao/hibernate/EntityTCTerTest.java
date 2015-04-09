@@ -37,19 +37,19 @@ public class EntityTCTerTest extends BaseTest {
     private EntityTCTerDao entityTCTerDao;
 
     @Test
-    public void testDaoExists() {
+    public void daoExists() {
         assertNotNull(entityTCTerDao);
     }
 
     @Test
-    public void testAllSize() {
+    public void allSize() {
         final List<EntityTCTer> result = entityTCTerDao.findAll();
         assertSize(1, result);
         EntityTCTer testCast = result.get(0);
     }
 
     @Test
-    public void testFindByFieldOne() {
+    public void findByFieldOne() {
         final List<EntityTCTer> result = entityTCTerDao.findByFieldOne("one1");
         assertSize(0, result);
     }

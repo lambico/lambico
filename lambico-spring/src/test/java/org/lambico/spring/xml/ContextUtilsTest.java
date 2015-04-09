@@ -17,10 +17,12 @@
  */
 package org.lambico.spring.xml;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 import org.lambico.dao.generic.Dao;
+import static org.lambico.test.ExtraAssert.assertSize;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
@@ -29,67 +31,69 @@ import org.springframework.core.io.support.ResourcePatternResolver;
  *
  * @author Lucio Benfante <lucio.benfante@gmail.com>
  */
-public class ContextUtilsTest extends TestCase {
+public class ContextUtilsTest {
 
-    private final ResourcePatternResolver resourcePatternResolver =
-            new PathMatchingResourcePatternResolver();
-
-    public ContextUtilsTest(String testName) {
-        super(testName);
-    }
+    private final ResourcePatternResolver resourcePatternResolver
+            = new PathMatchingResourcePatternResolver();
 
     /**
      * Test of getAllClasses method, of class DaoBeanCreator.
      */
-    public void testGetAllClasses() {
+    @Test
+    public void getAllClasses() {
         String packageName = "org.lambico.spring.xml.test";
         List<Class> result = ContextUtils.getAllClasses(resourcePatternResolver, null, packageName);
-        assertEquals(2, result.size());
+        assertSize(2, result);
     }
 
     /**
      * Test of isConcreteClass method, of class DaoBeanCreator.
      */
-    public void testIsConcreteClass() {
+    @Test
+    public void isConcreteClass() {
         assertTrue(ContextUtils.isConcreteClass(ContextUtilsTest.class));
     }
 
     /**
      * Test of isConcreteClass method, of class DaoBeanCreator.
      */
-    public void testIsConcreteClassWithInterface() {
+    @Test
+    public void isConcreteClassWithInterface() {
         assertFalse(ContextUtils.isConcreteClass(Runnable.class));
     }
 
     /**
      * Test of isAbstract method, of class DaoBeanCreator.
      */
-    public void testIsAbstract() {
+    @Test
+    public void isAbstract() {
         assertTrue(ContextUtils.isAbstract(ClassLoader.class));
     }
 
     /**
      * Test of isAbstract method, of class DaoBeanCreator.
      */
-    public void testIsAbstractWithInterface() {
+    @Test
+    public void isAbstractWithInterface() {
         assertTrue(ContextUtils.isAbstract(Runnable.class));
     }
 
     /**
      * Test of isAbstract method, of class DaoBeanCreator.
      */
-    public void testIsAbstractWithConcrete() {
+    @Test
+    public void isAbstractWithConcrete() {
         assertFalse(ContextUtils.isAbstract(ContextUtilsTest.class));
     }
 
     /**
      * Test of getClassesByAnnotation method, of class DaoBeanCreator.
      */
-    public void testGetClassesByAnnotation() {
+    @Test
+    public void getClassesByAnnotation() {
         List<Class> classes = ContextUtils.getAllClasses(resourcePatternResolver, null,
                 "org.lambico.spring.xml.test");
-        Class<? extends Annotation> annotationType = Dao.class;
-        List result = ContextUtils.getClassesByAnnotation(classes, annotationType);
-        assertEquals(1, result.size());
+        List<Class> result = ContextUtils.getClassesByAnnotation(classes, Dao.class);
+        assertSize(1, result);
     }
 }

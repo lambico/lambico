@@ -22,21 +22,22 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import junit.framework.TestCase;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.util.CollectionUtils;
 
 /**
  * @author michele franzin <michele at franzin.net>
  */
-public class YamlFixtureHelperTest extends TestCase {
+public class YamlFixtureHelperTest {
 
     private DemoBean[] expected;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         expected = new DemoBean[5];
         expected[0] = new DemoBean("first one", (long) 356);
         expected[1] = new DemoBean("Demo 1", (long) 6789);
@@ -45,38 +46,45 @@ public class YamlFixtureHelperTest extends TestCase {
         expected[4] = new DemoBean("Demo#2", (long) -9800);
     }
 
-    public void testShouldNotFailWrongFixtureDir() {
+    @Test
+    public void shouldNotFailWrongFixtureDir() {
         Set<Class> models = getClassSet(DemoBean.class);
         Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("nonExistant", models);
         assertTrue("Le fixture non sono vuote", objects.isEmpty());
     }
 
-    public void testShouldNotFailIfMissingFixtureFile() {
+    @Test
+    public void shouldNotFailIfMissingFixtureFile() {
         Set<Class> models = getClassSet(BigDecimal.class);
         Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures", models);
         assertTrue("Le fixture non sono vuote", objects.isEmpty());
     }
 
-    public void testShouldNotFailWhenTrailingSlashPresent() throws Exception {
+    @Test
+    public void shouldNotFailWhenTrailingSlashPresent() throws Exception {
         Set<Class> models = getClassSet(DemoBean.class);
         Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures/", models);
         assertNotNull("Non ha ritornato la mappa di fixtures", objects);
     }
 
-    public void testShouldNotFailIfNoFile() {
+    @Test
+    public void shouldNotFailIfNoFile() {
         Set<Class> models = new LinkedHashSet<Class>();
         Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("emptyDir", models);
         assertTrue("Le fixture non sono vuote", objects.isEmpty());
     }
 
-    public void testShouldNotFailIfEmptyFile() {
+    @Test
+    public void shouldNotFailIfEmptyFile() {
         Set<Class> models = getClassSet(DemoBean.class);
-        Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures/empty", models);
+        Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures/empty",
+                models);
         assertEquals("Non carica tutti i beans", 1, objects.size());
         assertTrue("Le fixture non sono vuote", objects.get(DemoBean.class).isEmpty());
     }
 
-    public void testBeanLoading() {
+    @Test
+    public void beanLoading() {
         Set<Class> models = getClassSet(DemoBean.class);
         Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures", models);
         assertNotNull("Non ha ritornato la mappa di fixtures", objects);
@@ -93,7 +101,8 @@ public class YamlFixtureHelperTest extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void testBookLoading() {
+    @Test
+    public void bookLoading() {
         Set<Class> models = getClassSet(BookTC.class, AuthorTC.class);
         Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures", models);
         assertNotNull("Non ha ritornato la mappa di fixtures", objects);
@@ -103,7 +112,8 @@ public class YamlFixtureHelperTest extends TestCase {
         assertBookAuthorsAreIdentical(objects.get(BookTC.class), objects.get(AuthorTC.class));
     }
 
-    public void testFixtureMerge() {
+    @Test
+    public void fixtureMerge() {
         Set<Class> models = getClassSet(BookTC.class, AuthorTC.class);
         Map<Class, List> objects = YamlFixtureHelper.loadFixturesFromResource("fixtures", models);
         AuthorTC author = (AuthorTC) objects.get(AuthorTC.class).get(3);

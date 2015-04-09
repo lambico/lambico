@@ -44,19 +44,19 @@ public class ManyToManyFixturesTest extends BaseTest {
     protected BookTCDao bookTCDao = null;
 
     @Test
-    public void testDaoExists() {
+    public void daoExists() {
         assertNotNull("Author dao variable not setted", authorTCDao);
         assertNotNull("Book dao variable not setted", bookTCDao);
     }
 
     @Test
-    public void testAllSize() {
+    public void allSize() {
         assertSize(4, authorTCDao.findAll());
         assertSize(3, bookTCDao.findAll());
     }
 
     @Test
-    public void testFixturesLoad() {
+    public void fixturesLoad() {
         List<AuthorTC> authors = authorTCDao.findByName("joe");
         assertSize(1, authors);
         assertSize(2, authors.get(0).getBooks());
@@ -70,7 +70,7 @@ public class ManyToManyFixturesTest extends BaseTest {
 
     @Test
     @Ignore
-    public void testRelationSanity() {
+    public void relationSanity() {
         BookTC book1 = new BookTC();
         book1.setTitle("title1");
         bookTCDao.store(book1);
