@@ -31,6 +31,8 @@ public interface GenericDaoBase<T, PK extends Serializable> {
 
     /**
      * Read an entity instance with a specified primary key value.
+     * This method might return a proxied instance that is initialized on-demand,
+     * when a non-identifier method is accessed.
      *
      * @param id The value of the primary key.
      * @return The entity.

@@ -17,6 +17,7 @@
  */
 package org.lambico.spring.xml;
 
+import org.lambico.dao.generic.CacheIt;
 import org.lambico.dao.generic.Dao;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -67,6 +68,7 @@ public class DaoBeanDefinitionParser extends AbstractSingleBeanDefinitionParser 
         String daoInterface = element.getAttribute(INTERFACE_ATTRIBUTE);
         bean.addPropertyValue("proxyInterfaces", daoInterface);
         Class entityType = null;
+        boolean cacheQueries = false;
         try {
             Class daoInterfaceClass =
                     Class.forName(daoInterface, true, this.getClass().getClassLoader());
@@ -79,12 +81,14 @@ public class DaoBeanDefinitionParser extends AbstractSingleBeanDefinitionParser 
                 throw new IllegalArgumentException(
                         "target Dao interface not annotated with Dao annotation");
             }
+            cacheQueries = (daoInterfaceClass.getAnnotation(CacheIt.class) != null);
         } catch (ClassNotFoundException ex) {
             throw new IllegalArgumentException("Dao interface not found", ex);
         }
         String genericDao = element.getAttribute(GENERIC_DAO_ATTRIBUTE);
         BeanDefinitionBuilder genericDaoBDB = BeanDefinitionBuilder.childBeanDefinition(genericDao);
         genericDaoBDB.addPropertyValue("type", entityType);
+        genericDaoBDB.addPropertyValue("classLevelCacheQueries", cacheQueries);
         bean.addPropertyValue("target", genericDaoBDB.getBeanDefinition());
     }
 

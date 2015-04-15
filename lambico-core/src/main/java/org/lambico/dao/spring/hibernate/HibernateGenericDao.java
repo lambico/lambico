@@ -20,6 +20,8 @@ package org.lambico.dao.spring.hibernate;
 import java.io.Serializable;
 import org.lambico.dao.generic.GenericDao;
 import org.lambico.dao.hibernate.GenericDaoHibernateCriteriaSupport;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate4.HibernateCallback;
 
 /**
  * The interface for the Spring Hibernate generic DAO.
@@ -31,4 +33,7 @@ import org.lambico.dao.hibernate.GenericDaoHibernateCriteriaSupport;
 public interface HibernateGenericDao<T, PK extends Serializable>
         extends GenericDao<T, PK>, GenericDaoHibernateCriteriaSupport<T>,
         GenericDaoHibernateSupport {
+    
+    <T> T doExecute(HibernateCallback<T> action) throws DataAccessException;
+    
 }

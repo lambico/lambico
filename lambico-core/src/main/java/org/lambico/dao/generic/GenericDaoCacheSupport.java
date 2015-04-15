@@ -17,21 +17,24 @@
  */
 package org.lambico.dao.generic;
 
-import java.io.Serializable;
-
 /**
- * Interface for the generic DAO.
+ * Support for cache configuration in the DAOs.
  *
- * Derived from
- * <a
- * href="http://www-128.ibm.com/developerworks/java/library/j-genericdao.html">
- * http://www-128.ibm.com/developerworks/java/library/j-genericdao.html</a>
- *
- * @param <T> The entity class type of the DAO.
- * @param <PK> The type of the primary key of the entity.
- * @author <a href="mailto:lucio.benfante@jugpadova.it">Lucio Benfante</a>
- * @version $Rev$
+ * @author <a href="mailto:lucio@benfante.com">Lucio Benfante</a>
+ * @since 4.0
+ * @version $Revision$
  */
-public interface GenericDao<T, PK extends Serializable>
-        extends GenericDaoBase<T, PK>, GenericDaoTypeSupport, GenericDaoCacheSupport {
+public interface GenericDaoCacheSupport {
+    /**
+     * Returns true if the cache is active at class level.
+     *
+     * @return true if the cache is active at class level.
+     */
+    boolean isClassLevelCacheQueries();
+    /**
+     * Sets the flag for activating the cache at class level.
+     *
+     * @param classLevelCacheQueries true id active.
+     */
+    void setClassLevelCacheQueries(boolean classLevelCacheQueries);
 }

@@ -23,6 +23,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 import javax.annotation.Resource;
 import org.hibernate.Criteria;
+import org.hibernate.FlushMode;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
@@ -30,15 +33,21 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.lambico.dao.generic.CacheIt;
 import org.lambico.dao.generic.GenericDaoBase;
+import org.lambico.dao.generic.GenericDaoCacheSupport;
 import org.lambico.dao.generic.GenericDaoTypeSupport;
 import org.lambico.dao.generic.Page;
 import org.lambico.dao.generic.PageDefaultImpl;
 import org.lambico.dao.hibernate.GenericDaoHibernateCriteriaSupport;
 import org.lambico.dao.spring.BusinessDao;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.orm.hibernate4.SessionFactoryUtils;
+import org.springframework.util.Assert;
 
 /**
  * A generic DAO wich can be extended and personalized.
@@ -52,14 +61,22 @@ import org.springframework.orm.hibernate4.HibernateTemplate;
 public class HibernateGenericBusinessDao<T, PK extends Serializable>
         extends HibernateDaoSupport
         implements GenericDaoBase<T, PK>, GenericDaoHibernateCriteriaSupport<T>,
-        GenericDaoTypeSupport, GenericDaoHibernateSupport {
+        GenericDaoTypeSupport, GenericDaoCacheSupport, GenericDaoHibernateSupport {
 
     /** The entity class type. */
     private Class<T> persistentClass;
     /**
+     * The flag for activating the cache at class level.
+     */
+    private boolean classLevelCacheQueries;
+    /**
      * A customized hibernate template.
      */
     private HibernateTemplate customizedHibernateTemplate;
+    /**
+     * The names of the filters that must be activated.
+     */
+    private String[] filterNames;
 
     /**
      * Build the DAO.
@@ -178,7 +195,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
     @SuppressWarnings("unchecked")
     @Override
     public List<T> searchByCriteria(final Criterion... criterion) {
-        Criteria crit = currentSession().createCriteria(persistentClass);
+        Criteria crit = currentCustomizedSession().createCriteria(persistentClass);
         for (Criterion c : criterion) {
             crit.add(c);
         }
@@ -225,8 +242,8 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
     @Override
     public Page<T> searchPaginatedByCriteria(final int page, final int pageSize,
             final Criterion... criterion) {
-        Criteria crit = currentSession().createCriteria(persistentClass);
-        Criteria count = currentSession().createCriteria(persistentClass);
+        Criteria crit = currentCustomizedSession().createCriteria(persistentClass);
+        Criteria count = currentCustomizedSession().createCriteria(persistentClass);
         for (Criterion c : criterion) {
             crit.add(c);
             count.add(c);
@@ -362,4 +379,84 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
         return result;
     }
 
+    @Override
+    public void setFilterNames(String... filterNames) {
+        this.filterNames = filterNames;
+        this.getHibernateTemplate().setFilterNames(filterNames);
+        this.getCustomizedHibernateTemplate().setFilterNames(filterNames);
+    }
+
+    @Override
+    public String[] getFilterNames() {
+        return this.filterNames;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public boolean isClassLevelCacheQueries() {
+        return classLevelCacheQueries;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void setClassLevelCacheQueries(boolean classLevelCacheQueries) {
+        this.classLevelCacheQueries = classLevelCacheQueries;
+    }
+    
+    /**
+     * Conveniently obtain and customize the current Hibernate Session.
+     * @return the Hibernate Session
+     * @throws DataAccessResourceFailureException if the Session couldn't be created
+     * @see org.hibernate.SessionFactory#getCurrentSession()
+     */
+    @Override
+    public Session currentCustomizedSession() throws DataAccessResourceFailureException {
+        Session session = currentSession();
+        enableFilters(session);
+        return session;
+    }
+
+    private void enableFilters(Session session) {
+        if (getFilterNames() != null) {
+            for (String filterName : getFilterNames()) {
+                session.enableFilter(filterName);
+            }
+        }
+    }
+
+    public <T> T doExecute(HibernateCallback<T> action) throws DataAccessException {
+        Assert.notNull(action, "Callback object must not be null");
+
+        Session session = null;
+        boolean isNew = false;
+        try {
+                session = currentCustomizedSession();
+        } catch (HibernateException ex) {
+            logger.debug("Could not retrieve pre-bound Hibernate session", ex);
+        }
+        if (session == null) {
+            session = getSessionFactory().openSession();
+            session.setFlushMode(FlushMode.MANUAL);
+            enableFilters(session);
+            isNew = true;
+        }
+
+        try {
+            return action.doInHibernate(session);
+        } catch (HibernateException ex) {
+            throw SessionFactoryUtils.convertHibernateAccessException(ex);
+        } catch (RuntimeException ex) {
+            // Callback code threw application exception...
+            throw ex;
+        } finally {
+            if (isNew) {
+                SessionFactoryUtils.closeSession(session);
+            }
+	}
+    }
+    
 }

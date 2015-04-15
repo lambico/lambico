@@ -17,7 +17,9 @@
  */
 package org.lambico.dao.spring.hibernate;
 
+import org.hibernate.Session;
 import org.lambico.dao.generic.GenericDaoTypeSupport;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.hibernate4.HibernateTemplate;
 
 /**
@@ -37,9 +39,35 @@ public interface GenericDaoHibernateSupport extends GenericDaoTypeSupport {
     /**
      * Gets a customized Spring's Hibernate Template, using the DAO
      * configuration.
+     * 
+     * @deprecated Simply use the {@link #getHibernateTemplate()} method.
      *
      * @return A Spring's Hibernate template.
      */
+    @Deprecated
     HibernateTemplate getCustomizedHibernateTemplate();
 
+    /**
+     * Set one or more names of Hibernate filters to be activated for all
+     * Sessions that this DAO works with.
+     * 
+     * @param filterNames The list of filters that must be activated.
+     */
+    public void setFilterNames(String... filterNames);
+
+    /**
+     * Return the names of Hibernate filters to be activated, if any.
+     * 
+     * @return the names of Hibernate filters to be activated, if any.
+     */
+    public String[] getFilterNames();
+
+    /**
+     * Conveniently obtain and customize the current Hibernate Session.
+     * @return the Hibernate Session
+     * @throws DataAccessResourceFailureException if the Session couldn't be created
+     * @see org.hibernate.SessionFactory#getCurrentSession()
+     */
+    Session currentCustomizedSession() throws DataAccessResourceFailureException;
+    
 }

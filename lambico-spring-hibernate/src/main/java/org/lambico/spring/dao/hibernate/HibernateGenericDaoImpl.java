@@ -17,13 +17,15 @@
  */
 package org.lambico.spring.dao.hibernate;
 
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.lambico.dao.spring.hibernate.HibernateGenericDao;
 import java.io.Serializable;
 import java.util.List;
 import org.apache.commons.lang.SerializationUtils;
 import org.hibernate.Criteria;
+import org.hibernate.FlushMode;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
@@ -31,9 +33,14 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.lambico.dao.generic.Page;
 import org.lambico.dao.generic.PageDefaultImpl;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
+import org.springframework.util.Assert;
 
 /**
  * Hibernate implementation of the generic DAO.
@@ -58,9 +65,13 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     private Class<T> type;
     /**
-     * A customized hibernate template.
+     * The flag for activating the cache at class level.
      */
-    private HibernateTemplate customizedHibernateTemplate;
+    private boolean classLevelCacheQueries;
+    /**
+     * The names of the filters that must be activated.
+     */
+    private String[] filterNames;
 
     /**
      * {@inheritDoc}
@@ -69,7 +80,13 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     @Override
     public final void create(final T o) {
-        getCustomizedHibernateTemplate().persist(o);
+        doExecute(new HibernateCallback<Object>() {
+            @Override
+            public Object doInHibernate(Session session) throws HibernateException {
+                session.persist(o);
+                return null;
+            }
+        });
     }
 
     /**
@@ -79,7 +96,12 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     @Override
     public final void store(final T o) {
-        getCustomizedHibernateTemplate().merge(o);
+        doExecute(new HibernateCallback<T>() {
+            @Override
+            public T doInHibernate(Session session) throws HibernateException {
+                return (T) session.merge(o);
+            }
+        });
     }
 
     /**
@@ -91,7 +113,12 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @Override
     @SuppressWarnings("unchecked")
     public final T read(final PK id) {
-        return (T) getCustomizedHibernateTemplate().load(getType(), id);
+        return doExecute(new HibernateCallback<T>() {
+            @Override
+            public T doInHibernate(Session session) throws HibernateException {
+                return (T) session.load(getType(), id);
+            }
+        });
     }
 
     /**
@@ -103,7 +130,12 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @Override
     @SuppressWarnings("unchecked")
     public final T get(final PK id) {
-        return (T) getCustomizedHibernateTemplate().get(getType(), id);
+        return doExecute(new HibernateCallback<T>() {
+            @Override
+            public T doInHibernate(Session session) throws HibernateException {
+                return (T) session.get(getType(), id);
+            }
+        });
     }
 
     /**
@@ -113,7 +145,13 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     @Override
     public final void delete(final T o) {
-        getCustomizedHibernateTemplate().delete(o);
+        doExecute(new HibernateCallback<Object>() {
+            @Override
+            public Object doInHibernate(Session session) throws HibernateException {
+                session.delete(o);
+                return null;
+            }
+        });
     }
 
     /**
@@ -124,10 +162,18 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @Override
     @SuppressWarnings("unchecked")
     public final List<T> findAll() {
-        return (List<T>) getCustomizedHibernateTemplate().find(
-                "from " + getType().getName() + " x");
-    }
+        return doExecute(new HibernateCallback<List<T>>() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public List<T> doInHibernate(Session session) throws HibernateException {
+                    Query queryObject = session.createQuery("from "+ getType().getName()+" x");
+                    prepare(queryObject);
+                    return queryObject.list();
+            }
 
+        });
+    }
+    
     /**
      * {@inheritDoc}
      *
@@ -137,7 +183,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @Override
     @SuppressWarnings("unchecked")
     public final List<T> searchByCriteria(final Criterion... criterion) {
-        Criteria crit = currentSession().createCriteria(getType());
+        Criteria crit = currentCustomizedSession().createCriteria(getType());
         for (Criterion c : criterion) {
             crit.add(c);
         }
@@ -153,7 +199,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @Override
     @SuppressWarnings("unchecked")
     public final List<T> searchByCriteria(final DetachedCriteria criteria) {
-        return (List<T>) getCustomizedHibernateTemplate().findByCriteria(criteria);
+        return searchByCriteria(criteria, -1, -1);
     }
 
     /**
@@ -168,8 +214,22 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @SuppressWarnings("unchecked")
     public final List<T> searchByCriteria(final DetachedCriteria criteria,
             final int firstResult, final int maxResults) {
-        return (List<T>) getCustomizedHibernateTemplate().
-                findByCriteria(criteria, firstResult, maxResults);
+        List<T> result = doExecute(new HibernateCallback<List<T>>() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public List<T> doInHibernate(Session session) throws HibernateException {
+                Criteria executableCriteria = criteria.getExecutableCriteria(session);
+                prepare(executableCriteria);
+                if (firstResult >= 0) {
+                    executableCriteria.setFirstResult(firstResult);
+                }
+                if (maxResults > 0) {
+                    executableCriteria.setMaxResults(maxResults);
+                }
+                return executableCriteria.list();
+            }
+        });
+        return result;
     }
 
     /**
@@ -184,8 +244,8 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @SuppressWarnings("unchecked")
     public final Page<T> searchPaginatedByCriteria(final int page,
             final int pageSize, final Criterion... criterion) {
-        Criteria crit = currentSession().createCriteria(getType());
-        Criteria count = currentSession().createCriteria(getType());
+        Criteria crit = currentCustomizedSession().createCriteria(getType());
+        Criteria count = currentCustomizedSession().createCriteria(getType());
         for (Criterion c : criterion) {
             crit.add(c);
             count.add(c);
@@ -213,16 +273,11 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
             final int pageSize, final DetachedCriteria criteria) {
         // Row count
         criteria.setProjection(Projections.rowCount());
-        int rowCount = ((Number) getHibernateTemplate().
-                findByCriteria(criteria).get(0)).intValue();
+        int rowCount = ((Number) searchByCriteria(criteria).get(0)).intValue();
         criteria.setProjection(null);
         criteria.setResultTransformer(Criteria.ROOT_ENTITY);
 
-        @SuppressWarnings("unchecked")
-        List<T> list = (List<T>) getCustomizedHibernateTemplate().
-                findByCriteria(criteria, (page - 1) * pageSize, pageSize);
-
-        return new PageDefaultImpl<T>(list, page, pageSize, rowCount);
+        return searchPaginatedByCriteria(page, pageSize, rowCount, criteria);
     }
 
     /**
@@ -235,13 +290,11 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @return {@inheritDoc}
      */
     @Override
-    public Page<T> searchPaginatedByCriteria(int page, int pageSize, int totalRecords,
-            DetachedCriteria criteria) {
+    public Page<T> searchPaginatedByCriteria(final int page, final int pageSize,
+            final int totalRecords, final DetachedCriteria criteria) {
         @SuppressWarnings("unchecked")
-        List<T> list = (List<T>) getCustomizedHibernateTemplate().
-                findByCriteria(criteria, (page - 1) * pageSize, pageSize);
-
-        return new PageDefaultImpl<T>(list, page, pageSize, totalRecords);
+        List<T> result = searchByCriteria(criteria, (page - 1) * pageSize, pageSize);
+        return new PageDefaultImpl<T>(result, page, pageSize, totalRecords);
     }
 
     /**
@@ -251,10 +304,16 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     @Override
     public int deleteAll() {
-        List<T> rows = findAll();
-
-        getCustomizedHibernateTemplate().deleteAll(rows);
-
+        final List<T> rows = findAll();
+        doExecute(new HibernateCallback<Object>() {
+            @Override
+            public Object doInHibernate(Session session) throws HibernateException {
+                for (Object row : rows) {
+                    session.delete(row);
+                }
+                return null;
+            }
+        });
         return rows.size();
     }
 
@@ -265,9 +324,15 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     @Override
     public final long count() {
-        return DataAccessUtils.intResult(
-                getCustomizedHibernateTemplate().find(
-                "select count(*) from " + getType().getSimpleName()));
+        return DataAccessUtils.intResult(doExecute(new HibernateCallback<List<T>>() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public List<T> doInHibernate(Session session) throws HibernateException {
+                    Query queryObject = session.createQuery("select count(*) from " + getType().getSimpleName());
+                    prepare(queryObject);
+                    return queryObject.list();
+            }
+        }));
     }
 
     /**
@@ -280,8 +345,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     public final long countByCriteria(final DetachedCriteria criteria) {
         DetachedCriteria countCriteria = (DetachedCriteria) SerializationUtils.clone(criteria);
         countCriteria.setProjection(Projections.rowCount());
-        return DataAccessUtils.intResult(getCustomizedHibernateTemplate().findByCriteria(
-                countCriteria));
+        return DataAccessUtils.intResult(searchByCriteria(countCriteria));
     }
 
     /**
@@ -289,9 +353,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      */
     @Override
     public final void rollBackTransaction() {
-        final SessionFactory currSessionFactory =
-                getCustomizedHibernateTemplate().getSessionFactory();
-        final Session currentSession = currSessionFactory.getCurrentSession();
+        final Session currentSession = currentSession();
         final Transaction transaction = currentSession.getTransaction();
         if (transaction != null
                 && transaction.isActive()
@@ -331,7 +393,7 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
     @Override
     protected void initDao() throws Exception {
         super.initDao();
-        this.customizedHibernateTemplate = new HibernateTemplate(getSessionFactory());
+        getHibernateTemplate().setCacheQueries(isClassLevelCacheQueries());
     }
 
     /**
@@ -341,7 +403,111 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * @return A customized hibernate template.
      */
     @Override
+    @Deprecated
     public HibernateTemplate getCustomizedHibernateTemplate() {
-        return this.customizedHibernateTemplate;
+        return this.getHibernateTemplate();
     }
+
+    @Override
+    public void setFilterNames(String... filterNames) {
+        if (this.filterNames != null && this.filterNames.length > 0) {
+            disableFilters(currentSession());
+        }
+        this.filterNames = filterNames;
+    }
+
+    @Override
+    public String[] getFilterNames() {
+        return this.filterNames;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public boolean isClassLevelCacheQueries() {
+        return classLevelCacheQueries;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void setClassLevelCacheQueries(boolean classLevelCacheQueries) {
+        this.classLevelCacheQueries = classLevelCacheQueries;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @return {@inheritDoc }
+     * @throws DataAccessResourceFailureException {@inheritDoc }
+     * @see {@inheritDoc }
+     */
+    @Override
+    public final Session currentCustomizedSession() throws DataAccessResourceFailureException {
+        Session session = currentSession();
+        enableFilters(session);
+        return session;
+    }
+
+    private void enableFilters(Session session) {
+        if (getFilterNames() != null) {
+            for (String filterName : getFilterNames()) {
+                session.enableFilter(filterName);
+            }
+        }
+    }
+
+    private void disableFilters(Session session) {
+        if (getFilterNames() != null) {
+            for (String filterName : getFilterNames()) {
+                session.disableFilter(filterName);
+            }
+        }
+    }
+
+    @Override
+    public <T> T doExecute(HibernateCallback<T> action) throws DataAccessException {
+        Assert.notNull(action, "Callback object must not be null");
+
+        Session session = null;
+        boolean isNew = false;
+        try {
+                session = currentCustomizedSession();
+        } catch (HibernateException ex) {
+            logger.debug("Could not retrieve pre-bound Hibernate session", ex);
+        }
+        if (session == null) {
+            session = getSessionFactory().openSession();
+            session.setFlushMode(FlushMode.MANUAL);
+            enableFilters(session);
+            isNew = true;
+        }
+
+        try {
+            return action.doInHibernate(session);
+        } catch (HibernateException ex) {
+            throw SessionFactoryUtils.convertHibernateAccessException(ex);
+        } catch (RuntimeException ex) {
+            // Callback code threw application exception...
+            throw ex;
+        } finally {
+            if (isNew) {
+                SessionFactoryUtils.closeSession(session);
+            }
+	}
+    }
+
+    private void prepare(Query queryObject) {
+        if (this.isClassLevelCacheQueries()) {
+            queryObject.setCacheable(true);
+        }
+    }
+    
+    protected void prepare(Criteria criteria) {
+        if (this.isClassLevelCacheQueries()) {
+            criteria.setCacheable(true);
+        }
+    }
+    
 }

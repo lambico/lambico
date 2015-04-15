@@ -44,10 +44,10 @@ import org.lambico.dao.generic.GenericDaoTypeSupport;
 import org.lambico.dao.generic.MaxResults;
 import org.lambico.dao.generic.NamedParameter;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
+import org.lambico.dao.spring.hibernate.HibernateGenericDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.HibernateCallback;
-import org.springframework.orm.hibernate4.HibernateTemplate;
 import org.springframework.util.StringUtils;
 
 /**
@@ -99,17 +99,17 @@ public class HibernateDaoInstrumentation {
 
         if (HibernateDaoUtils.isAKnownNativeMethod(method)) {
             result = pjp.proceed(args);
+        } else if (HibernateDaoUtils.isDaoInit(method)) {
+            HibernateDaoUtils.getHibernateTemplate((GenericDaoHibernateSupport) target);
         } else {
             logger.debug("target: " + target);
             logger.debug("method: " + method);
             logger.debug("args: " + args);
 
-            HibernateTemplate hibernateTemplate = HibernateDaoUtils.getHibernateTemplate(
-                    ((GenericDaoHibernateSupport) target));
-            hibernateTemplate.setExposeNativeSession(true);
+            HibernateGenericDao dao = (HibernateGenericDao)target;
 
             // query using a named query from the method name
-            result = hibernateTemplate.execute(new HibernateCallback() {
+            result = dao.doExecute(new HibernateCallback() {
 
                 @Override
                 public Object doInHibernate(final Session session) {
@@ -164,8 +164,7 @@ public class HibernateDaoInstrumentation {
                 if (method.getName().startsWith("findBy")
                         || method.getName().startsWith("countBy")) {
                     // Query evicting condition from the method name
-                    result = hibernateTemplate.execute(
-                            new HibernateCallback() {
+                    result = dao.doExecute(new HibernateCallback() {
 
                                 @Override
                                 public Object doInHibernate(final Session session) {

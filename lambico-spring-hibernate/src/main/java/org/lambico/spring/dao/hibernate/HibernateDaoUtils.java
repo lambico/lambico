@@ -58,6 +58,14 @@ public final class HibernateDaoUtils {
         }
         return result;
     }
+    
+    public static boolean isDaoInit(final Method method) {
+        boolean result = false;
+        if (method.getName().equals("initDao")) {
+            result = true;
+        }
+        return result;
+    }
 
     /**
      * Get an {@link HibernateTemplate } template customized with the
@@ -68,7 +76,8 @@ public final class HibernateDaoUtils {
      */
     public static HibernateTemplate getHibernateTemplate(
             final GenericDaoHibernateSupport genericDao) {
-        HibernateTemplate result = genericDao.getCustomizedHibernateTemplate();
+        HibernateTemplate result = genericDao.getHibernateTemplate();
+        result.setExposeNativeSession(true);
         Class<?>[] interfaces = genericDao.getClass().getInterfaces();
         for (Class<?> iface : interfaces) {
             if (null != iface.getAnnotation(CacheIt.class)) {

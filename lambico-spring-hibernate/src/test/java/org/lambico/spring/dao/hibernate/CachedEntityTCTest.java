@@ -99,7 +99,7 @@ public class CachedEntityTCTest extends AbstractBaseTest {
     @Transactional
     public void test1() {
         final Statistics statistics =
-                ((HibernateGenericDao) cachedEntityTCDao).getCustomizedHibernateTemplate().
+                ((HibernateGenericDao) cachedEntityTCDao).getHibernateTemplate().
                 getSessionFactory().getStatistics();
         // Caches due to @CachteIt annotation on method
         cachedEntityTCDao.findByFieldOne(FIELD);

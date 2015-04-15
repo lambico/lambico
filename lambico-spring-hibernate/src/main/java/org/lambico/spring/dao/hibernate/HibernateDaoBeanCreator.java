@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import javax.persistence.Entity;
 import org.lambico.dao.AutomaticDao;
+import org.lambico.dao.generic.CacheIt;
 import org.lambico.dao.generic.Dao;
 import org.lambico.spring.xml.ContextUtils;
 import org.lambico.spring.xml.DaoBeanCreator;
@@ -256,8 +257,23 @@ public class HibernateDaoBeanCreator implements DaoBeanCreator {
         Class<?>[] genericDaoInterfaces = extractDaoInterfaces(genericDaoName, daoInterface);
         beanDefinitionBuilder.addPropertyValue("proxyInterfaces", genericDaoInterfaces);
         genericDaoBDB.addPropertyValue("type", persistentClass);
+        genericDaoBDB.addPropertyValue("classLevelCacheQueries", mustCacheQueries(daoInterface));
         beanDefinitionBuilder.addPropertyValue("target", genericDaoBDB.getBeanDefinition());
         registry.registerBeanDefinition(id, beanDefinitionBuilder.getBeanDefinition());
+    }
+
+    /**
+     * Check if the DAO will cache queries (annotated with {@link CacheIt}).
+     * 
+     * @param daoInterface The DAO interface.
+     * @return true if the DAO will cache queries.
+     */
+    private static boolean mustCacheQueries(final Class daoInterface) {
+        if (daoInterface != null) {
+            return daoInterface.getAnnotation(CacheIt.class) != null;
+        } else {
+            return false;
+        }
     }
 
     /**
