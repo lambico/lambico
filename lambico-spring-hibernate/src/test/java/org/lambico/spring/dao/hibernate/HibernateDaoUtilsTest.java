@@ -36,7 +36,7 @@ public class HibernateDaoUtilsTest extends BaseTest {
      * Test of isAKnownNativeMethod method, of class HibernateDaoUtils.
      */
     @Test
-    public void testIsAKnownNativeMethod() throws NoSuchMethodException {
+    public void isAKnownNativeMethod() throws NoSuchMethodException {
         assertTrue(HibernateDaoUtils.isAKnownNativeMethod(entityTCDao.getClass().getDeclaredMethod(
                 "toString")));
         assertTrue(HibernateDaoUtils.isAKnownNativeMethod(entityTCDao.getClass().getDeclaredMethod(

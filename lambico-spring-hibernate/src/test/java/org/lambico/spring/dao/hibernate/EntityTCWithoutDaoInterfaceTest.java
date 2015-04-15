@@ -37,12 +37,12 @@ public class EntityTCWithoutDaoInterfaceTest extends BaseTest {
     private GenericDao<EntityTCWithoutDaoInterface, Long> entityTCWithoutDaoInterfaceDao;
 
     @Test
-    public void testDaoExists() {
+    public void daoExists() {
         assertNotNull(entityTCWithoutDaoInterfaceDao);
     }
 
     @Test
-    public void testAllSize() {
+    public void allSize() {
         final List<EntityTCWithoutDaoInterface> result = entityTCWithoutDaoInterfaceDao.findAll();
         assertSize(5, result);
         EntityTCWithoutDaoInterface testCast = result.get(0);

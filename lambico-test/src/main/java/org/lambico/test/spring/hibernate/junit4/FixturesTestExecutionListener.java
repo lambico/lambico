@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.lang.ArrayUtils;
 import org.lambico.dao.generic.GenericDaoBase;
 import org.lambico.dao.spring.hibernate.GenericDaoHibernateSupport;
 import org.lambico.data.YamlFixtureHelper;
@@ -54,8 +53,7 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
     private static final Logger logger = LoggerFactory.
             getLogger(FixturesTestExecutionListener.class);
     private FixturesConfigurationAttributes configurationAttributes;
-    // fixture instances
-    private static Map<Class, List> fixtures = new LinkedHashMap<Class, List>();
+    private static final Map<Class, List> fixtureInstances = new LinkedHashMap<Class, List>();
 
     @Override
     public void beforeTestClass(final TestContext testContext) throws Exception {
@@ -115,7 +113,7 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
                 GenericDaoBase dao = DaoUtils.getDaoFor(model, testContext.getApplicationContext());
                 final HibernateTemplate template = ((GenericDaoHibernateSupport) dao).
                         getHibernateTemplate();
-                List<Object> data = fixtures.get(model);
+                List<Object> data = fixtureInstances.get(model);
                 if (data == null) {
                     logger.warn("No fixtures stored for {} model", model.getSimpleName());
                     continue;
@@ -141,6 +139,7 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
 
     private void emptyDatabaseFixtures(final TestContext testContext) {
         for (Class model : retrieveConfigurationAttributes(testContext).getReversedModelClasses()) {
+            // TODO: find a quicker alternative (using jdbcTemplate?)
             GenericDaoBase dao = DaoUtils.getDaoFor(model, testContext.getApplicationContext());
             dao.deleteAll();
         }
@@ -151,7 +150,7 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
      */
     @SuppressWarnings("unchecked")
     private void setupFixtures(final TestContext testContext) {
-        fixtures.clear();
+        fixtureInstances.clear();
         FixturesConfigurationAttributes config = retrieveConfigurationAttributes(testContext);
         Set<Class> classes = config.getModelClassesSet();
         if (classes.isEmpty()) {
@@ -161,11 +160,11 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
         try {
             ClassPathResource path = (ClassPathResource) testContext.getApplicationContext().
                     getResource(ResourceLoader.CLASSPATH_URL_PREFIX + config.getRootFolder());
-            fixtures.putAll(YamlFixtureHelper.loadFixturesFromResource(path, classes));
+            fixtureInstances.putAll(YamlFixtureHelper.loadFixturesFromResource(path, classes));
             if (logger.isInfoEnabled()) {
-                HashMap<String, Integer> map = new HashMap<String, Integer>(fixtures.size());
+                HashMap<String, Integer> map = new HashMap<String, Integer>(fixtureInstances.size());
                 for (Class model : classes) {
-                    map.put(model.getSimpleName(), fixtures.get(model).size());
+                    map.put(model.getSimpleName(), fixtureInstances.get(model).size());
                 }
                 logger.info("Loaded fixtures for models {}", map);
             }
@@ -185,11 +184,8 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
     private FixturesConfigurationAttributes retrieveConfigurationAttributes(TestContext testContext) {
         if (this.configurationAttributes == null) {
             this.configurationAttributes = new FixturesConfigurationAttributes();
-
-            Class<?>[] classes = getSuperClasses(testContext.getTestClass());
-            ArrayUtils.reverse(classes);
-            for (Class<?> c : classes) {
-                FixtureSet annotation = c.getAnnotation(FixtureSet.class);
+            for (Class<?> clazz : getSuperClasses(testContext.getTestClass())) {
+                FixtureSet annotation = clazz.getAnnotation(FixtureSet.class);
                 if (annotation != null) {
                     configurationAttributes.merge(annotation);
                 }
@@ -199,9 +195,9 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
     }
 
     /**
-     * Gets all superclasses of the supplied {@link Class class}, including the class itself. The
-     * ordering of the returned list will begin with the supplied class and continue up the class
-     * hierarchy.
+     * Gets all superclasses of the supplied {@link Class class}, including the class itself. The 
+     * ordering of the returned list will start with the last class in hierarchy and continues down
+     * to the the class supplied class.
      * <p>
      * Note: This code has been borrowed from
      * {@link org.junit.internal.runners.TestClass#getSuperClasses(Class)} and adapted.
@@ -209,13 +205,13 @@ public class FixturesTestExecutionListener extends AbstractTestExecutionListener
      * @param clazz the class for which to retrieve the superclasses.
      * @return all superclasses of the supplied class.
      */
-    private Class<?>[] getSuperClasses(Class<?> clazz) {
+    private List<Class<?>> getSuperClasses(Class<?> testClass) {
         ArrayList<Class<?>> results = new ArrayList<Class<?>>();
-        Class<?> current = clazz;
+        Class<?> current = testClass;
         while (current != null) {
-            results.add(current);
+            results.add(0, current);
             current = current.getSuperclass();
         }
-        return results.toArray(new Class<?>[]{});
+        return results;
     }
 }

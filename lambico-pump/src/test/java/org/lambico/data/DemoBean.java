@@ -52,7 +52,7 @@ public class DemoBean {
             return false;
         // object must be DemoBean at this point
         DemoBean test = (DemoBean) obj;
-        return (id == test.getId() || (id != null && id.equals(test.id)))
+        return (id == test.id || (id != null && id.equals(test.id)))
                 && (nome == test.nome || (nome != null && nome.equals(test.nome)));
     }
 

@@ -34,18 +34,18 @@ public class HibernateGenericBusinessDaoTest  extends BaseTest {
     private EntityTCBusinessDao entityTCBusinessDao;
     
     @Test
-    public void testStoreRetrieve() {
+    public void storeRetrieve() {
         EntityTC entity = new EntityTC();
         entityTCBusinessDao.store(entity);
         assert(entity.getId() > 0);
-        entity.setFieldOne("pippo");
+        entity.setFieldOne("something");
         entityTCBusinessDao.store(entity);
         entity = entityTCBusinessDao.read(entity.getId());
-        assertEquals("pippo", entity.getFieldOne());
+        assertEquals("something", entity.getFieldOne());
     }
 
     @Test
-    public void testFindAll(){
+    public void findAll(){
         List<EntityTC> list = entityTCBusinessDao.findAll();
         assertNotNull(list);
     }

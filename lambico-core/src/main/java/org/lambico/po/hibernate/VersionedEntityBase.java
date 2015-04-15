@@ -57,6 +57,7 @@ public abstract class VersionedEntityBase<T extends VersionedData>
      */
     @OneToMany(mappedBy = "entity", cascade = CascadeType.ALL)
     @OrderBy(value = "dateFrom")
+    @Override
     public List<T> getVersionedData() {
         return this.versionedData;
     }
@@ -66,6 +67,7 @@ public abstract class VersionedEntityBase<T extends VersionedData>
      *
      * @param versionedData {@inheritDoc}
      */
+    @Override
     public void setVersionedData(final List<T> versionedData) {
         this.versionedData = versionedData;
     }
@@ -75,6 +77,7 @@ public abstract class VersionedEntityBase<T extends VersionedData>
      *
      * @return {@inheritDoc}
      */
+    @Override
     public String getDefaultLocale() {
         return defaultLocale;
     }
@@ -84,6 +87,7 @@ public abstract class VersionedEntityBase<T extends VersionedData>
      *
      * @param defaultLocale {@inheritDoc}
      */
+    @Override
     public void setDefaultLocale(final String defaultLocale) {
         this.defaultLocale = defaultLocale;
     }

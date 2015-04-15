@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class YamlFixtureHelper {
 
-    private static Logger logger = LoggerFactory.getLogger(YamlFixtureHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(YamlFixtureHelper.class);
     private static final Pattern HEADER_MATCH = Pattern.compile("^-\\s??(\\S*)\\s*?$",
             Pattern.MULTILINE);
     private static final Pattern LINE_MATCH = Pattern.compile("^(.+)$", Pattern.MULTILINE);
@@ -51,43 +51,6 @@ public class YamlFixtureHelper {
     private YamlFixtureHelper() {
     }
 
-//    /**
-//     * Gets id of dao related to a model.
-//     * <p/>
-//     * *WARNING*: strong condition on the DAO id (entity_name+Dao) For retriving a dao for an
-//     * entity it's better something like:
-//     * <code>
-//     * DaoProvider daos = (DaoProvider)ctx.getBean(DAO_PROVIDER_ID);
-//     * GenericDao dao = (GenericDao)daos.getDao(clazz);
-//     * </code>
-//     * <p/>
-//     * The DAO_PROVIDER_ID usually is "daos".
-//     *
-//     * @param model The class of a model.
-//     * @return The DAO id.
-//     */
-//    public static String getFixtureDaoId(final Class model) {
-//        return StringUtils.uncapitalize(model.getSimpleName()) + "Dao";
-//    }
-//
-//    /**
-//     * Gets id of dao related to a model.
-//     * <p/>
-//     * *WARNING*: strong condition on the DAO id (entity_name+Dao) For retriving a dao for an
-//     * entity it's better something like:
-//     * <code>
-//     * DaoProvider daos = (DaoProvider)ctx.getBean(DAO_PROVIDER_ID);
-//     * GenericDao dao = (GenericDao)daos.getDao(clazz);
-//     * </code>
-//     * <p/>
-//     * The DAO_PROVIDER_ID usually is "daos".
-//     *
-//     * @param model The class of a model.
-//     * @return The business DAO id.
-//     */
-//    public static String getFixtureBusinessDaoId(final Class model) {
-//        return StringUtils.uncapitalize(model.getSimpleName()) + "BusinessDao";
-//    }
     /**
      * Gets human readable name of a model.
      *
@@ -139,12 +102,12 @@ public class YamlFixtureHelper {
                     sb.append(content).append(IOUtils.LINE_SEPARATOR);
                     fixtures.put(model, new LinkedList());
                 } else {
-                    logger.warn("No fixtures for " + getModelName(model) + " in the file '"
-                            + fixtureFileName + "' ?");
+                    logger.warn("No fixtures for {} in the file '{}' ?", getModelName(model),
+                            fixtureFileName);
                 }
             } catch (FileNotFoundException e) {
-                logger.warn("Fixture file not found for " + getModelName(model)
-                        + ", did you created the file '" + fixtureFileName + "' ?");
+                logger.warn("Fixture file not found for {}, did you created the file '{}' ?",
+                        getModelName(model), fixtureFileName);
             } catch (IOException e) {
                 logger.error("Loading of fixtures failed for " + getModelName(model), e);
             } finally {

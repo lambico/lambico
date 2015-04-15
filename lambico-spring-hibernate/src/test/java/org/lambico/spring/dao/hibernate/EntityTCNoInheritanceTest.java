@@ -37,12 +37,12 @@ public class EntityTCNoInheritanceTest extends BaseTest {
     private GenericDao<EntityTCNoInheritance, Short> entityTCNoInheritanceDao;
 
     @Test
-    public void testDaoExists() {
+    public void daoExists() {
         assertNotNull(entityTCNoInheritanceDao);
     }
 
     @Test
-    public void testAllSize() {
+    public void allSize() {
         final List<EntityTCNoInheritance> result = entityTCNoInheritanceDao.findAll();
         assertSize(5, result);
         EntityTCNoInheritance testCast = result.get(0);

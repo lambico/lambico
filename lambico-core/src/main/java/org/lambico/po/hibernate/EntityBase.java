@@ -54,6 +54,7 @@ public abstract class EntityBase implements Entity, Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Override
     public Long getId() {
         return this.id;
     }
@@ -72,6 +73,7 @@ public abstract class EntityBase implements Entity, Serializable {
      *
      * @param id the entity id
      */
+    @Override
     public void setId(final Long id) {
         this.id = id;
     }

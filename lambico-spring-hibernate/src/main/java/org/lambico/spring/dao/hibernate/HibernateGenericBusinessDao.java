@@ -64,7 +64,7 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
         GenericDaoTypeSupport, GenericDaoCacheSupport, GenericDaoHibernateSupport {
 
     /** The entity class type. */
-    private Class<T> persistentClass;
+    private final Class<T> persistentClass;
     /**
      * The flag for activating the cache at class level.
      */

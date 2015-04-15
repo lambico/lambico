@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2009 Lambico Team <lucio.benfante@gmail.com>
  *
- * This file is part of Lambico Core.
+ * This file is part of Lambico Spring - Hibernate.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lambico.dao;
+package org.lambico.spring.po;
 
-import java.util.Properties;
+import org.lambico.po.hibernate.EntityBase;
+import javax.persistence.Entity;
 
 /**
- * An exception manager that simply rethrows the exception.
+ * A persistent object to be used for the annotated dao.
  *
- * @author Federico Russo <chiccorusso@gmail.com>
- * @author Lucio Benfante <lucio.benfante@gmail.com>
+ * michele franzin <michele.franzin at seesaw.it>
  */
-public class BypassingExceptionManager extends DaoExceptionManagerBase {
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param throwable {@inheritDoc}
-     * @param properties {@inheritDoc}
-     * @throws java.lang.Throwable
-     */
-    @Override
-    public void process(final Throwable throwable, final Properties properties)
-            throws Throwable {
-        throw throwable;
-    }
+@Entity
+public class AnnotatedPO extends EntityBase {
 }

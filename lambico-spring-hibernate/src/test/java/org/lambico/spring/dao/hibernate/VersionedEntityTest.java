@@ -39,7 +39,7 @@ public class VersionedEntityTest extends BaseTest {
     private VersionedEntityTCBO versionedEntityTCBO;
 
     @Test
-    public void testStoreRetrieve() {
+    public void storeRetrieve() {
         VersionedEntityTC versionedEntity = new VersionedEntityTC();
         versionedEntity.setName("Test name");
         VersionedEntityDataTC versionedEntityData = new VersionedEntityDataTC();
@@ -52,7 +52,7 @@ public class VersionedEntityTest extends BaseTest {
     }
 
     @Test
-    public void testUpdateNewVersionedData() {
+    public void updateNewVersionedData() {
         VersionedEntityTC versionedEntity = new VersionedEntityTC();
         versionedEntity.setName("Test name");
         VersionedEntityDataTC versionedEntityData = new VersionedEntityDataTC();
@@ -70,7 +70,7 @@ public class VersionedEntityTest extends BaseTest {
     }
 
     @Test
-    public void testUpdateExistentVersionedData() throws InterruptedException {
+    public void updateExistentVersionedData() throws InterruptedException {
         VersionedEntityTC versionedEntity = new VersionedEntityTC();
         versionedEntity.setName("Test name");
         VersionedEntityDataTC versionedEntityData = new VersionedEntityDataTC();
@@ -93,7 +93,7 @@ public class VersionedEntityTest extends BaseTest {
     }
 
     @Test
-    public void testUpdateExistentVersionedDataWithLocales() throws InterruptedException {
+    public void updateExistentVersionedDataWithLocales() throws InterruptedException {
         VersionedEntityTC versionedEntity = new VersionedEntityTC();
         versionedEntity.setDefaultLocale(Locale.ITALIAN.getLanguage());
         versionedEntity.setName("Test name");

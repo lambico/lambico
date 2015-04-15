@@ -32,19 +32,19 @@ public class PageDefaultImpl<T> implements Page<T> {
     /**
      * The content of the page.
      */
-    private List<T> results;
+    private final List<T> results;
     /**
      * The size of the page, i.e. the max number of rows in a single page.
      */
-    private int pageSize;
+    private final int pageSize;
     /**
      * The index of the current page.
      */
-    private int page;
+    private final int page;
     /**
      * The total rows count.
      */
-    private int rowCount;
+    private final int rowCount;
     /**
      * An empty page.
      */

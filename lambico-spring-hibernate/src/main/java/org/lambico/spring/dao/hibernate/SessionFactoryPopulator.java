@@ -22,8 +22,6 @@ import java.util.List;
 import javax.persistence.Entity;
 import org.lambico.spring.xml.ContextUtils;
 import org.lambico.spring.xml.EntityDiscoverer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.TypedStringValue;
@@ -49,13 +47,12 @@ import org.w3c.dom.Element;
  */
 public class SessionFactoryPopulator implements EntityDiscoverer {
 
-    private static Logger logger = LoggerFactory.getLogger(SessionFactoryPopulator.class);
     /** The ResourcePatternResolver. */
-    private ResourcePatternResolver rl;
+    private final ResourcePatternResolver rl;
     /** The BeanDefinition registry. */
-    private BeanDefinitionRegistry registry;
+    private final BeanDefinitionRegistry registry;
     /** The BeanDefinitionParserDelegate. */
-    private BeanDefinitionParserDelegate delegate;
+    private final BeanDefinitionParserDelegate delegate;
     /** The ReaderContext. */
     private final ReaderContext readerContext;
 

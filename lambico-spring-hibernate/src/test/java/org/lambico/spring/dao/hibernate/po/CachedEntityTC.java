@@ -91,10 +91,10 @@ public class CachedEntityTC extends EntityBase {
         blobTwo = new Byte[1000];
         blobThree = new Byte[1000];
         blobFour = new Byte[1000];
-        Arrays.fill(blobFour, new Byte((byte) 4));
-        Arrays.fill(blobThree, new Byte((byte) 3));
-        Arrays.fill(blobTwo, new Byte((byte) 2));
-        Arrays.fill(blobOne, new Byte((byte) 1));
+        Arrays.fill(blobFour, (byte) 4);
+        Arrays.fill(blobThree, (byte) 3);
+        Arrays.fill(blobTwo, (byte) 2);
+        Arrays.fill(blobOne, (byte) 1);
     }
 
     public String getFieldOne() {

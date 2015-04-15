@@ -37,12 +37,12 @@ public class EntityTCBisTest extends BaseTest {
     private EntityTCBisDao entityTCBisDao;
 
     @Test
-    public void testDaoExists() {
+    public void daoExists() {
         assertNotNull(entityTCBisDao);
     }
 
     @Test
-    public void testAllSize() {
+    public void allSize() {
         final List<EntityTCBis> result = entityTCBisDao.findAll();
         assertSize(5, result);
         EntityTCBis testCast = result.get(0);

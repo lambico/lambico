@@ -19,6 +19,7 @@ package org.lambico.spring.dao.hibernate;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -59,7 +60,7 @@ import org.springframework.util.StringUtils;
 @Aspect
 public class HibernateDaoInstrumentation {
 
-    private static Logger logger = LoggerFactory.getLogger(HibernateDaoInstrumentation.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateDaoInstrumentation.class);
     /** Length of the "findBy"prefix. */
     private static final int FIND_BY_PREFIX_SIZE = "findBy".length();
     /** Length of the "orderBy" prefix. */
@@ -104,7 +105,7 @@ public class HibernateDaoInstrumentation {
         } else {
             logger.debug("target: " + target);
             logger.debug("method: " + method);
-            logger.debug("args: " + args);
+            logger.debug("args: " + Arrays.toString(args));
 
             HibernateGenericDao dao = (HibernateGenericDao)target;
 
@@ -145,10 +146,10 @@ public class HibernateDaoInstrumentation {
                             }
                         }
                         if (firstResult != null) {
-                            namedQuery.setFirstResult(firstResult.intValue());
+                            namedQuery.setFirstResult(firstResult);
                         }
-                        if (maxResults != null && maxResults.intValue() >= 0) {
-                            namedQuery.setMaxResults(maxResults.intValue());
+                        if (maxResults != null && maxResults >= 0) {
+                            namedQuery.setMaxResults(maxResults);
                         }
                         namedQuery.setCacheable(method.isAnnotationPresent(CacheIt.class));
                         return namedQuery.list();
@@ -173,10 +174,10 @@ public class HibernateDaoInstrumentation {
                                     Criteria executableCriteria =
                                             criteria.getExecutableCriteria(session);
                                     if (firstResult != null) {
-                                        executableCriteria.setFirstResult(firstResult.intValue());
+                                        executableCriteria.setFirstResult(firstResult);
                                     }
-                                    if (maxResults != null && maxResults.intValue() >= 0) {
-                                        executableCriteria.setMaxResults(maxResults.intValue());
+                                    if (maxResults != null && maxResults >= 0) {
+                                        executableCriteria.setMaxResults(maxResults);
                                     }
                                     final Criteria crit = criteria.getExecutableCriteria(session);
                                     crit.setCacheable(method.isAnnotationPresent(CacheIt.class));

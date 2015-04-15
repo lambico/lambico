@@ -31,7 +31,7 @@ public class EntityBaseTest {
      * Test of getId method, of class EntityBase.
      */
     @Test
-    public void testGetId() {
+    public void getId() {
         EntityBase instance = new EntityBaseImpl();
         assertNull("A newly created entity should have its id equalt to null.", instance.getId());
     }
@@ -40,9 +40,9 @@ public class EntityBaseTest {
      * Test of setId method, of class EntityBase.
      */
     @Test
-    public void testSetId() {
+    public void setId() {
         // Not a really useful test
-        Long id = Long.valueOf(1);
+        Long id = 1L;
         EntityBase instance = new EntityBaseImpl();
         instance.setId(id);
         assertNotNull(instance.getId());
@@ -54,7 +54,7 @@ public class EntityBaseTest {
      * Test of equals method, of class EntityBase, using null ids.
      */
     @Test
-    public void testEqualsWithNullId() {
+    public void equalsWithNullId() {
         EntityBase instanceA = new EntityBaseImpl();
         EntityBase instanceB = new EntityBaseImpl();
         assertFalse(instanceA.equals(instanceB));
@@ -64,9 +64,9 @@ public class EntityBaseTest {
      * Test of equals method, of class EntityBase, using the same not null id.
      */
     @Test
-    public void testEqualsWithTheSameId() {
-        Long idA = new Long(1);
-        Long idB = new Long(1);
+    public void equalsWithTheSameId() {
+        Long idA = 1L;
+        Long idB = 1L;
         EntityBase instanceA = new EntityBaseImpl();
         instanceA.setId(idA);
         EntityBase instanceB = new EntityBaseImpl();
@@ -78,9 +78,9 @@ public class EntityBaseTest {
      * Test of equals method, of class EntityBase, using two different not null ids.
      */
     @Test
-    public void testEqualsWithDifferentIds() {
-        Long idA = new Long(1);
-        Long idB = new Long(2);
+    public void equalsWithDifferentIds() {
+        Long idA = 1L;
+        Long idB = 2L;
         EntityBase instanceA = new EntityBaseImpl();
         instanceA.setId(idA);
         EntityBase instanceB = new EntityBaseImpl();
@@ -92,8 +92,8 @@ public class EntityBaseTest {
      * Test of equals method, of class EntityBase, using a null id, and a not null id.
      */
     @Test
-    public void testEqualsWithANullId() {
-        Long idA = new Long(1);
+    public void equalsWithANullId() {
+        Long idA = 1L;
         Long idB = null;
         EntityBase instanceA = new EntityBaseImpl();
         instanceA.setId(idA);
@@ -106,9 +106,9 @@ public class EntityBaseTest {
      * Test of hashCode method, of class EntityBase.
      */
     @Test
-    public void testHashCode() {
-        Long idA = new Long(1);
-        Long idB = new Long(1);
+    public void hashCodeMethod() {
+        Long idA = 1L;
+        Long idB = 1L;
         EntityBase instanceA = new EntityBaseImpl();
         instanceA.setId(idA);
         EntityBase instanceB = new EntityBaseImpl();
@@ -120,7 +120,7 @@ public class EntityBaseTest {
      * Test of hashCode method, of class EntityBase.
      */
     @Test
-    public void testHashCodeWithNullId() {
+    public void hashCodeWithNullId() {
         EntityBase instanceA = new EntityBaseImpl();
         EntityBase instanceB = new EntityBaseImpl();
         assertTrue(instanceA.hashCode() != instanceB.hashCode());
@@ -130,8 +130,8 @@ public class EntityBaseTest {
      * Test of toString method, of class EntityBase.
      */
     @Test
-    public void testToString() {
-        Long id = new Long(1);
+    public void toStringMethod() {
+        Long id = 1L;
         EntityBase instance = new EntityBaseImpl();
         instance.setId(id);
         assertEquals(instance.getClass().getName() + "[id=1]", instance.toString());

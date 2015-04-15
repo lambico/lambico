@@ -18,7 +18,8 @@
 package org.lambico.spring.dao.hibernate;
 
 import java.util.Set;
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.lambico.test.ExtraAssert.assertSize;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 /**
@@ -26,11 +27,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
  *
  * @author Lucio Benfante <lucio.benfante@gmail.com>
  */
-public class HibernateDaoBeanCreatorTest extends TestCase {
-
-    public HibernateDaoBeanCreatorTest(String testName) {
-        super(testName);
-    }
+public class HibernateDaoBeanCreatorTest {
 
     private HibernateDaoBeanCreator createInstance() {
         return new HibernateDaoBeanCreator(new PathMatchingResourcePatternResolver(), null, null,
@@ -40,10 +37,11 @@ public class HibernateDaoBeanCreatorTest extends TestCase {
     /**
      * Test of getDaoInterfaces method, of class DaoBeanCreator.
      */
-    public void testGetDaoInterfaces() {
+    @Test
+    public void getDaoInterfaces() {
         HibernateDaoBeanCreator instance = createInstance();
         String interfacePackageName = "org.lambico.spring.dao.hibernate";
         Set result = instance.getDaoInterfaces(interfacePackageName);
-        assertEquals(7, result.size());
+        assertSize(7, result);
     }
 }
