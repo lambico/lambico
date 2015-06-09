@@ -227,8 +227,7 @@
                         <exclude>**/*.svg</exclude>
                         <exclude>**/testdata/UTF8WithPreamble.txt</exclude>
                         <exclude>**/testdata/UTF8WithoutPreamble.txt</exclude>
-                        <exclude>.hgtags</exclude>
-                        <exclude>.hgignore</exclude>
+                        <exclude>.travis.yml</exclude>
                     </excludes>
                     <properties>
                         <name>${project.name}</name>
