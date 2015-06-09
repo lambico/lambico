@@ -1,3 +1,5 @@
+# lambico [![Build Status](https://travis-ci.org/lambico/lambico.svg?branch=master)](https://travis-ci.org/lambico/lambico)
+
 With Lambico you can add DAOs to your entities just writing only their interfaces, with no implementation.
 
 For example:
