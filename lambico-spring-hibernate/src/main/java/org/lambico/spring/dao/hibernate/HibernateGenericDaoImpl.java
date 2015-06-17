@@ -21,8 +21,10 @@ import org.hibernate.Transaction;
 import org.lambico.dao.spring.hibernate.HibernateGenericDao;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.SerializationUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Filter;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -72,6 +74,10 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
      * The names of the filters that must be activated.
      */
     private String[] filterNames;
+    /**
+     * The parameters for the activated filters.
+     */
+    private Map<String, Object>[] filterParams;
 
     /**
      * {@inheritDoc}
@@ -232,6 +238,28 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param criteria {@inheritDoc}
+     * @param firstResult {@inheritDoc}
+     * @param maxResults {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public final Page<T> searchPaginatedByCriteria(final DetachedCriteria criteria,
+            final int firstResult, final int maxResults) {
+        // Row count
+        criteria.setProjection(Projections.rowCount());
+        int rowCount = ((Number) searchByCriteria(criteria).get(0)).intValue();
+        criteria.setProjection(null);
+        criteria.setResultTransformer(Criteria.ROOT_ENTITY);
+        List<T> result = searchByCriteria(criteria, firstResult, maxResults);
+        int page = (firstResult / maxResults) + 1;
+        return new PageDefaultImpl<T>(result, page, maxResults, rowCount);
+    }
+    
     /**
      * {@inheritDoc}
      *
@@ -421,6 +449,16 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
         return this.filterNames;
     }
 
+    @Override
+    public Map<String, Object>[] getFilterParams() {
+        return filterParams;
+    }
+
+    @Override
+    public void setFilterParams(Map<String, Object>... filterParams) {
+        this.filterParams = filterParams;
+    }
+    
     /**
      * {@inheritDoc }
      */
@@ -452,8 +490,16 @@ public class HibernateGenericDaoImpl<T, PK extends Serializable>
 
     private void enableFilters(Session session) {
         if (getFilterNames() != null) {
-            for (String filterName : getFilterNames()) {
-                session.enableFilter(filterName);
+            for (int i = 0; i < filterNames.length; i++) {
+                Filter filter = session.enableFilter(filterNames[i]);
+                if (getFilterParams() != null && getFilterParams().length > 0) {
+                    Map<String, Object> filterParams = getFilterParams()[i];
+                    if (filterParams != null) {
+                        for (Map.Entry<String, Object> filterParam : filterParams.entrySet()) {
+                            filter.setParameter(filterParam.getKey(), filterParam.getValue());
+                        }
+                    }
+                }
             }
         }
     }

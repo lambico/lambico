@@ -17,6 +17,7 @@
  */
 package org.lambico.dao.spring.hibernate;
 
+import java.util.Map;
 import org.hibernate.Session;
 import org.lambico.dao.generic.GenericDaoTypeSupport;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -53,15 +54,19 @@ public interface GenericDaoHibernateSupport extends GenericDaoTypeSupport {
      * 
      * @param filterNames The list of filters that must be activated.
      */
-    public void setFilterNames(String... filterNames);
+    void setFilterNames(String... filterNames);
 
     /**
      * Return the names of Hibernate filters to be activated, if any.
      * 
      * @return the names of Hibernate filters to be activated, if any.
      */
-    public String[] getFilterNames();
+    String[] getFilterNames();
 
+    Map<String, Object>[] getFilterParams();
+
+    void setFilterParams(Map<String, Object>... filterParams);
+    
     /**
      * Conveniently obtain and customize the current Hibernate Session.
      * @return the Hibernate Session

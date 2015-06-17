@@ -57,6 +57,16 @@ public interface GenericDaoHibernateCriteriaSupport<T> {
     List<T> searchByCriteria(DetachedCriteria criteria, int firstResult, int maxResults);
 
     /**
+     * Search using a criteria with limits, returning a Page.
+     *
+     * @param criteria The Criteria.
+     * @param firstResult The index of the first result.
+     * @param maxResults The max number of returned results.
+     * @return The result of the search with the provided criteria.
+     */
+    Page<T> searchPaginatedByCriteria(DetachedCriteria criteria, int firstResult, int maxResults);
+    
+    /**
      * Search using a set of Criteria with pagination.
      *
      * @param page The requested page index.

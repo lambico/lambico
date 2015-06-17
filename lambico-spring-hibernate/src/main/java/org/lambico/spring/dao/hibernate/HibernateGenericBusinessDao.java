@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
@@ -77,6 +78,10 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
      * The names of the filters that must be activated.
      */
     private String[] filterNames;
+    /**
+     * The parameters for the activated filters.
+     */
+    private Map<String, Object>[] filterParams;
 
     /**
      * Build the DAO.
@@ -228,6 +233,28 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
             final int maxResults) {
         return (List<T>) getHibernateTemplate().
                 findByCriteria(criteria, firstResult, maxResults);
+    }
+    
+    /**
+     * {@inheritDoc}
+     *
+     * @param criteria {@inheritDoc}
+     * @param firstResult {@inheritDoc}
+     * @param maxResults {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public final Page<T> searchPaginatedByCriteria(final DetachedCriteria criteria,
+            final int firstResult, final int maxResults) {
+        // Row count
+        criteria.setProjection(Projections.rowCount());
+        int rowCount = ((Number) searchByCriteria(criteria).get(0)).intValue();
+        criteria.setProjection(null);
+        criteria.setResultTransformer(Criteria.ROOT_ENTITY);
+        List<T> result = searchByCriteria(criteria, firstResult, maxResults);
+        int page = (firstResult / maxResults) + 1;
+        return new PageDefaultImpl<T>(result, page, maxResults, rowCount);
     }
 
     /**
@@ -391,6 +418,16 @@ public class HibernateGenericBusinessDao<T, PK extends Serializable>
         return this.filterNames;
     }
 
+    @Override
+    public Map<String, Object>[] getFilterParams() {
+        return filterParams;
+    }
+
+    @Override
+    public void setFilterParams(Map<String, Object>... filterParams) {
+        this.filterParams = filterParams;
+    }
+    
     /**
      * {@inheritDoc }
      */
